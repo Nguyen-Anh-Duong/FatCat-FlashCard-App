@@ -6,5 +6,5 @@ FatCat is a flashcard application designed to help users learn and memorize info
 
 ## 2. Features
 Hiii
-
+Hello
 
