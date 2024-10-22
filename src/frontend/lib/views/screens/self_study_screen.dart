@@ -1,0 +1,304 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:flip_card/flip_card.dart';
+import 'package:provider/provider.dart';
+import 'package:FatCat/constants/colors.dart';
+import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/viewmodels/self_study_view_model.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+class SelfStudyScreen extends StatelessWidget {
+  final List<CardModel> cards;
+
+  SelfStudyScreen({super.key, required this.cards});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => SelfStudyViewModel(cards),
+      child: Consumer<SelfStudyViewModel>(
+        builder: (context, viewModel, child) {
+          return Scaffold(
+            backgroundColor: AppColors.white,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  // Top Section
+                  Column(
+                    children: [
+                      // Top navigation bar
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () {},
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  '${viewModel.progress} / ${viewModel.cards.length}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.settings),
+                              onPressed: () {
+                                _showSettingsBottomSheet(context, viewModel);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Score indicators
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${viewModel.orangeScore}',
+                                style: const TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${viewModel.greenScore}',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Centered Card Swiper with equal spacing
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 570,
+                          width: 390,
+                          child: CardSwiper(
+                            controller: viewModel.cardSwiperController,
+                            cardsCount: viewModel.cards.length,
+                            onSwipe: viewModel.onSwipe,
+                            scale: 1,
+                            isLoop: false,
+                            numberOfCardsDisplayed: 2,
+                            backCardOffset: const Offset(0, 0),
+                            padding: const EdgeInsets.all(24.0),
+                            maxAngle: 10,
+                            cardBuilder: (context, index, percentThresholdX,
+                                percentThresholdY) {
+                              final isSwipingRight = percentThresholdX > 0;
+                              final isSwipingLeft = percentThresholdX < 0;
+
+                              final isNotSwiping = percentThresholdX == 0;
+                              Color borderColor = Colors.transparent;
+                              double borderWidth = 0.0;
+                              if (isNotSwiping) {
+                                borderColor = Colors.transparent;
+                                borderWidth = 0.0;
+                              } else {
+                                borderColor = (isSwipingRight || isSwipingLeft)
+                                    ? (isSwipingRight
+                                        ? AppColors.green
+                                        : AppColors.orange)
+                                    : Colors.transparent;
+                                borderWidth = (isSwipingRight || isSwipingLeft)
+                                    ? 2.0
+                                    : 0.0;
+                              }
+
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: borderColor,
+                                    width: borderWidth,
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: FlipCard(
+                                  key: viewModel.cardKeys[index],
+                                  direction: FlipDirection.HORIZONTAL,
+                                  front: GestureDetector(
+                                    onTap: () => viewModel.flipCard(index),
+                                    child: _buildCardSide(
+                                      viewModel.cards[index].question,
+                                      viewModel,
+                                    ),
+                                  ),
+                                  back: GestureDetector(
+                                    onTap: () => viewModel.flipCard(index),
+                                    child: _buildCardSide(
+                                      viewModel.cards[index].answer,
+                                      viewModel,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Bottom navigation - Fixed at bottom
+                  Container(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 16.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          onPressed: viewModel.goToPreviousCard,
+                          color: Colors.grey[600],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.play_arrow),
+                          onPressed: () {},
+                          color: Colors.grey[600],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCardSide(String content, SelfStudyViewModel viewModel) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.backgroundCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.black.withOpacity(0.2),
+          width: 0.1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 0.1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Center(
+            child: Text(
+              content,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Positioned(
+            bottom: 12.0,
+            right: 12.0,
+            child: IconButton(
+              icon: const Icon(Icons.volume_up),
+              iconSize: 32,
+              color: AppColors.greyIcon,
+              onPressed: () async {
+                await FlutterTts().setLanguage("en-US");
+                await FlutterTts().speak(content);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSettingsBottomSheet(
+      BuildContext context, SelfStudyViewModel viewModel) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Volume Control
+              Row(
+                children: [
+                  const Text('Volume:'),
+                  Expanded(
+                    child: Slider(
+                      value: viewModel.ttsVolume,
+                      min: 0.0,
+                      max: 1.0,
+                      divisions: 10,
+                      label: '${(viewModel.ttsVolume * 100).round()}%',
+                      onChanged: (double newValue) {
+                        viewModel.setVolume(newValue);
+                      },
+                      onChangeEnd: (double newValue) {
+                        FlutterTts().setVolume(newValue);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              // Shuffle Cards Button
+              ElevatedButton(
+                onPressed: () {
+                  viewModel.shuffleCards();
+                  Navigator.of(context).pop(); // Close the bottom sheet
+                },
+                child: const Text('Shuffle Cards'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
