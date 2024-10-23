@@ -1,5 +1,5 @@
 import 'package:FatCat/models/deck_provider.dart';
-import 'package:FatCat/views/screens/decks%20management/available_decks/deck_cart_widget.dart';
+import 'package:FatCat/views/widgets/deck_cart_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

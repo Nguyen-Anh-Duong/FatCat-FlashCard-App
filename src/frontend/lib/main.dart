@@ -1,5 +1,5 @@
 import 'package:FatCat/views/screens/home.dart';
-import 'package:FatCat/views/screens/screen_control.dart';
+import 'package:FatCat/views/screens/bottom_nav.dart';
 import 'package:FatCat/views/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 
