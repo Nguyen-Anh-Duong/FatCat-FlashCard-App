@@ -108,4 +108,6 @@ class SelfStudyViewModel extends ChangeNotifier {
     temp = newValue;
     notifyListeners();
   }
+
+  bool get isStudyCompleted => _progress == cards.length;
 }

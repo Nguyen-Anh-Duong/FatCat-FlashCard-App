@@ -9,6 +9,12 @@ class IntermittentStudyViewModel extends ChangeNotifier {
   late CardSwiperController cardSwiperController;
   late List<GlobalKey<FlipCardState>> cardKeys;
 
+  final Map<String, int> _detailedAnswers = {
+    "Dễ": 0,
+    "Tốt": 0,
+    "Khó": 0,
+    "Học lại": 0
+  };
   int _studiedCards = 0;
   bool _showAnswer = false;
   Color? _currentBorderColor;
@@ -20,6 +26,7 @@ class IntermittentStudyViewModel extends ChangeNotifier {
   int get totalCards => cards.length;
   bool get showAnswer => _showAnswer;
   Color? get currentBorderColor => _currentBorderColor;
+  Map<String, int> get detailedAnswers => _detailedAnswers;
 
   IntermittentStudyViewModel({required this.cards}) {
     cardSwiperController = CardSwiperController();
@@ -40,11 +47,23 @@ class IntermittentStudyViewModel extends ChangeNotifier {
       isCurrentCardAnswered = true;
       _studiedCards++;
       _showAnswer = false;
-      print(difficulty);
-      if (difficulty == 0 || difficulty == 1) {
-        cardSwiperController.swipe(CardSwiperDirection.left);
-      } else {
-        cardSwiperController.swipe(CardSwiperDirection.right);
+      switch (difficulty) {
+        case 0:
+          _detailedAnswers["Học lại"] = _detailedAnswers["Học lại"]! + 1;
+          cardSwiperController.swipe(CardSwiperDirection.left);
+          break;
+        case 1:
+          _detailedAnswers["Khó"] = _detailedAnswers["Khó"]! + 1;
+          cardSwiperController.swipe(CardSwiperDirection.left);
+          break;
+        case 2:
+          _detailedAnswers["Tốt"] = _detailedAnswers["Tốt"]! + 1;
+          cardSwiperController.swipe(CardSwiperDirection.right);
+          break;
+        case 3:
+          _detailedAnswers["Dễ"] = _detailedAnswers["Dễ"]! + 1;
+          cardSwiperController.swipe(CardSwiperDirection.right);
+          break;
       }
       notifyListeners();
     }
@@ -77,6 +96,8 @@ class IntermittentStudyViewModel extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  bool get isStudyCompleted => studiedCards == cards.length;
 
   @override
   void dispose() {
