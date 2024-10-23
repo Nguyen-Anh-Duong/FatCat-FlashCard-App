@@ -1,4 +1,4 @@
-class CardModel {
+class DeckModel {
   final String id;
   final String deckId;
   final String name;
@@ -8,7 +8,7 @@ class CardModel {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  CardModel({
+  DeckModel({
     required this.id,
     required this.deckId,
     required this.name,

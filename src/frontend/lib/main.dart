@@ -3,6 +3,8 @@ import 'package:FatCat/views/screens/bottom_nav.dart';
 import 'package:FatCat/views/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'models/card_model.dart';
+
 void main() {
   runApp(const MyApp());
 }
