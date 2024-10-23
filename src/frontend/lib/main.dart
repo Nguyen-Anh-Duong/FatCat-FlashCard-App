@@ -1,6 +1,5 @@
-import 'package:FatCat/models/card_model.dart';
-import 'package:FatCat/views/screens/intermittent_study_screen.dart';
-import 'package:FatCat/views/screens/self_study_screen.dart';
+import 'package:FatCat/views/screens/home.dart';
+import 'package:FatCat/views/screens/screen_control.dart';
 import 'package:FatCat/views/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -62,7 +61,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: IntermittentStudyScreen(cards: cards),
+      home: const ScreenControl(),
     );
   }
 }
