@@ -1,8 +1,8 @@
 import 'package:FatCat/models/current_page_model.dart';
-import 'package:FatCat/views/screens/cards%20management/cards_control.dart';
-import 'package:FatCat/views/screens/decks%20management/decks_control.dart';
-import 'package:FatCat/views/screens/home.dart';
-import 'package:FatCat/views/screens/settings/settings.dart';
+import 'package:FatCat/views/screens/cards_screen.dart';
+import 'package:FatCat/views/screens/decks_control_screen.dart';
+import 'package:FatCat/views/screens/home_screen.dart';
+import 'package:FatCat/views/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

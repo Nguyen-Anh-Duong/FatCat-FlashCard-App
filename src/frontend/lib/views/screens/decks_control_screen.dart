@@ -1,6 +1,7 @@
+import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/models/deck_provider.dart';
-import 'package:FatCat/views/screens/decks%20management/available_decks/available_deck_screen.dart';
-import 'package:FatCat/views/screens/decks%20management/deck_item_widget.dart';
+import 'package:FatCat/views/screens/available_deck_screen.dart';
+import 'package:FatCat/views/widgets/deck_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -64,10 +65,15 @@ class DecksControl extends StatelessWidget {
                           onPressed: () {
                             String deckName = controller1.text;
                             String deckDescription = controller2.text;
-                            Map<String, dynamic> deck = {
-                              'deckName': deckName,
-                              'deckDescription': deckDescription,
-                            };
+                            DeckModel deck = DeckModel(
+                              id: "1",
+                              name: deckName,
+                              description: deckDescription,
+                              is_published: "1",
+                              deck_cards_count: "1",
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                            );
                             Provider.of<DeckProvider>(context, listen: false)
                                 .addDeck(deck);
                             Navigator.of(context).pop();

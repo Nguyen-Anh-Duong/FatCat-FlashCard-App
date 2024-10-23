@@ -1,10 +1,24 @@
-import 'package:FatCat/views/screens/home.dart';
-import 'package:FatCat/views/screens/screen_control.dart';
+import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/models/current_page_model.dart';
+import 'package:FatCat/models/deck_provider.dart';
+import 'package:FatCat/views/screens/home_screen.dart';
+import 'package:FatCat/views/screens/bottom_navigation_bar.dart';
 import 'package:FatCat/views/screens/test_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) => CurrentPageModel()), // First provider
+        ChangeNotifierProvider(
+            create: (_) => DeckProvider()), // Second provider
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -13,54 +27,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final List<CardModel> cards = [
-      CardModel(
-        id: "1",
-        userId: "123",
-        deckId: "00001",
-        question: "question",
-        imageId: "imageId",
-        answer: "answer",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-      CardModel(
-        id: "2",
-        userId: "123",
-        deckId: "00001",
-        question: "question 2",
-        imageId: "imageId 2",
-        answer: "answer 2",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-      CardModel(
-        id: "3",
-        userId: "123",
-        deckId: "00001",
-        question: "question 3",
-        imageId: "imageId 3",
-        answer: "answer 3",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-      CardModel(
-        id: "4",
-        userId: "123",
-        deckId: "00001",
-        question: "question 4",
-        imageId: "imageId 4",
-        answer: "answer 4",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    ];
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+          fontFamily: 'Nunito',
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+          useMaterial3: true),
       home: const ScreenControl(),
     );
   }
