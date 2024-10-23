@@ -1,3 +1,4 @@
+import 'package:FatCat/views/screens/review_study_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flip_card/flip_card.dart';
@@ -17,6 +18,13 @@ class IntermittentStudyScreen extends StatelessWidget {
       create: (_) => IntermittentStudyViewModel(cards: cards),
       child: Consumer<IntermittentStudyViewModel>(
         builder: (context, viewModel, child) {
+          if (viewModel.isStudyCompleted) {
+            return ReviewStudyScreen(
+              detailedAnswers: viewModel.detailedAnswers,
+              correctAnswers: null,
+              incorrectAnswers: null,
+            );
+          }
           return Scaffold(
             backgroundColor: AppColors.white,
             body: SafeArea(
