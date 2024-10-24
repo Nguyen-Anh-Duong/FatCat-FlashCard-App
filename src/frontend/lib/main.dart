@@ -1,5 +1,4 @@
 import 'package:FatCat/models/card_model.dart';
-import 'package:FatCat/models/current_page_model.dart';
 import 'package:FatCat/models/deck_provider.dart';
 import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
 import 'package:FatCat/views/screens/home_screen.dart';
