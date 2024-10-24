@@ -1,4 +1,6 @@
 import 'package:FatCat/views/screens/review_study_screen.dart';
+import 'package:FatCat/views/widgets/primary_button_widget.dart';
+import 'package:FatCat/views/widgets/primary_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flip_card/flip_card.dart';
@@ -235,7 +237,7 @@ class SelfStudyScreen extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.play_arrow),
                           onPressed: () {
-                            _showConfirmNextToReview(context);
+                            _showConfirmNextToReview(context, viewModel);
                           },
                           color: Colors.grey[600],
                         ),
@@ -346,7 +348,8 @@ class SelfStudyScreen extends StatelessWidget {
     );
   }
 
-  void _showConfirmNextToReview(BuildContext context) {
+  void _showConfirmNextToReview(
+      BuildContext context, SelfStudyViewModel viewModel) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -358,47 +361,37 @@ class SelfStudyScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Bạn có muốn đi đến trang kiểm tra kết quả học tập không?',
+              'Bạn sẽ bỏ qua các thẻ còn lại\nvà thống kê kết quả ?',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 32),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                  ),
-                  child: const Text('Đóng'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
+                primaryOutlineButton("Đóng", 150, () {
+                  Navigator.of(context).pop();
+                }),
+                primaryButton(
+                  "Đồng ý",
+                  150,
+                  () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => ReviewStudyScreen(
-                          detailedAnswers: null,
-                          correctAnswers: Provider.of<SelfStudyViewModel>(
-                                  context,
-                                  listen: false)
-                              .greenScore,
-                          incorrectAnswers: Provider.of<SelfStudyViewModel>(
-                                  context,
-                                  listen: false)
-                              .orangeScore,
-                        ),
+                            detailedAnswers: null,
+                            correctAnswers: viewModel.greenScore,
+                            incorrectAnswers: viewModel.orangeScore),
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.greyIcon,
-                  ),
-                  child: const Text('Đi đến'),
-                ),
+                )
               ],
             ),
+            const SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),

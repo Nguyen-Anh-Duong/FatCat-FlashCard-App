@@ -1,6 +1,7 @@
 import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/current_page_model.dart';
 import 'package:FatCat/models/deck_provider.dart';
+import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
 import 'package:FatCat/views/screens/home_screen.dart';
 import 'package:FatCat/views/screens/bottom_navigation_bar.dart';
 import 'package:FatCat/views/screens/test_screen.dart';
@@ -12,7 +13,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (_) => CurrentPageModel()), // First provider
+            create: (_) => ScreenControlViewModel()), // First provider
         ChangeNotifierProvider(
             create: (_) => DeckProvider()), // Second provider
       ],
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           fontFamily: 'Nunito',
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
           useMaterial3: true),
       home: const ScreenControl(),
     );

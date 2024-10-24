@@ -112,7 +112,7 @@ class SelfStudyViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    cardSwiperController.dispose();
+    // cardSwiperController.dispose();
     super.dispose();
   }
 }

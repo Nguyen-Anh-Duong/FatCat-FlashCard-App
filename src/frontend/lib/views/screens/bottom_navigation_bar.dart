@@ -1,4 +1,5 @@
 import 'package:FatCat/models/current_page_model.dart';
+import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
 import 'package:FatCat/views/screens/cards_screen.dart';
 import 'package:FatCat/views/screens/decks_control_screen.dart';
 import 'package:FatCat/views/screens/home_screen.dart';
@@ -12,10 +13,10 @@ class ScreenControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<CurrentPageModel>(
-        builder: (context, CurrentPageModel, child) {
+      body: Consumer<ScreenControlViewModel>(
+        builder: (context, viewModel, child) {
           return IndexedStack(
-            index: CurrentPageModel.currentIndex,
+            index: viewModel.currentIndex,
             children: const <Widget>[
               Home(),
               DecksControl(),
@@ -31,9 +32,10 @@ class ScreenControl extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 20,
         unselectedFontSize: 20,
-        onTap: (index) => Provider.of<CurrentPageModel>(context, listen: false)
-            .setPage(index),
-        currentIndex: Provider.of<CurrentPageModel>(context).currentIndex,
+        onTap: (index) =>
+            Provider.of<ScreenControlViewModel>(context, listen: false)
+                .setPage(index),
+        currentIndex: Provider.of<ScreenControlViewModel>(context).currentIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

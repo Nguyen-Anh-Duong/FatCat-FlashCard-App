@@ -1,4 +1,6 @@
 import 'package:FatCat/viewmodels/review_screen_view_model.dart';
+import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
+import 'package:FatCat/views/screens/bottom_navigation_bar.dart';
 import 'package:FatCat/views/widgets/primary_button_widget.dart';
 import 'package:FatCat/views/widgets/primary_outline_button.dart';
 import 'package:flutter/material.dart';
@@ -113,11 +115,29 @@ class ReviewStudyScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      primaryButton('Ôn luyện lại trong chế độ học', () {
-                        print("hi");
-                      }),
+                      primaryButton(
+                        'Ôn luyện lại trong chế độ học',
+                        double.infinity,
+                        () {
+                          Provider.of<ScreenControlViewModel>(context,
+                                  listen: false)
+                              .setPage(0);
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const ScreenControl()),
+                            (Route<dynamic> route) => false,
+                          );
+                        },
+                      ),
                       const SizedBox(height: 8),
-                      primaryOutlineButton('Đặt lại thẻ ghi nhớ', () {})
+                      primaryOutlineButton(
+                          'Đặt lại thẻ ghi nhớ', double.infinity, () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => const ScreenControl()),
+                          (Route<dynamic> route) => false,
+                        );
+                      })
                     ],
                   ),
                 ),

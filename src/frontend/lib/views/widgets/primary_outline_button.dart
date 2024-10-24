@@ -1,10 +1,10 @@
 import 'package:FatCat/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-Widget primaryOutlineButton(String text, VoidCallback onPress) {
+Widget primaryOutlineButton(String text, double width, VoidCallback onPress) {
   return SizedBox(
     height: 50,
-    width: double.infinity,
+    width: width,
     child: Padding(
       padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       child: OutlinedButton(
