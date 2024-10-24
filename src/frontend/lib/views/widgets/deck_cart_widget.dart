@@ -19,7 +19,7 @@ class DeckCartWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                SelfStudyScreen(cards: cardsForDecks[deck.id]!),
+                IntermittentStudyScreen(cards: cardsForDecks[deck.id]!),
           ),
         );
       },

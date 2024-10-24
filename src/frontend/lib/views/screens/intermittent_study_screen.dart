@@ -10,7 +10,7 @@ import 'package:FatCat/viewmodels/intermittent_study_view_model.dart';
 class IntermittentStudyScreen extends StatelessWidget {
   final List<CardModel> cards;
 
-  IntermittentStudyScreen({super.key, required this.cards});
+  const IntermittentStudyScreen({super.key, required this.cards});
 
   @override
   Widget build(BuildContext context) {

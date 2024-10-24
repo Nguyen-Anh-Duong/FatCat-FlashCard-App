@@ -1,3 +1,4 @@
+import 'package:FatCat/views/screens/review_study_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flip_card/flip_card.dart';
@@ -18,12 +19,18 @@ class SelfStudyScreen extends StatelessWidget {
       create: (_) => SelfStudyViewModel(cards),
       child: Consumer<SelfStudyViewModel>(
         builder: (context, viewModel, child) {
+          if (viewModel.isStudyCompleted) {
+            return ReviewStudyScreen(
+              detailedAnswers: null,
+              correctAnswers: viewModel.greenScore,
+              incorrectAnswers: viewModel.orangeScore,
+            );
+          }
           return Scaffold(
             backgroundColor: AppColors.white,
             body: SafeArea(
               child: Column(
                 children: [
-                  // Top Section
                   Column(
                     children: [
                       // Top navigation bar
@@ -35,22 +42,33 @@ class SelfStudyScreen extends StatelessWidget {
                         child: Row(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.close,
+                                size: 32,
+                                color: AppColors.greyIcon,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
                             ),
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  '${viewModel.progress} / ${viewModel.cards.length}',
+                                  'Tự học\n${viewModel.progress} / ${viewModel.cards.length}',
+                                  textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.settings),
+                              icon: const Icon(
+                                Icons.settings,
+                                size: 32,
+                                color: AppColors.greyIcon,
+                              ),
                               onPressed: () {
                                 _showSettingsBottomSheet(context, viewModel);
                               },
@@ -58,14 +76,22 @@ class SelfStudyScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
+                      // Thanh progress
+                      LinearProgressIndicator(
+                        value: viewModel.progress / viewModel.cards.length,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.progressBarColor),
+                      ),
+                      const SizedBox(height: 16),
                       // Score indicators
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
+                              width: 120,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
                                 vertical: 8,
@@ -74,15 +100,21 @@ class SelfStudyScreen extends StatelessWidget {
                                 color: Colors.orange.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Text(
-                                '${viewModel.orangeScore}',
-                                style: const TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: 16,
-                                ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Đang học\n${viewModel.orangeScore}',
+                                    style: const TextStyle(
+                                      color: Colors.orange,
+                                      fontSize: 16,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
                             ),
                             Container(
+                              width: 120,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
                                 vertical: 8,
@@ -91,12 +123,17 @@ class SelfStudyScreen extends StatelessWidget {
                                 color: Colors.green.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Text(
-                                '${viewModel.greenScore}',
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 16,
-                                ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Biết\n${viewModel.orangeScore}',
+                                    style: const TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 16,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -111,7 +148,7 @@ class SelfStudyScreen extends StatelessWidget {
                       child: Container(
                         alignment: Alignment.center,
                         child: SizedBox(
-                          height: 570,
+                          height: 630,
                           width: 390,
                           child: CardSwiper(
                             controller: viewModel.cardSwiperController,
@@ -197,7 +234,9 @@ class SelfStudyScreen extends StatelessWidget {
                         ),
                         IconButton(
                           icon: const Icon(Icons.play_arrow),
-                          onPressed: () {},
+                          onPressed: () {
+                            _showConfirmNextToReview(context);
+                          },
                           color: Colors.grey[600],
                         ),
                       ],
@@ -236,6 +275,11 @@ class SelfStudyScreen extends StatelessWidget {
             child: Text(
               content,
               textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                color: AppColors.greyText,
+              ),
             ),
           ),
           Positioned(
@@ -299,6 +343,65 @@ class SelfStudyScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showConfirmNextToReview(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Bạn có muốn đi đến trang kiểm tra kết quả học tập không?',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                  ),
+                  child: const Text('Đóng'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => ReviewStudyScreen(
+                          detailedAnswers: null,
+                          correctAnswers: Provider.of<SelfStudyViewModel>(
+                                  context,
+                                  listen: false)
+                              .greenScore,
+                          incorrectAnswers: Provider.of<SelfStudyViewModel>(
+                                  context,
+                                  listen: false)
+                              .orangeScore,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.greyIcon,
+                  ),
+                  child: const Text('Đi đến'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
