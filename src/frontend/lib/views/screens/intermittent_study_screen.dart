@@ -133,7 +133,16 @@ class IntermittentStudyScreen extends StatelessWidget {
             viewModel.flipCurrentCard(context);
           }
         },
-        child: const Text('Hiện đáp án'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.backgroundButtonColor,
+          foregroundColor: AppColors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        child: const Text(
+          'Hiện đáp án',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
       ),
     );
   }
@@ -142,10 +151,13 @@ class IntermittentStudyScreen extends StatelessWidget {
     return Row(
       children: [
         _buildOptionButton(
-            'Học lại', Colors.red, () => viewModel.answerCard(0)),
-        _buildOptionButton('Khó', Colors.orange, () => viewModel.answerCard(1)),
-        _buildOptionButton('Tốt', Colors.blue, () => viewModel.answerCard(2)),
-        _buildOptionButton('Dễ', Colors.green, () => viewModel.answerCard(3)),
+            'Học lại', AppColors.red, () => viewModel.answerCard(0)),
+        _buildOptionButton(
+            'Khó', AppColors.orange, () => viewModel.answerCard(1)),
+        _buildOptionButton(
+            'Tốt', AppColors.blue, () => viewModel.answerCard(2)),
+        _buildOptionButton(
+            'Dễ', AppColors.green, () => viewModel.answerCard(3)),
       ],
     );
   }

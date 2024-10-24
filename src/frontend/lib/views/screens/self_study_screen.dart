@@ -126,7 +126,7 @@ class SelfStudyScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Text(
-                                    'Biết\n${viewModel.orangeScore}',
+                                    'Biết\n${viewModel.greenScore}',
                                     style: const TextStyle(
                                       color: Colors.green,
                                       fontSize: 16,

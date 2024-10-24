@@ -1,4 +1,6 @@
 import 'package:FatCat/viewmodels/review_screen_view_model.dart';
+import 'package:FatCat/views/widgets/primary_button_widget.dart';
+import 'package:FatCat/views/widgets/primary_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:FatCat/constants/colors.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +34,13 @@ class ReviewStudyScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: AppColors.white,
-            title: const Text('Tiến độ của bạn'),
+            title: const Text(
+              'Tiến độ của bạn',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22),
+            ),
             centerTitle: true,
             elevation: 0,
           ),
@@ -105,39 +113,11 @@ class ReviewStudyScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // TODO: Implement "Ôn luyện trong chế độ Học" functionality
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          child: const Text(
-                            'Ôn luyện trong chế độ Học',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                        ),
-                      ),
+                      primaryButton('Ôn luyện lại trong chế độ học', () {
+                        print("hi");
+                      }),
                       const SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // TODO: Implement "Đặt lại Thẻ ghi nhớ" functionality
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.blue),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          child: const Text(
-                            'Đặt lại Thẻ ghi nhớ',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                        ),
-                      ),
+                      primaryOutlineButton('Đặt lại thẻ ghi nhớ', () {})
                     ],
                   ),
                 ),
