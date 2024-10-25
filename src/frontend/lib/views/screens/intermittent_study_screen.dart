@@ -58,7 +58,14 @@ class IntermittentStudyScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                  // Thanh progress
+                  LinearProgressIndicator(
+                    value: viewModel.studiedCards / viewModel.cards.length,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.progressBarColor),
+                  ),
+                  const SizedBox(height: 16),
                   // Card Swiper
                   Expanded(
                     child: CardSwiper(

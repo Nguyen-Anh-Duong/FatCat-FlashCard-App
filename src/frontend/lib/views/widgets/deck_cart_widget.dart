@@ -1,7 +1,6 @@
 import 'package:FatCat/constants/card_data_test.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/views/screens/intermittent_study_screen.dart';
-import 'package:FatCat/views/screens/self_study_screen.dart';
 import 'package:flutter/material.dart';
 
 class DeckCartWidget extends StatelessWidget {
@@ -19,7 +18,7 @@ class DeckCartWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                SelfStudyScreen(cards: cardsForDecks[deck.id]!),
+                IntermittentStudyScreen(cards: cardsForDecks[deck.id]!),
           ),
         );
       },

@@ -1,4 +1,3 @@
-import 'package:FatCat/models/current_page_model.dart';
 import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
 import 'package:FatCat/views/screens/cards_screen.dart';
 import 'package:FatCat/views/screens/decks_control_screen.dart';

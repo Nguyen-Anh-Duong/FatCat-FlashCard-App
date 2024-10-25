@@ -18,25 +18,38 @@ class StudyStreakWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text('Chuỗi $streak ngày',
-                style:
-                    const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            const Icon(Icons.local_fire_department,
-                size: 72, color: Colors.orange),
-            const SizedBox(height: 8),
-            const Text('Hãy học vào ngày mai\nđể duy trì chuỗi của bạn!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 16),
-            _buildCalendar(),
-          ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            backgroundColor: Colors.white,
+            foregroundColor: AppColors.blackText,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16))),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text('Chuỗi $streak ngày',
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                const Icon(Icons.local_fire_department,
+                    size: 72, color: Colors.orange),
+                const SizedBox(height: 8),
+                const Text('Hãy học vào ngày mai\nđể duy trì chuỗi của bạn!',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                const SizedBox(height: 16),
+                _buildCalendar(),
+              ],
+            ),
+          ),
         ),
       ),
     );
