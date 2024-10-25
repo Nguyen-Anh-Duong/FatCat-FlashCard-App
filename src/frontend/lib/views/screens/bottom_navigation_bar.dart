@@ -1,8 +1,8 @@
-import 'package:FatCat/models/current_page_model.dart';
-import 'package:FatCat/views/screens/cards%20management/cards_control.dart';
-import 'package:FatCat/views/screens/decks%20management/decks_control.dart';
-import 'package:FatCat/views/screens/home.dart';
-import 'package:FatCat/views/screens/settings/settings.dart';
+import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
+import 'package:FatCat/views/screens/cards_screen.dart';
+import 'package:FatCat/views/screens/decks_control_screen.dart';
+import 'package:FatCat/views/screens/home_screen.dart';
+import 'package:FatCat/views/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,14 +12,14 @@ class ScreenControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<CurrentPageModel>(
-        builder: (context, CurrentPageModel, child) {
+      body: Consumer<ScreenControlViewModel>(
+        builder: (context, viewModel, child) {
           return IndexedStack(
-            index: CurrentPageModel.currentIndex,
+            index: viewModel.currentIndex,
             children: const <Widget>[
               Home(),
               DecksControl(),
-              CardsControl(),
+              CardsScreen(),
               Settings(),
             ],
           );
@@ -31,9 +31,10 @@ class ScreenControl extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 20,
         unselectedFontSize: 20,
-        onTap: (index) => Provider.of<CurrentPageModel>(context, listen: false)
-            .setPage(index),
-        currentIndex: Provider.of<CurrentPageModel>(context).currentIndex,
+        onTap: (index) =>
+            Provider.of<ScreenControlViewModel>(context, listen: false)
+                .setPage(index),
+        currentIndex: Provider.of<ScreenControlViewModel>(context).currentIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -44,12 +45,12 @@ class ScreenControl extends StatelessWidget {
             label: 'Decks',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: 'Cards',
+            icon: Icon(Icons.local_library_rounded),
+            label: 'Library',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.account_circle),
+            label: 'Profiles',
           ),
         ],
       ),

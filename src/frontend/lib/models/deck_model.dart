@@ -1,6 +1,5 @@
 class DeckModel {
   final String id;
-  final String deckId;
   final String name;
   final String description;
   final String is_published;
@@ -10,7 +9,6 @@ class DeckModel {
 
   DeckModel({
     required this.id,
-    required this.deckId,
     required this.name,
     required this.description,
     required this.is_published,

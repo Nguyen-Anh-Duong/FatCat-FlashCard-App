@@ -10,7 +10,7 @@ import 'package:FatCat/viewmodels/intermittent_study_view_model.dart';
 class IntermittentStudyScreen extends StatelessWidget {
   final List<CardModel> cards;
 
-  IntermittentStudyScreen({super.key, required this.cards});
+  const IntermittentStudyScreen({super.key, required this.cards});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,14 @@ class IntermittentStudyScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                  // Thanh progress
+                  LinearProgressIndicator(
+                    value: viewModel.studiedCards / viewModel.cards.length,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.progressBarColor),
+                  ),
+                  const SizedBox(height: 16),
                   // Card Swiper
                   Expanded(
                     child: CardSwiper(
@@ -133,7 +140,16 @@ class IntermittentStudyScreen extends StatelessWidget {
             viewModel.flipCurrentCard(context);
           }
         },
-        child: const Text('Hiện đáp án'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.backgroundButtonColor,
+          foregroundColor: AppColors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        child: const Text(
+          'Hiện đáp án',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
       ),
     );
   }
@@ -142,10 +158,13 @@ class IntermittentStudyScreen extends StatelessWidget {
     return Row(
       children: [
         _buildOptionButton(
-            'Học lại', Colors.red, () => viewModel.answerCard(0)),
-        _buildOptionButton('Khó', Colors.orange, () => viewModel.answerCard(1)),
-        _buildOptionButton('Tốt', Colors.blue, () => viewModel.answerCard(2)),
-        _buildOptionButton('Dễ', Colors.green, () => viewModel.answerCard(3)),
+            'Học lại', AppColors.red, () => viewModel.answerCard(0)),
+        _buildOptionButton(
+            'Khó', AppColors.orange, () => viewModel.answerCard(1)),
+        _buildOptionButton(
+            'Tốt', AppColors.blue, () => viewModel.answerCard(2)),
+        _buildOptionButton(
+            'Dễ', AppColors.green, () => viewModel.answerCard(3)),
       ],
     );
   }

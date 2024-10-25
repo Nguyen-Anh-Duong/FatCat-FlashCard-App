@@ -39,7 +39,6 @@ class SelfStudyViewModel extends ChangeNotifier {
     _greenScore++;
     _progress++;
     _scoreHistory.add('green');
-    print("====");
     notifyListeners();
   }
 
@@ -110,4 +109,10 @@ class SelfStudyViewModel extends ChangeNotifier {
   }
 
   bool get isStudyCompleted => _progress == cards.length;
+
+  @override
+  void dispose() {
+    // cardSwiperController.dispose();
+    super.dispose();
+  }
 }
