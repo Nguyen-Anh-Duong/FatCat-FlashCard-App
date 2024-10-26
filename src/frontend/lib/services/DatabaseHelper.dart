@@ -1,13 +1,12 @@
 import 'dart:async';
 
-// import 'package:flutter/widgets.dart';
-import 'package:FatCat/models/deck_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:FatCat/models/user_model.dart';
 import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/models/progress_model.dart';
 
 void vah_test() async {
@@ -20,7 +19,6 @@ void vah_test() async {
   print("DB VERSION: " + (await db.getVersion()).toString());
 
   print(await getAllUser());
-
 }
 
 class AppDatabase {
