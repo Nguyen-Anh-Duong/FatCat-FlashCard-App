@@ -33,10 +33,10 @@ class AppDatabase {
       onUpgrade: (db, oldVersion, newVersion) {
         if (oldVersion < 2) {
           db.execute('CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
-
+          db.execute('CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
         }
       },
-      version: 1,
+      version: 2,
     );
     return database!;
   }
