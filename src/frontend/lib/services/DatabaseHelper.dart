@@ -102,6 +102,17 @@ Future<int> insertCard(CardModel card) async {
   }
 }
 
+Future<int> deleteCardById(int id) async{
+  try {
+    Database db = await AppDatabase.getInstance();
+    int numberOfRowEffected= await db.delete('CARD', where: "id = ?", whereArgs: [id]);
+    return 1;
+  }catch(ex) {
+    print(ex);
+    return -1;
+  }
+}
+
 //Progress Data
 Future<int> insertProgress(ProgressModel progress) async {
   try {
