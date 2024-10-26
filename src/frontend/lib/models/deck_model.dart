@@ -33,4 +33,5 @@ class DeckModel {
   String toString() {
     return 'Deck{id: $id, name: $name, description: $description, is_published: $is_published, deck_cards_count: $deck_cards_count, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
+
 }
