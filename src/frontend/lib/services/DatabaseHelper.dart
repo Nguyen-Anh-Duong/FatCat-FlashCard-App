@@ -1,6 +1,7 @@
 import 'dart:async';
 
 // import 'package:flutter/widgets.dart';
+import 'package:FatCat/models/deck_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -77,6 +78,17 @@ Future <List<UserModel>> getAllUser() async {
     } in userMaps)
       UserModel(id: id, name: name),
   ];
+}
+
+//Deck data
+Future<int> insertDeck(DeckModel deck) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+    int lastInsertedRow = await db.insert('DECK', deck.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
+    return lastInsertedRow;
+  }catch(ex) {
+    return -1;
+  }
 }
 
 
