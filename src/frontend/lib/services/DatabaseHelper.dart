@@ -7,6 +7,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:FatCat/models/user_model.dart';
+import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/models/progress_model.dart';
 
 void vah_test() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,6 +93,27 @@ Future<int> insertDeck(DeckModel deck) async {
   }
 }
 
+//Card data
+Future<int> insertCard(CardModel card) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+    int lastInsertedRow = await db.insert('CARD', card.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
+    return lastInsertedRow;
+  }catch(ex) {
+    return -1;
+  }
+}
+
+//Progress Data
+Future<int> insertProgress(ProgressModel progress) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+    int lastInsertedRow = await db.insert('PROGRESS', progress.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
+    return lastInsertedRow;
+  }catch(ex) {
+    return -1;
+  }
+}
 
 
 
