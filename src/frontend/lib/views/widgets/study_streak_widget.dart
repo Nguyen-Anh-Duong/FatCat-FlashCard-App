@@ -1,6 +1,6 @@
 import 'package:FatCat/constants/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 class StudyStreakWidget extends StatelessWidget {
   final int streak;
