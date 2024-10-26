@@ -45,7 +45,7 @@ class AppDatabase {
 }
 
 //User data
-Future<int> insertUser(User user) async {
+Future<int> insertUser(UserModel user) async {
   try{
     Database db = await AppDatabase.getInstance();
     int lastInsertedRow = await db.insert('USER', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
@@ -67,7 +67,7 @@ Future<int> deleteUserById(int id) async{
   }
 }
 
-Future <List<User>> getAllUser() async {
+Future <List<UserModel>> getAllUser() async {
   Database db = await AppDatabase.getInstance();
 
   final List<Map<String, Object?>> userMaps = await db.query('USER');
@@ -77,7 +77,7 @@ Future <List<User>> getAllUser() async {
     'id': id as int,
     'name': name as String,
     } in userMaps)
-      User(c_id: id, c_name: name),
+      UserModel(c_id: id, c_name: name),
   ];
 }
 
