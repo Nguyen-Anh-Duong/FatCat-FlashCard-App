@@ -27,18 +27,13 @@ class AppDatabase {
     database ??= await openDatabase(
       join(await getDatabasesPath(), 'app.db'),
       onCreate: (db, version) {
-        return db.execute(
-            'CREATE TABLE USER(id INTEGER PRIMARY KEY, name TEXT)');
+        db.execute('CREATE TABLE USER(id TEXT PRIMARY KEY, name TEXT)');
+        db.execute('CREATE TABLE DECK(id TEXT PRIMARY KEY, name TEXT, description TEXT, is_published TEXT, deck_cards_count INTEGER, createdAt TEXT, updatedAt TEXT)');
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        if (oldVersion < 2) {
-          db.execute('CREATE TABLE USER(id INTEGER PRIMARY KEY, name TEXT)');
-        }
-        if (oldVersion < 3) {
-          db.execute('CREATE TABLE DECK(id INTEGER PRIMARY KEY, user_id INTEGER, name TEXT, description TEXT)');
-        }
+
       },
-      version: 3,
+      version: 1,
     );
     return database!;
   }
