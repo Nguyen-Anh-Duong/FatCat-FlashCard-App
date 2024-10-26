@@ -74,10 +74,10 @@ Future <List<UserModel>> getAllUser() async {
 
   return [
     for(final {
-    'id': id as int,
+    'id': id as String,
     'name': name as String,
     } in userMaps)
-      UserModel(c_id: id, c_name: name),
+      UserModel(id: id, name: name),
   ];
 }
 
