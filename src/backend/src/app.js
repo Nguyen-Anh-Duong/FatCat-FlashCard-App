@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 require("dotenv").config();
+const {sequelize} = require("./database/init.database")
+const {User, Deck, Card, Image, Class, ClassMember, ClassDeck} = require("./models")
 
 const app = express();
 
@@ -13,7 +15,12 @@ app.use(compression());
 app.use(express.json());
 
 //init database
-require("./database/init.database");
+sequelize.sync({ alter: true}).then(() => {
+    console.log("All models were synchronized successfully.");
+}).catch((error) => {
+    console.error("Error synchronizing models:", error);
+});
+
 
 //init routes
 app.use("/", require("./routes"));

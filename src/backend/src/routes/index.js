@@ -8,6 +8,6 @@ router.get("/v1/api", (req, res) => {
     });
 });
 
-router.use("/v1/api/access", require("./access"));
+router.use("/v1/api/access", require("./access/index"));
 
 module.exports = router;
