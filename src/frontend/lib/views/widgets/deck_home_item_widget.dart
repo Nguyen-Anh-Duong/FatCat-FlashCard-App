@@ -24,33 +24,52 @@ class DeckHomeItemWidget extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
+          side: BorderSide(
+            color: const Color.fromARGB(255, 99, 99, 99).withOpacity(0.25),
+            width: 2,
+          ),
         ),
         onPressed: () {},
-        child: Container(
-          // margin: EdgeInsets.all(0),
-          // padding: EdgeInsets.all(0),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: const Color.fromARGB(255, 99, 99, 99)
-                  .withOpacity(0.25), // Border color
-              width: 2, // Border width
-            ),
-            borderRadius: BorderRadius.circular(14), // Same as button radius
-          ),
+        child: SizedBox(
           width: 250,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      description,
+                      maxLines: 2,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                description,
-                style: const TextStyle(
-                  fontSize: 15,
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 16),
+                child: Text(
+                  userCreate,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppColors.blackText,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

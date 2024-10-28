@@ -1,4 +1,5 @@
 import 'package:FatCat/constants/colors.dart';
+import 'package:FatCat/utils/app_elevated_button_style.dart';
 import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 
@@ -23,11 +24,16 @@ class StudyStreakWidget extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(0),
-            backgroundColor: Colors.white,
-            foregroundColor: AppColors.blackText,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16))),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          side: BorderSide(
+            color: const Color.fromARGB(255, 99, 99, 99).withOpacity(0.25),
+            width: 2,
+          ),
+          padding: EdgeInsets.zero,
+        ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 500),
           child: Padding(
@@ -36,15 +42,22 @@ class StudyStreakWidget extends StatelessWidget {
               children: [
                 Text('Chuỗi $streak ngày',
                     style: const TextStyle(
-                        fontSize: 28, fontWeight: FontWeight.bold)),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blackText)),
                 const SizedBox(height: 8),
-                const Icon(Icons.local_fire_department,
-                    size: 72, color: Colors.orange),
+                Image.asset(
+                  './assets/icons/fire.png',
+                  height: 72,
+                  width: 72,
+                ),
                 const SizedBox(height: 8),
                 const Text('Hãy học vào ngày mai\nđể duy trì chuỗi của bạn!',
                     textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.blackText)),
                 const SizedBox(height: 16),
                 _buildCalendar(),
               ],
@@ -82,11 +95,16 @@ class StudyStreakWidget extends StatelessWidget {
     return Container(
       width: 40,
       height: 100,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isInStreak ? Colors.orange.withOpacity(0.6) : Colors.transparent,
-        border: isToday ? Border.all(color: AppColors.green, width: 2) : null,
-      ),
+      decoration: isToday
+          ? BoxDecoration(
+              shape: BoxShape.circle,
+              color: isInStreak ? Colors.orange : Colors.transparent,
+              border: Border.all(color: AppColors.blackText, width: 2),
+            )
+          : BoxDecoration(
+              shape: BoxShape.circle,
+              color: isInStreak ? Colors.orange : Colors.transparent,
+            ),
       child: Stack(
         alignment: Alignment.center,
         children: [
