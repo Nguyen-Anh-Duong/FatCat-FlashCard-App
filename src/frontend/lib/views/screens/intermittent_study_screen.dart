@@ -14,7 +14,6 @@ class IntermittentStudyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("222222222222224444 ${cards}");
     return ChangeNotifierProvider(
       create: (_) => IntermittentStudyViewModel(cards: cards),
       child: Consumer<IntermittentStudyViewModel>(
@@ -40,7 +39,7 @@ class IntermittentStudyScreen extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
-                            // Handle close action
+                            Navigator.pop(context);
                           },
                         ),
                         Text(
