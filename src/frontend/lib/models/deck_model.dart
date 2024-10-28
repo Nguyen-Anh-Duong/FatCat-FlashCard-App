@@ -17,7 +17,19 @@ class DeckModel {
     required this.updatedAt,
   });
 
-  Map <String, Object?> toMap() {
+  factory DeckModel.fromJson(Map<String, dynamic> json) {
+    return DeckModel(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      is_published: json['is_published'],
+      deck_cards_count: json['deck_cards_count'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+    );
+  }
+
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'name': name,

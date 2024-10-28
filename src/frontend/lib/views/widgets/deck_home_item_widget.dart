@@ -5,11 +5,13 @@ class DeckHomeItemWidget extends StatelessWidget {
   final String name;
   final String description;
   final String userCreate;
+  final VoidCallback onPressed;
   const DeckHomeItemWidget({
     super.key,
     required this.name,
     required this.description,
     required this.userCreate,
+    required this.onPressed,
   });
 
   @override
@@ -29,7 +31,7 @@ class DeckHomeItemWidget extends StatelessWidget {
             width: 2,
           ),
         ),
-        onPressed: () {},
+        onPressed: onPressed,
         child: SizedBox(
           width: 250,
           child: Column(

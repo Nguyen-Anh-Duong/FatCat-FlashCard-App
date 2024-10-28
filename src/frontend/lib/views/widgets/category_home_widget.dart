@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class CategoryHomeWidget extends StatelessWidget {
   final String iconPath;
+  final VoidCallback onPressed;
   const CategoryHomeWidget({
     super.key,
     required this.iconPath,
+    required this.onPressed,
   });
 
   @override
@@ -21,7 +23,7 @@ class CategoryHomeWidget extends StatelessWidget {
           ),
           child: ElevatedButton(
             style: AppElevatedButtonStyles.categoryHome,
-            onPressed: () {},
+            onPressed: onPressed,
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: Image.asset(iconPath, width: 72, height: 72),
