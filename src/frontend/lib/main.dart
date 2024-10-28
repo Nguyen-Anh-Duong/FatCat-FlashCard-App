@@ -7,15 +7,18 @@ import 'package:FatCat/views/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:FatCat/services/DatabaseHelper.dart';
+
 void main() {
   vah_test();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (_) => ScreenControlViewModel()), // First provider
+          create: (_) => ScreenControlViewModel(),
+        ), // First provider
         ChangeNotifierProvider(
-            create: (_) => DeckProvider()), // Second provider
+          create: (_) => DeckProvider(),
+        ), // Second provider
       ],
       child: MyApp(),
     ),

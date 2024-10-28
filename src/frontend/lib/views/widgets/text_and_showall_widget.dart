@@ -14,7 +14,10 @@ class TextAndShowAllWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(text, style: AppTextStyles.normalText),
+          Text(text,
+              style: isShowAll
+                  ? AppTextStyles.normalText
+                  : AppTextStyles.boldText20),
           if (isShowAll)
             const Text('Xem tất cả', style: AppTextStyles.viewAllText)
         ],

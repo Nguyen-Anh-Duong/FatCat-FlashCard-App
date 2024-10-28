@@ -69,7 +69,7 @@ class DecksControl extends StatelessWidget {
                               id: "1",
                               name: deckName,
                               description: deckDescription,
-                              is_published: "1",
+                              is_published: true,
                               deck_cards_count: "1",
                               createdAt: DateTime.now(),
                               updatedAt: DateTime.now(),

@@ -2,7 +2,7 @@ class DeckModel {
   final String id;
   final String name;
   final String description;
-  final String is_published;
+  final bool is_published;
   final String deck_cards_count;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -17,7 +17,21 @@ class DeckModel {
     required this.updatedAt,
   });
 
-  Map <String, Object?> toMap() {
+  factory DeckModel.fromJson(Map<String, dynamic> json) {
+    final deck = DeckModel(
+      id: json['id'].toString(),
+      name: json['name'],
+      description: json['description'],
+      is_published: json['is_published'],
+      deck_cards_count: json['deck_cards_count'].toString(),
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+    );
+    print("==========${deck.toString()}");
+    return deck;
+  }
+
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'name': name,

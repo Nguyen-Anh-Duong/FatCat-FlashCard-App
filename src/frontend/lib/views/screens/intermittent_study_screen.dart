@@ -39,7 +39,7 @@ class IntermittentStudyScreen extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
-                            // Handle close action
+                            Navigator.pop(context);
                           },
                         ),
                         Text(
