@@ -1,5 +1,8 @@
+import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/viewmodels/category_screen_viewmodel.dart';
+import 'package:FatCat/views/widgets/deck_category_widget.dart';
+import 'package:FatCat/views/widgets/deck_home_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,26 +17,27 @@ class CategoryScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => CategoryScreenViewModel(decks: decks),
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(category),
+          backgroundColor: Colors.white,
+          title: Text(category,
+              style: const TextStyle(
+                  color: AppColors.blackText, fontWeight: FontWeight.bold)),
           centerTitle: true,
         ),
         body: SafeArea(
           child: Consumer<CategoryScreenViewModel>(
             builder: (context, viewModel, child) {
               return ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(8),
                 itemCount: viewModel.decks.length,
                 itemBuilder: (context, index) {
                   final deck = viewModel.decks[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: ListTile(
-                      title: Text(deck.name),
-                      subtitle: Text('cards'),
-                      onTap: () {},
-                    ),
-                  );
+                  return DeckCategoryWidget(
+                      name: deck.name,
+                      description: deck.description,
+                      userCreate: "chua test",
+                      onPressed: () {});
                 },
               );
             },

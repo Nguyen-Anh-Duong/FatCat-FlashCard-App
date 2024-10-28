@@ -20,13 +20,11 @@ class CategoryScreenViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Method to sort decks
   void sortDecks({required bool ascending}) {
     _decks.sort((a, b) =>
         ascending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
     notifyListeners();
   }
 
-  // Method to get deck count
   int get deckCount => _decks.length;
 }

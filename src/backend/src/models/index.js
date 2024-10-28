@@ -43,4 +43,4 @@ ClassDeck.belongsTo(Class, { foreignKey: 'group_id' });
 Deck.hasMany(ClassDeck, { foreignKey: 'deck_id', onDelete: 'CASCADE' });
 ClassDeck.belongsTo(Deck, { foreignKey: 'deck_id' });
 
-module.exports = { User, Deck, Card, Image, Class, ClassMember, ClassDeck };
+module.exports = { User, Deck, Card, Image, Class, ClassMember, ClassDeck, Category };
