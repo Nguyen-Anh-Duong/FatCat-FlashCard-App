@@ -111,8 +111,16 @@ class DecksControl extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
+                      const Text(
+                        "Recommended Decks",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      TextButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -122,14 +130,7 @@ class DecksControl extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.menu),
-                      ),
-                      const Text(
-                        "Recommended Decks",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+                        child: const Text("See all"),
                       ),
                     ],
                   ),
@@ -148,8 +149,16 @@ class DecksControl extends StatelessWidget {
                     height: 20,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
+                      const Text(
+                        "Available Decks",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      TextButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -159,14 +168,7 @@ class DecksControl extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.menu),
-                      ),
-                      const Text(
-                        "Available Decks",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+                        child: const Text("See all"),
                       ),
                     ],
                   ),
