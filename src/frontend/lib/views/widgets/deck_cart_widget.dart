@@ -1,7 +1,12 @@
 import 'package:FatCat/constants/card_data_test.dart';
+import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/models/card_provider.dart';
 import 'package:FatCat/models/deck_model.dart';
+import 'package:FatCat/views/screens/cards_screen.dart';
 import 'package:FatCat/views/screens/intermittent_study_screen.dart';
+import 'package:FatCat/views/widgets/card_item_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DeckCartWidget extends StatelessWidget {
   final DeckModel deck;
@@ -17,8 +22,9 @@ class DeckCartWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                IntermittentStudyScreen(cards: cardsForDecks[deck.id]!),
+            builder: (context) {
+              return const CardsScreen();
+            },
           ),
         );
       },
@@ -28,13 +34,13 @@ class DeckCartWidget extends StatelessWidget {
           width: double.infinity,
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              width: 2,
-              color: Color.fromRGBO(49, 58, 89, 1),
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(10),
+          //   border: Border.all(
+          //     width: 2,
+          //     color: Color.fromRGBO(49, 58, 89, 1),
+          //   ),
+          // ),
           child: Column(
             children: [
               Text(
