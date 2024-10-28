@@ -1,4 +1,5 @@
 import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/models/card_provider.dart';
 import 'package:FatCat/models/deck_provider.dart';
 import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
 import 'package:FatCat/views/screens/home_screen.dart';
@@ -18,6 +19,9 @@ void main() {
         ), // First provider
         ChangeNotifierProvider(
           create: (_) => DeckProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CardProvider(),
         ), // Second provider
       ],
       child: MyApp(),

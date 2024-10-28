@@ -19,7 +19,7 @@ class ScreenControl extends StatelessWidget {
             children: const <Widget>[
               Home(),
               DecksControl(),
-              CardsControl(),
+              CardsScreen(),
               Settings(),
             ],
           );
@@ -45,12 +45,12 @@ class ScreenControl extends StatelessWidget {
             label: 'Decks',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: 'Cards',
+            icon: Icon(Icons.local_library_rounded),
+            label: 'Library',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.account_circle),
+            label: 'Profiles',
           ),
         ],
       ),
