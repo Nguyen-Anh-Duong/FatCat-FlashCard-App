@@ -14,6 +14,7 @@ class IntermittentStudyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("222222222222224444 ${cards}");
     return ChangeNotifierProvider(
       create: (_) => IntermittentStudyViewModel(cards: cards),
       child: Consumer<IntermittentStudyViewModel>(

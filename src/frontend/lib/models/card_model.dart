@@ -1,10 +1,10 @@
 // lib/models/card_model.dart
 class CardModel {
   final String id;
-  final String userId;
+  final String? userId;
   final String deckId;
   final String question;
-  final String imageId;
+  final String? imageId;
   final String answer;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -20,7 +20,20 @@ class CardModel {
     required this.updatedAt,
   });
 
-  Map <String, Object?> toMap() {
+  factory CardModel.fromJson(Map<String, dynamic> json) {
+    return CardModel(
+      id: json['id'].toString(),
+      userId: json['userId'],
+      deckId: json['deckId'].toString(),
+      question: json['question'] as String,
+      imageId: json['imageId'],
+      answer: json['answer'] as String,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+    );
+  }
+
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'userId': userId,
