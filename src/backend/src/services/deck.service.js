@@ -5,6 +5,9 @@ const { Deck, Category, Card } = require("../models");
 
 class DeckService {
     static async getDecksByCategoryName(categoryName) {
+        if (categoryName === "Khác") {
+            return await Deck.findAll();
+        }
         const category = await Category.findOne({   
             where: { name: categoryName }
         });
@@ -13,7 +16,6 @@ class DeckService {
         }
         return await Deck.findAll({
             where: { category_id: category.id },
-            include: [{ model: Category, attributes: ['name'] }]
         });
     }
     static async getCardsByDeckId(deckId) {

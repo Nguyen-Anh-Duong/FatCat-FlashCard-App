@@ -6,7 +6,7 @@ async function seedLanguageData() {
     await sequelize.transaction(async (t) => {
       // Tạo category
       const languageCategory = await Category.create({
-        name: 'Language'
+        name: 'Ngôn ngữ'
       }, { transaction: t });
 
       // Tạo English Vocabulary deck

@@ -7,7 +7,8 @@ require("dotenv").config();
 const {sequelize} = require("./database/init.database")
 const {User, Deck, Card, Image, Class, ClassMember, ClassDeck, Category} = require("./models")
 const seedLanguageData = require("./utils/seedLanguageData")
-const seedUserData = require("./utils/seedUserData")
+const seedUserData = require("./utils/seedUserData");
+const seedData = require("./utils/seedData");
 
 const app = express();
 
@@ -19,8 +20,7 @@ app.use(express.json());
 //init database
 sequelize.sync({ force: true}).then(async () => {
     console.log("All models were synchronized successfully.");
-    await seedUserData();
-    await seedLanguageData();
+    await seedData();
 }).catch((error) => {
     console.error("Error synchronizing models:", error);
 });

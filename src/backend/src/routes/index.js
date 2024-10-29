@@ -9,6 +9,7 @@ router.get("/v1/api", (req, res) => {
 });
 
 router.use("/v1/api/deck", require("./deck/index"));
+router.use("/v1/api/card", require("./card/index"));
 router.use("/v1/api/access", require("./access/index"));
 
 

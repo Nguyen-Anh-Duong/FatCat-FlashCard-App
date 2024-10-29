@@ -29,6 +29,10 @@ const Card = sequelize.define("Card", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    question_language: {
+        type: DataTypes.TEXT,
+        defaultValue: "en"
+    },
     image_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -40,6 +44,10 @@ const Card = sequelize.define("Card", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    answer_language: {
+         type: DataTypes.TEXT,
+        defaultValue: "en"
+    }
 }, {
     tableName: "Cards",
     timestamps: true,
