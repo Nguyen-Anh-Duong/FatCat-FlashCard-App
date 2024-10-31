@@ -22,4 +22,7 @@ class AppColors {
   static const Color red = Colors.red;
   static const Color blue = Colors.blue;
   static const Color green = Colors.green;
+
+  //
+  static const Color borderCard = Color.fromARGB(255, 99, 99, 99);
 }

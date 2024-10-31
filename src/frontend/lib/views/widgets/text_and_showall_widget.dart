@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class TextAndShowAllWidget extends StatelessWidget {
   final String text;
   final bool isShowAll;
+  final VoidCallback onPressed;
   const TextAndShowAllWidget(
-      {super.key, required this.text, this.isShowAll = true});
+      {super.key,
+      required this.text,
+      this.isShowAll = true,
+      this.onPressed = _defaultOnPressed});
+
+  static void _defaultOnPressed() {}
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +20,18 @@ class TextAndShowAllWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(text,
-              style: isShowAll
-                  ? AppTextStyles.normalText
-                  : AppTextStyles.boldText20),
+          GestureDetector(
+            onTap: onPressed,
+            child: Text(text,
+                style: isShowAll
+                    ? AppTextStyles.normalText
+                    : AppTextStyles.boldText20),
+          ),
           if (isShowAll)
-            const Text('Xem tất cả', style: AppTextStyles.viewAllText)
+            TextButton(
+              onPressed: onPressed,
+              child: const Text('Xem tất cả', style: AppTextStyles.viewAllText),
+            )
         ],
       ),
     );

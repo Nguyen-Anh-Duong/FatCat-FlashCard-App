@@ -29,12 +29,15 @@ class AppDatabase {
       join(await getDatabasesPath(), 'app.db'),
       onCreate: (db, version) {
         db.execute('CREATE TABLE USER(id TEXT PRIMARY KEY, name TEXT)');
-        db.execute('CREATE TABLE DECK(id TEXT PRIMARY KEY, name TEXT, description TEXT, is_published TEXT, deck_cards_count INTEGER, createdAt TEXT, updatedAt TEXT)');
+        db.execute(
+            'CREATE TABLE DECK(id TEXT PRIMARY KEY, name TEXT, description TEXT, is_published TEXT, deck_cards_count INTEGER, createdAt TEXT, updatedAt TEXT)');
       },
       onUpgrade: (db, oldVersion, newVersion) {
         if (oldVersion < 2) {
-          db.execute('CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
-          db.execute('CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
+          db.execute(
+              'CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
+          db.execute(
+              'CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
         }
       },
       version: 2,
@@ -45,37 +48,42 @@ class AppDatabase {
 
 //User data
 Future<int> insertUser(UserModel user) async {
-  try{
-    Database db = await AppDatabase.getInstance();
-    int lastInsertedRow = await db.insert('USER', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
-    return lastInsertedRow;
-  }catch(ex) {
-    print(ex);
-    return -1;
-  }
-}
-
-Future<int> deleteUserById(int id) async{
   try {
     Database db = await AppDatabase.getInstance();
-    int numberOfRowEffected= await db.delete('USER', where: "id = ?", whereArgs: [id]);
-    return 1;
-  }catch(ex) {
+    int lastInsertedRow = await db.insert(
+      'USER',
+      user.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return lastInsertedRow;
+  } catch (ex) {
     print(ex);
     return -1;
   }
 }
 
-Future <List<UserModel>> getAllUser() async {
+Future<int> deleteUserById(int id) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+    int numberOfRowEffected =
+        await db.delete('USER', where: "id = ?", whereArgs: [id]);
+    return 1;
+  } catch (ex) {
+    print(ex);
+    return -1;
+  }
+}
+
+Future<List<UserModel>> getAllUser() async {
   Database db = await AppDatabase.getInstance();
 
   final List<Map<String, Object?>> userMaps = await db.query('USER');
 
   return [
-    for(final {
-    'id': id as String,
-    'name': name as String,
-    } in userMaps)
+    for (final {
+          'id': id as String,
+          'name': name as String,
+        } in userMaps)
       UserModel(id: id, name: name),
   ];
 }
@@ -84,9 +92,16 @@ Future <List<UserModel>> getAllUser() async {
 Future<int> insertDeck(DeckModel deck) async {
   try {
     Database db = await AppDatabase.getInstance();
-    int lastInsertedRow = await db.insert('DECK', deck.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
+    int lastInsertedRow = await db.insert(
+      'DECK',
+      deck.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print("lastInsertedRow: $lastInsertedRow");
+    print("1111111111111111");
     return lastInsertedRow;
-  }catch(ex) {
+  } catch (ex) {
+    print(ex);
     return -1;
   }
 }
@@ -95,19 +110,24 @@ Future<int> insertDeck(DeckModel deck) async {
 Future<int> insertCard(CardModel card) async {
   try {
     Database db = await AppDatabase.getInstance();
-    int lastInsertedRow = await db.insert('CARD', card.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
+    int lastInsertedRow = await db.insert(
+      'CARD',
+      card.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     return lastInsertedRow;
-  }catch(ex) {
+  } catch (ex) {
     return -1;
   }
 }
 
-Future<int> deleteCardById(int id) async{
+Future<int> deleteCardById(int id) async {
   try {
     Database db = await AppDatabase.getInstance();
-    int numberOfRowEffected= await db.delete('CARD', where: "id = ?", whereArgs: [id]);
+    int numberOfRowEffected =
+        await db.delete('CARD', where: "id = ?", whereArgs: [id]);
     return 1;
-  }catch(ex) {
+  } catch (ex) {
     print(ex);
     return -1;
   }
@@ -117,12 +137,13 @@ Future<int> deleteCardById(int id) async{
 Future<int> insertProgress(ProgressModel progress) async {
   try {
     Database db = await AppDatabase.getInstance();
-    int lastInsertedRow = await db.insert('PROGRESS', progress.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
+    int lastInsertedRow = await db.insert(
+      'PROGRESS',
+      progress.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     return lastInsertedRow;
-  }catch(ex) {
+  } catch (ex) {
     return -1;
   }
 }
-
-
-

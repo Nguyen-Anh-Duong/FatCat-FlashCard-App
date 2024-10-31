@@ -1,9 +1,15 @@
+import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/models/deck_provider.dart';
+import 'package:FatCat/services/DatabaseHelper.dart';
 import 'package:FatCat/views/screens/available_deck_screen.dart';
+import 'package:FatCat/views/screens/cards_screen.dart';
+import 'package:FatCat/views/widgets/deck_home_item_widget.dart';
 import 'package:FatCat/views/widgets/deck_item_widget.dart';
+import 'package:FatCat/views/widgets/text_and_showall_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:FatCat/services/DatabaseHelper.dart';
 
 class DecksControl extends StatelessWidget {
   const DecksControl({super.key});
@@ -13,9 +19,11 @@ class DecksControl extends StatelessWidget {
     final TextEditingController controller1 = TextEditingController();
     final TextEditingController controller2 = TextEditingController();
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         title: const Text("Decks"),
         centerTitle: true,
+        backgroundColor: AppColors.white,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
@@ -62,26 +70,30 @@ class DecksControl extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             String deckName = controller1.text;
                             String deckDescription = controller2.text;
-                            DeckModel deck = DeckModel(
+                            print("deckName: $deckName");
+                            print("deckDescription: $deckDescription");
+                            print("============");
+                            int i = await insertDeck(DeckModel(
                               id: "1",
                               name: deckName,
                               description: deckDescription,
                               is_published: true,
-                              deck_cards_count: "1",
+                              deck_cards_count: "0",
                               createdAt: DateTime.now(),
                               updatedAt: DateTime.now(),
-                            );
-                            Provider.of<DeckProvider>(context, listen: false)
-                                .addDeck(deck);
+                            ));
+                            print(i);
+                            // Provider.of<DeckProvider>(context, listen: false)
+                            //     .addDeck(deck);
                             Navigator.of(context).pop();
                           },
                           child: const Text(
                             'Create',
                             style: TextStyle(
-                              color: Color.fromRGBO(253, 253, 253, 1),
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -101,79 +113,79 @@ class DecksControl extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return AvailableDeckScreen();
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.menu),
-                ),
-                const Text(
-                  "Recommended Decks",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+            const SizedBox(
+              height: 20,
+            ),
+            TextAndShowAllWidget(
+              text: "Đề xuất",
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return AvailableDeckScreen();
+                    },
                   ),
-                ),
-              ],
+                );
+              },
             ),
             SizedBox(
               height: 150,
               child: ListView.builder(
+                padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return const DeckItemWidget(
-                      name: 'English', description: 'Spanish');
+                  return DeckHomeItemWidget(
+                      name: 'English',
+                      description: 'Spanish',
+                      userCreate: 'duy',
+                      onPressed: () async {
+                        await Future.delayed(const Duration(milliseconds: 200));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const CardsScreen();
+                            },
+                          ),
+                        );
+                      });
                 },
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return AvailableDeckScreen();
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.menu),
-                ),
-                const Text(
-                  "Available Decks",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+            TextAndShowAllWidget(
+              text: "Tất cả",
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return AvailableDeckScreen();
+                    },
                   ),
-                ),
-              ],
+                );
+              },
             ),
             SizedBox(
               height: 150,
               child: ListView.builder(
+                padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return const DeckItemWidget(
-                      name: 'Vietnamese', description: 'Spanish');
+                  return DeckHomeItemWidget(
+                    name: 'Vietnamese',
+                    description: 'Spanish',
+                    userCreate: 'duy',
+                    onPressed: () {},
+                  );
                 },
               ),
             ),

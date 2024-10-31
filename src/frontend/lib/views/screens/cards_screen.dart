@@ -1,5 +1,9 @@
+import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/models/card_provider.dart';
+import 'package:FatCat/utils/app_elevated_button_style.dart';
 import 'package:FatCat/views/screens/intermittent_study_screen.dart';
+import 'package:FatCat/views/screens/self_study_screen.dart';
+import 'package:FatCat/views/widgets/primary_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,16 +16,20 @@ class CardsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cardData = Provider.of<CardProvider>(context, listen: false).cardData;
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         title: const Text("Cards"),
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () {
+            primaryOutlineButton(
+              'Học theo tiến độ',
+              double.infinity,
+              () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
@@ -30,54 +38,50 @@ class CardsScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: const SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Icon(Icons.credit_card),
-                    Text("Flashcards"),
-                  ],
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Icon(Icons.credit_card),
-                    Text("Flashcards"),
-                  ],
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Icon(Icons.credit_card),
-                    Text("Flashcards"),
-                  ],
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Icon(Icons.credit_card),
-                    Text("Flashcards"),
-                  ],
-                ),
-              ),
             ),
             SizedBox(
-              height: 500,
+              height: 20,
+            ),
+            primaryOutlineButton(
+              'Tự học',
+              double.infinity,
+              () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return SelfStudyScreen(cards: cardData);
+                    },
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            primaryOutlineButton(
+              'Học chọn nhiều đáp án',
+              double.infinity,
+              () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return SelfStudyScreen(cards: cardData);
+                    },
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(
+              height: 2,
+              color: Colors.black,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   return CardItemWidget(
