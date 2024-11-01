@@ -97,8 +97,6 @@ Future<int> insertDeck(DeckModel deck) async {
       deck.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print("lastInsertedRow: $lastInsertedRow");
-    print("1111111111111111");
     return lastInsertedRow;
   } catch (ex) {
     print(ex);
