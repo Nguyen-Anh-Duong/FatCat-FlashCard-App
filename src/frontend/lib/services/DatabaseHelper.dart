@@ -1,14 +1,13 @@
 import 'dart:async';
 
+import 'package:FatCat/models/card_model.dart';
+import 'package:FatCat/models/deck_model.dart';
+import 'package:FatCat/models/progress_model.dart';
+import 'package:FatCat/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-import 'package:FatCat/models/user_model.dart';
-import 'package:FatCat/models/card_model.dart';
-import 'package:FatCat/models/deck_model.dart';
-import 'package:FatCat/models/progress_model.dart';
 
 void vah_test() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +17,7 @@ void vah_test() async {
 
   Database db = await AppDatabase.getInstance();
   print("DB VERSION: " + (await db.getVersion()).toString());
-
+  print(DateTime.now().toIso8601String());
   print(await getAllUser());
 }
 
@@ -32,16 +31,13 @@ class AppDatabase {
         db.execute('CREATE TABLE USER(id TEXT PRIMARY KEY, name TEXT)');
         db.execute(
             'CREATE TABLE DECK(id TEXT PRIMARY KEY, name TEXT, description TEXT, is_published TEXT, deck_cards_count INTEGER, createdAt TEXT, updatedAt TEXT)');
+        db.execute(
+            'CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT, deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
+        db.execute(
+            'CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
       },
-      onUpgrade: (db, oldVersion, newVersion) {
-        if (oldVersion < 2) {
-          db.execute(
-              'CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT, deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
-          db.execute(
-              'CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
-        }
-      },
-      version: 2,
+      onUpgrade: (db, oldVersion, newVersion) {},
+      version: 1,
     );
     return database!;
   }
@@ -105,7 +101,8 @@ Future<int> insertDeck(DeckModel deck) async {
 Future<int> deleteDeckById(int id) async {
   try {
     Database db = await AppDatabase.getInstance();
-    int numberOfRowEffected = await db.delete('DECK', where: "id = ?", whereArgs: [id]);
+    int numberOfRowEffected =
+        await db.delete('DECK', where: "id = ?", whereArgs: [id]);
     return 1;
   } catch (ex) {
     return -1;
@@ -113,10 +110,11 @@ Future<int> deleteDeckById(int id) async {
 }
 
 ///Update the deck that has the same DeckModel's id
-Future<void> updateDeck(DeckModel deck) async{
+Future<void> updateDeck(DeckModel deck) async {
   try {
     Database db = await AppDatabase.getInstance();
-    await db.update('DECK', deck.toMap(), where: 'id = ?', whereArgs: [deck.id]);
+    await db
+        .update('DECK', deck.toMap(), where: 'id = ?', whereArgs: [deck.id]);
   } catch (ex) {
     print(ex);
   }
@@ -149,20 +147,44 @@ Future<int> deleteCardById(int id) async {
 }
 
 ///Update the card that has the same CardModel's id
-Future<void> updateCard(CardModel card) async{
+Future<void> updateCard(CardModel card) async {
   try {
     Database db = await AppDatabase.getInstance();
-    await db.update('CARD', card.toMap(), where: 'id = ?', whereArgs: [card.id]);
+    await db
+        .update('CARD', card.toMap(), where: 'id = ?', whereArgs: [card.id]);
   } catch (ex) {
     print(ex);
   }
 }
 
+//CARD(id TEXT PRIMARY KEY, userId TEXT, deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)'
 ///Get card with DeckModel
-// Future<List<CardModel>> getCard(DeckModel deck) async {
-//   Database db = await AppDatabase.getInstance();
-//   final List<Map<String, Object?>> cardMaps = await(db.query('CARD', where: ''))
-// }
+Future<List<CardModel>> getCard(DeckModel deck) async {
+  Database db = await AppDatabase.getInstance();
+  final List<Map<String, Object?>> cardMaps =
+      await (db.query('CARD', where: 'deckId = ?', whereArgs: [deck.id]));
+  return [
+    for (final {
+          'id': id as String,
+          'userId': userId as String,
+          'deckId': deckId as String,
+          'question': question as String,
+          'imageId': imageId as String,
+          'answer': answer as String,
+          'createdAt': createdAt as String,
+          'updatedAt': updatedAt as String,
+        } in cardMaps)
+      CardModel(
+          id: id,
+          userId: userId,
+          deckId: deckId,
+          question: question,
+          imageId: imageId,
+          answer: answer,
+          createdAt: DateTime.parse(createdAt),
+          updatedAt: DateTime.parse(updatedAt))
+  ];
+}
 
 //Progress Data
 Future<int> insertProgress(ProgressModel progress) async {
