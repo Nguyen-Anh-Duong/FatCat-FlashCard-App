@@ -111,6 +111,15 @@ Future<int> deleteDeckById(int id) async {
   }
 }
 
+Future<void> updateDeck(DeckModel deck) async{
+  try {
+    Database db = await AppDatabase.getInstance();
+    await db.update('DECK', deck.toMap(), where: 'id = ?', whereArgs: [deck.id]);
+  } catch (ex) {
+    print(ex);
+  }
+}
+
 //Card data
 Future<int> insertCard(CardModel card) async {
   try {
