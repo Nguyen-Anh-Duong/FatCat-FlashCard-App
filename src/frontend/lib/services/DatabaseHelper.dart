@@ -133,11 +133,11 @@ Future<int> insertDeck(DeckModel deck) async {
   }
 }
 
-Future<int> deleteDeckById(int id) async {
+Future<int> deleteDeck(DeckModel deck) async {
   try {
     Database db = await AppDatabase.getInstance();
     int numberOfRowEffected =
-        await db.delete('DECK', where: "id = ?", whereArgs: [id]);
+        await db.delete('DECK', where: "id = ?", whereArgs: [deck.id]);
     return 1;
   } catch (ex) {
     return -1;
@@ -198,18 +198,6 @@ Future<int> insertCard(CardModel card) async {
 
     return lastInsertedRow;
   } catch (ex) {
-    return -1;
-  }
-}
-
-Future<int> updateCard(CardModel card) async {
-  try {
-    Database db = await AppDatabase.getInstance();
-    await db
-        .update('CARD', card.toMap(), where: 'id = ?', whereArgs: [card.id]);
-    return 1;
-  } catch (ex) {
-    print(ex);
     return -1;
   }
 }
