@@ -48,6 +48,8 @@ void vah_test() async {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
   await insertDeck(dummyDeck);
+
+  print(await getDeckWithId('1'));
 }
 
 class AppDatabase {
@@ -91,7 +93,7 @@ Future<int> deleteUserById(int id) async {
   try {
     Database db = await AppDatabase.getInstance();
     int numberOfRowEffected =
-        await db.delete('USER', where: "id = ?", whereArgs: [id]);
+    await db.delete('USER', where: "id = ?", whereArgs: [id]);
     return 1;
   } catch (ex) {
     return -1;
@@ -105,9 +107,9 @@ Future<List<UserModel>> getAllUser() async {
 
   return [
     for (final {
-          'id': id as String,
-          'name': name as String,
-        } in userMaps)
+    'id': id as String,
+    'name': name as String,
+    } in userMaps)
       UserModel(id: id, name: name),
   ];
 }
@@ -131,11 +133,36 @@ Future<int> deleteDeckById(int id) async {
   try {
     Database db = await AppDatabase.getInstance();
     int numberOfRowEffected =
-        await db.delete('DECK', where: "id = ?", whereArgs: [id]);
+    await db.delete('DECK', where: "id = ?", whereArgs: [id]);
     return 1;
   } catch (ex) {
     return -1;
   }
+}
+
+Future<List<DeckModel>> getDeckWithId(String id) async {
+  Database db = await AppDatabase.getInstance();
+  final List<Map<String, Object?>> deckMaps =
+  await db.query('DECK', where: 'id = ?', whereArgs: [id]);
+  return [
+    for (final {
+    'id': id as String,
+    'name': name as String,
+    'description': description as String,
+    'is_published': is_published as String,
+    'deck_cards_count': deck_cards_count as int,
+    'createdAt': createdAt as String,
+    'updatedAt': updatedAt as String,
+    } in deckMaps)
+      DeckModel(
+          id: id,
+          name: name,
+          description: description,
+          is_published: is_published.toBoolean(),
+          deck_cards_count: deck_cards_count.toString(),
+          createdAt: DateTime.parse(createdAt),
+          updatedAt: DateTime.parse(updatedAt))
+  ];
 }
 
 ///Update the deck that has the same DeckModel's id
@@ -158,6 +185,7 @@ Future<int> insertCard(CardModel card) async {
       card.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
     return lastInsertedRow;
   } catch (ex) {
     return -1;
@@ -168,7 +196,7 @@ Future<int> deleteCardById(int id) async {
   try {
     Database db = await AppDatabase.getInstance();
     int numberOfRowEffected =
-        await db.delete('CARD', where: "id = ?", whereArgs: [id]);
+    await db.delete('CARD', where: "id = ?", whereArgs: [id]);
     return 1;
   } catch (ex) {
     return -1;
@@ -190,18 +218,18 @@ Future<void> updateCard(CardModel card) async {
 Future<List<CardModel>> getCard(DeckModel deck) async {
   Database db = await AppDatabase.getInstance();
   final List<Map<String, Object?>> cardMaps =
-      await (db.query('CARD', where: 'deckId = ?', whereArgs: [deck.id]));
+  await (db.query('CARD', where: 'deckId = ?', whereArgs: [deck.id]));
   return [
     for (final {
-          'id': id as String,
-          'userId': userId as String,
-          'deckId': deckId as String,
-          'question': question as String,
-          'imageId': imageId as String,
-          'answer': answer as String,
-          'createdAt': createdAt as String,
-          'updatedAt': updatedAt as String,
-        } in cardMaps)
+    'id': id as String,
+    'userId': userId as String,
+    'deckId': deckId as String,
+    'question': question as String,
+    'imageId': imageId as String,
+    'answer': answer as String,
+    'createdAt': createdAt as String,
+    'updatedAt': updatedAt as String,
+    } in cardMaps)
       CardModel(
           id: id,
           userId: userId,
@@ -226,5 +254,12 @@ Future<int> insertProgress(ProgressModel progress) async {
     return lastInsertedRow;
   } catch (ex) {
     return -1;
+  }
+}
+
+extension on String {
+  bool toBoolean() {
+    if (this.toLowerCase() == "true" || this.toLowerCase() == "1") return true;
+    else return false;
   }
 }
