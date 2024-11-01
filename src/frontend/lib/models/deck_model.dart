@@ -27,7 +27,6 @@ class DeckModel {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
-    print("==========${deck.toString()}");
     return deck;
   }
 
@@ -38,8 +37,8 @@ class DeckModel {
       'description': description,
       'is_published': is_published.toString(),
       'deck_cards_count': deck_cards_count,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'createdAt': createdAt.millisecondsSinceEpoch.toString(),
+      'updatedAt': updatedAt.millisecondsSinceEpoch.toString(),
     };
   }
 
@@ -47,5 +46,4 @@ class DeckModel {
   String toString() {
     return 'Deck{id: $id, name: $name, description: $description, is_published: $is_published, deck_cards_count: $deck_cards_count, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
-
 }

@@ -41,8 +41,8 @@ class CardModel {
       'question': question,
       'imageId': imageId,
       'answer': answer,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'createdAt': createdAt.millisecondsSinceEpoch.toString(),
+      'updatedAt': updatedAt.millisecondsSinceEpoch.toString(),
     };
   }
 

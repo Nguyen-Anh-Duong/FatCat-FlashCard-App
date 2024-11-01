@@ -198,6 +198,8 @@ Future<List<DeckModel>> getAllDeck(String orderBy) async {
 Future<void> updateDeck(DeckModel deck) async {
   try {
     Database db = await AppDatabase.getInstance();
+    deck.updatedAt = DateTime.now();
+
     await db
         .update('DECK', deck.toMap(), where: 'id = ?', whereArgs: [deck.id]);
   } catch (ex) {
