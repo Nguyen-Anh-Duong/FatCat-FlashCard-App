@@ -1,3 +1,5 @@
+import 'package:FatCat/services/date_time_formatter.dart';
+
 class DeckModel {
   String id;
   String name;
@@ -37,8 +39,8 @@ class DeckModel {
       'description': description,
       'is_published': is_published.toString(),
       'deck_cards_count': deck_cards_count,
-      'createdAt': createdAt.millisecondsSinceEpoch.toString(),
-      'updatedAt': updatedAt.millisecondsSinceEpoch.toString(),
+      'createdAt': time_formatter(createdAt),
+      'updatedAt': time_formatter(updatedAt),
     };
   }
 

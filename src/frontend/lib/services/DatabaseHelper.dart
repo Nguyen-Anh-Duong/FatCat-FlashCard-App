@@ -172,17 +172,17 @@ Future<List<DeckModel>> getDeckWithId(String id) async {
 Future<List<DeckModel>> getAllDeck(String orderBy) async {
   Database db = await AppDatabase.getInstance();
   final List<Map<String, Object?>> deckMaps =
-  await db.query('DECK', orderBy: orderBy);
+      await db.query('DECK', orderBy: orderBy);
   return [
     for (final {
-    'id': id as String,
-    'name': name as String,
-    'description': description as String,
-    'is_published': is_published as String,
-    'deck_cards_count': deck_cards_count as int,
-    'createdAt': createdAt as String,
-    'updatedAt': updatedAt as String,
-    } in deckMaps)
+          'id': id as String,
+          'name': name as String,
+          'description': description as String,
+          'is_published': is_published as String,
+          'deck_cards_count': deck_cards_count as int,
+          'createdAt': createdAt as String,
+          'updatedAt': updatedAt as String,
+        } in deckMaps)
       DeckModel(
           id: id,
           name: name,
