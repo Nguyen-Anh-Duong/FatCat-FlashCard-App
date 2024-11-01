@@ -57,7 +57,6 @@ Future<int> insertUser(UserModel user) async {
     );
     return lastInsertedRow;
   } catch (ex) {
-    print(ex);
     return -1;
   }
 }
@@ -69,7 +68,6 @@ Future<int> deleteUserById(int id) async {
         await db.delete('USER', where: "id = ?", whereArgs: [id]);
     return 1;
   } catch (ex) {
-    print(ex);
     return -1;
   }
 }
@@ -99,7 +97,16 @@ Future<int> insertDeck(DeckModel deck) async {
     );
     return lastInsertedRow;
   } catch (ex) {
-    print(ex);
+    return -1;
+  }
+}
+
+Future<int> deleteDeckById(int id) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+    int numberOfRowEffected = await db.delete('DECK', where: "id = ?", whereArgs: [id]);
+    return 1;
+  } catch (ex) {
     return -1;
   }
 }
@@ -126,7 +133,6 @@ Future<int> deleteCardById(int id) async {
         await db.delete('CARD', where: "id = ?", whereArgs: [id]);
     return 1;
   } catch (ex) {
-    print(ex);
     return -1;
   }
 }
