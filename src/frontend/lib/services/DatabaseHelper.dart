@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,7 +36,7 @@ class AppDatabase {
       onUpgrade: (db, oldVersion, newVersion) {
         if (oldVersion < 2) {
           db.execute(
-              'CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
+              'CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT, deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
           db.execute(
               'CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
         }
@@ -111,6 +112,7 @@ Future<int> deleteDeckById(int id) async {
   }
 }
 
+///Update the deck that has the same DeckModel's id
 Future<void> updateDeck(DeckModel deck) async{
   try {
     Database db = await AppDatabase.getInstance();
@@ -145,6 +147,22 @@ Future<int> deleteCardById(int id) async {
     return -1;
   }
 }
+
+///Update the card that has the same CardModel's id
+Future<void> updateCard(CardModel card) async{
+  try {
+    Database db = await AppDatabase.getInstance();
+    await db.update('CARD', card.toMap(), where: 'id = ?', whereArgs: [card.id]);
+  } catch (ex) {
+    print(ex);
+  }
+}
+
+///Get card with DeckModel
+// Future<List<CardModel>> getCard(DeckModel deck) async {
+//   Database db = await AppDatabase.getInstance();
+//   final List<Map<String, Object?>> cardMaps = await(db.query('CARD', where: ''))
+// }
 
 //Progress Data
 Future<int> insertProgress(ProgressModel progress) async {
