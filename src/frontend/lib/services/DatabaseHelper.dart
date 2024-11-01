@@ -202,6 +202,18 @@ Future<int> insertCard(CardModel card) async {
   }
 }
 
+Future<int> updateCard(CardModel card) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+    await db
+        .update('CARD', card.toMap(), where: 'id = ?', whereArgs: [card.id]);
+    return 1;
+  } catch (ex) {
+    print(ex);
+    return -1;
+  }
+}
+
 Future<int> deleteCard(CardModel card) async {
   try {
     Database db = await AppDatabase.getInstance();
