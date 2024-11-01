@@ -41,8 +41,8 @@ class CardModel {
       'question': question,
       'imageId': imageId,
       'answer': answer,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 

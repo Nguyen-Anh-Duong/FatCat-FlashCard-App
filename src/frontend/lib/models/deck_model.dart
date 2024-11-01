@@ -36,7 +36,7 @@ class DeckModel {
       'id': id,
       'name': name,
       'description': description,
-      'is_published': is_published,
+      'is_published': is_published.toString(),
       'deck_cards_count': deck_cards_count,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),

@@ -17,8 +17,37 @@ void vah_test() async {
 
   Database db = await AppDatabase.getInstance();
   print("DB VERSION: " + (await db.getVersion()).toString());
-  print(DateTime.now().toIso8601String());
-  print(await getAllUser());
+
+  CardModel dummyCard1 = CardModel(
+      id: '100',
+      userId: '1',
+      deckId: '1',
+      question: '1',
+      imageId: '',
+      answer: '1',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now());
+  CardModel dummyCard2 = CardModel(
+      id: '200',
+      userId: '1',
+      deckId: '1',
+      question: '1',
+      imageId: '',
+      answer: '1',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now());
+  await insertCard(dummyCard1);
+  await insertCard(dummyCard2);
+
+  DeckModel dummyDeck = DeckModel(
+      id: '1',
+      name: 'number',
+      description: '',
+      is_published: false,
+      deck_cards_count: '0',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now());
+  await insertDeck(dummyDeck);
 }
 
 class AppDatabase {
@@ -157,7 +186,6 @@ Future<void> updateCard(CardModel card) async {
   }
 }
 
-//CARD(id TEXT PRIMARY KEY, userId TEXT, deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)'
 ///Get card with DeckModel
 Future<List<CardModel>> getCard(DeckModel deck) async {
   Database db = await AppDatabase.getInstance();
