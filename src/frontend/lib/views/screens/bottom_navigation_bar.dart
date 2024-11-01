@@ -1,9 +1,13 @@
+import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
-import 'package:FatCat/views/screens/cards_screen.dart';
 import 'package:FatCat/views/screens/decks_control_screen.dart';
+import 'package:FatCat/views/screens/group_screen.dart';
 import 'package:FatCat/views/screens/home_screen.dart';
+import 'package:FatCat/views/screens/library_screen.dart';
 import 'package:FatCat/views/screens/settings_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
 class ScreenControl extends StatelessWidget {
@@ -11,49 +15,90 @@ class ScreenControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<ScreenControlViewModel>(
-        builder: (context, viewModel, child) {
-          return IndexedStack(
-            index: viewModel.currentIndex,
-            children: const <Widget>[
-              Home(),
-              DecksControl(),
-              CardsScreen(),
-              Settings(),
-            ],
-          );
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        unselectedItemColor: const Color.fromRGBO(96, 98, 131, 1),
-        selectedItemColor: const Color.fromRGBO(253, 253, 253, 1),
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 20,
-        unselectedFontSize: 20,
-        onTap: (index) =>
-            Provider.of<ScreenControlViewModel>(context, listen: false)
-                .setPage(index),
-        currentIndex: Provider.of<ScreenControlViewModel>(context).currentIndex,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    return Consumer<ScreenControlViewModel>(
+      builder: (context, viewModel, child) => PersistentTabView(
+        decoration: NavBarDecoration(
+          colorBehindNavBar: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: AppColors.borderCard.withOpacity(0.25),
+            width: 1.5,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.apps_outlined),
-            label: 'Decks',
+        ),
+        context,
+        controller: viewModel.controller,
+        screens: _buildScreens(),
+        items: _navBarsItems(),
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset: true,
+        stateManagement: true, // Default is true.
+        hideNavigationBarWhenKeyboardAppears: true,
+        padding: const EdgeInsets.only(top: 12, bottom: 12),
+        margin: EdgeInsets.only(left: 8, right: 8),
+        navBarHeight: 72,
+        backgroundColor: Colors.white,
+        isVisible: true,
+        animationSettings: const NavBarAnimationSettings(
+          navBarItemAnimation: ItemAnimationSettings(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.ease,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_library_rounded),
-            label: 'Library',
+          screenTransitionAnimation: ScreenTransitionAnimationSettings(
+            animateTabTransition: true,
+            duration: Duration(milliseconds: 300),
+            screenTransitionAnimationType: ScreenTransitionAnimationType.slide,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profiles',
-          ),
-        ],
+        ),
+        confineToSafeArea: true,
+        navBarStyle:
+            NavBarStyle.style9, // Choose the nav bar style with this property
+        hideOnScrollSettings: HideOnScrollSettings(),
       ),
     );
+  }
+
+  List<Widget> _buildScreens() {
+    return [
+      Home(),
+      DecksControl(),
+      LibraryScreen(),
+      GroupScreen(),
+      Settings(),
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: Icon(CupertinoIcons.home),
+        title: ("Trang chủ"),
+        activeColorPrimary: Colors.orange,
+        inactiveColorPrimary: Colors.grey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(CupertinoIcons.square_stack),
+        title: ("Bộ thẻ"),
+        activeColorPrimary: Colors.blue,
+        inactiveColorPrimary: Colors.grey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(CupertinoIcons.square_favorites),
+        title: ("Thư viện"),
+        activeColorPrimary: Colors.purple,
+        inactiveColorPrimary: Colors.grey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(CupertinoIcons.group),
+        title: ("Nhóm"),
+        activeColorPrimary: Colors.green,
+        inactiveColorPrimary: Colors.grey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(Icons.settings),
+        title: ("Cài đặt"),
+        activeColorPrimary: Colors.black,
+        inactiveColorPrimary: Colors.grey,
+      ),
+    ];
   }
 }

@@ -10,7 +10,8 @@ Widget primaryOutlineButton(String text, double width, VoidCallback onPress) {
       child: OutlinedButton(
         onPressed: onPress,
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.backgroundButtonColor),
+          side: const BorderSide(
+              color: AppColors.backgroundButtonColor, width: 2),
           backgroundColor: AppColors.white,
           foregroundColor: AppColors.backgroundButtonColor,
           shape:

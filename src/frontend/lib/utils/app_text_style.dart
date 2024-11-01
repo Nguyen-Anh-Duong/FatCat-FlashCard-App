@@ -23,4 +23,10 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.blackText,
   );
+  static final boldText28SigmarOne = TextStyle(
+    fontFamily: 'SigmarOne',
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
 }

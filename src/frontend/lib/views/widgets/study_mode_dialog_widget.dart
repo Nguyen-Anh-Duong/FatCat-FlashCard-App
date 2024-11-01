@@ -15,7 +15,7 @@ class StudyModeDialog extends StatelessWidget {
     final viewModel = Provider.of<StudyModeViewModel>(context);
     return AlertDialog(
       buttonPadding: EdgeInsets.zero,
-      title: Text('Chọn chế độ học $deckId'),
+      title: Text('Chọn chế độ học deckId::$deckId'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

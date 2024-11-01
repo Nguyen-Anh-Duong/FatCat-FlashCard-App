@@ -1,3 +1,5 @@
+import 'package:FatCat/constants/colors.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
 class CardItemWidget extends StatelessWidget {
@@ -11,35 +13,44 @@ class CardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
-      child: Container(
-        width: 250,
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          // border: Border.all(
-          //   width: 2,
-          //   color: Color.fromRGBO(49, 58, 89, 1),
-          // ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: FlipCard(
+        speed: 250,
+        direction: FlipDirection.VERTICAL,
+        front: Container(
+          height: 100,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                  width: 2, color: AppColors.borderCard.withOpacity(0.25))),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                question,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
-        child: Column(
-          children: [
-            Text(
-              question,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+        back: Container(
+          height: 100,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                  width: 2, color: AppColors.borderCard.withOpacity(0.25))),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                answer,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
               ),
             ),
-            Text(
-              answer,
-              style: const TextStyle(
-                fontSize: 15,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
