@@ -1,11 +1,11 @@
 class DeckModel {
-  final String id;
-  final String name;
-  final String description;
-  final bool is_published;
-  final String deck_cards_count;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  String id;
+  String name;
+  String description;
+  bool is_published;
+  String deck_cards_count;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   DeckModel({
     required this.id,
