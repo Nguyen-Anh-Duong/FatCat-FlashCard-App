@@ -169,6 +169,31 @@ Future<List<DeckModel>> getDeckWithId(String id) async {
   ];
 }
 
+Future<List<DeckModel>> getAllDeck(String orderBy) async {
+  Database db = await AppDatabase.getInstance();
+  final List<Map<String, Object?>> deckMaps =
+  await db.query('DECK', orderBy: orderBy);
+  return [
+    for (final {
+    'id': id as String,
+    'name': name as String,
+    'description': description as String,
+    'is_published': is_published as String,
+    'deck_cards_count': deck_cards_count as int,
+    'createdAt': createdAt as String,
+    'updatedAt': updatedAt as String,
+    } in deckMaps)
+      DeckModel(
+          id: id,
+          name: name,
+          description: description,
+          is_published: is_published.toBoolean(),
+          deck_cards_count: deck_cards_count.toString(),
+          createdAt: DateTime.parse(createdAt),
+          updatedAt: DateTime.parse(updatedAt))
+  ];
+}
+
 ///Update the deck that has the same DeckModel's id
 Future<void> updateDeck(DeckModel deck) async {
   try {
