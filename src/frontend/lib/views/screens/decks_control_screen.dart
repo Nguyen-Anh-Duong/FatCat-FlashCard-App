@@ -1,7 +1,9 @@
 import 'package:FatCat/constants/colors.dart';
+import 'package:FatCat/constants/deck_data_test.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/models/deck_provider.dart';
 import 'package:FatCat/services/DatabaseHelper.dart';
+import 'package:FatCat/utils/app_text_style.dart';
 import 'package:FatCat/views/screens/available_deck_screen.dart';
 import 'package:FatCat/views/screens/cards_screen.dart';
 import 'package:FatCat/views/widgets/deck_home_item_widget.dart';
@@ -19,11 +21,10 @@ class DecksControl extends StatelessWidget {
     final TextEditingController controller1 = TextEditingController();
     final TextEditingController controller2 = TextEditingController();
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.backgroundScreen,
       appBar: AppBar(
-        title: const Text("Decks"),
-        centerTitle: true,
-        backgroundColor: AppColors.white,
+        title: Text("Decks", style: AppTextStyles.boldText28SigmarOne),
+        backgroundColor: AppColors.backgroundScreen,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
@@ -150,7 +151,7 @@ class DecksControl extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return const CardsScreen();
+                              return CardsScreen(deck: decks[0]);
                             },
                           ),
                         );

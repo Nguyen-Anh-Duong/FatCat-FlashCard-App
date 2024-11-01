@@ -16,6 +16,8 @@ class CardItemWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: FlipCard(
+        speed: 250,
+        direction: FlipDirection.VERTICAL,
         front: Container(
           height: 100,
           decoration: BoxDecoration(

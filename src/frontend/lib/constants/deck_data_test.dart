@@ -3,8 +3,9 @@ import 'package:FatCat/models/deck_model.dart';
 List<DeckModel> decks = [
   DeckModel(
     id: "1",
-    name: "Deck 1",
-    description: "Description 1",
+    name: "Unit 1. Hobbies - Tiếng Anh 7 Global Success",
+    description:
+        "Tổng hợp các thuật ngữ về chủ đề Hobbies, từ vựng các thứ các kiểu bala",
     is_published: true,
     deck_cards_count: "1",
     createdAt: DateTime.now(),

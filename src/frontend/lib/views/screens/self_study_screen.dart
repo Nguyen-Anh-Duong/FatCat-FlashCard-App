@@ -194,6 +194,7 @@ class SelfStudyScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: FlipCard(
+                                  speed: 300,
                                   key: viewModel.cardKeys[index],
                                   direction: FlipDirection.HORIZONTAL,
                                   front: GestureDetector(

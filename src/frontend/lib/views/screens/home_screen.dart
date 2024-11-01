@@ -2,6 +2,7 @@ import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/utils/app_text_style.dart';
 import 'package:FatCat/viewmodels/home_viewmodel.dart';
 import 'package:FatCat/views/screens/bottom_navigation_bar.dart';
+import 'package:FatCat/views/screens/rank_screen.dart';
 import 'package:FatCat/views/widgets/category_home_widget.dart';
 import 'package:FatCat/views/widgets/curved_clipper_widget.dart';
 import 'package:FatCat/views/widgets/deck_cart_widget.dart';
@@ -12,6 +13,7 @@ import 'package:FatCat/views/widgets/study_streak_widget.dart';
 import 'package:FatCat/views/widgets/text_and_showall_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -29,7 +31,7 @@ class Home extends StatelessWidget {
       child: Consumer<HomeViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.backgroundScreen,
             body: SafeArea(
               child: SingleChildScrollView(
                 child: Center(
@@ -58,6 +60,7 @@ class Home extends StatelessWidget {
                                         'Fat Cat',
                                         style: TextStyle(
                                             color: AppColors.white,
+                                            fontFamily: 'SigmarOne',
                                             fontSize: 28,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -103,15 +106,32 @@ class Home extends StatelessWidget {
                       const SizedBox(
                         height: 8,
                       ),
-                      const TextAndShowAllWidget(
-                          text: 'Streak', isShowAll: false),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: StudyStreakWidget(
-                            streak: 3,
-                            streakStartAt:
-                                DateTime.now().add(const Duration(days: 2))),
-                      ),
+                      if (viewModel.isConnected)
+                        Column(
+                          children: [
+                            const TextAndShowAllWidget(
+                                text: 'Streak', isShowAll: false),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 16),
+                              child: StudyStreakWidget(
+                                streak: 3,
+                                streakStartAt: DateTime.now().add(
+                                  const Duration(days: 2),
+                                ),
+                                onPressed: () {
+                                  PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    screen: RankScreen(),
+                                    withNavBar: false,
+                                    pageTransitionAnimation:
+                                        PageTransitionAnimation.cupertino,
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
                       const SizedBox(
                         height: 20,
                       ),

@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class ScreenControlViewModel extends ChangeNotifier {
-  int _currentIndex = 0;
+  late PersistentTabController controller;
+  bool isBottomBarVisible = true;
 
-  int get currentIndex => _currentIndex;
+  ScreenControlViewModel() {
+    controller = PersistentTabController();
+  }
 
-  void setPage(int value) {
-    _currentIndex = value;
+  void hideBottomBar() {
+    isBottomBarVisible = false;
+    notifyListeners();
+  }
+
+  void showBottomBar() {
+    isBottomBarVisible = true;
     notifyListeners();
   }
 }

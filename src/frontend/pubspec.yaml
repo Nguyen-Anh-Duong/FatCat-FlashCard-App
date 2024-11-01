@@ -43,6 +43,8 @@ dependencies:
   flutter_tts: ^4.0.2
   sqflite: ^2.4.0
   http: ^1.2.2
+  persistent_bottom_nav_bar: ^6.2.1
+  connectivity_plus: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -54,10 +56,27 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: "^0.14.1"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/fatcat.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/foreground.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/fatcat.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/fatcat.png"
+    icon_size: 48 # min:48, max:256, default: 48
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -86,6 +105,11 @@ flutter:
         - asset: assets/fonts/Nunito-SemiBold.ttf
           weight: 600
 
+    - family: SigmarOne
+      fonts:
+        - asset: assets/fonts/SigmarOne-Regular.ttf
+
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -93,6 +117,7 @@ flutter:
   assets:
     - assets/default.jpg
     - assets/icons/
+    - assets/fatcat.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

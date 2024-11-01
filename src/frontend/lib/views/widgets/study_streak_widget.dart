@@ -1,17 +1,22 @@
 import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/utils/app_elevated_button_style.dart';
+import 'package:FatCat/views/screens/rank_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 // import 'package:intl/intl.dart';
 
 class StudyStreakWidget extends StatelessWidget {
   final int streak;
   final DateTime streakStartAt;
+  final VoidCallback onPressed;
 
   const StudyStreakWidget({
     super.key,
     required this.streak,
     required this.streakStartAt,
+    this.onPressed = _defaultOnPressed,
   });
+  static void _defaultOnPressed() {}
 
   DateTime _normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
@@ -22,7 +27,7 @@ class StudyStreakWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(

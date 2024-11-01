@@ -1,4 +1,5 @@
 import 'package:FatCat/constants/card_data_test.dart';
+import 'package:FatCat/constants/deck_data_test.dart';
 import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/card_provider.dart';
 import 'package:FatCat/models/deck_model.dart';
@@ -23,7 +24,9 @@ class DeckCartWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return const CardsScreen();
+              return CardsScreen(
+                deck: decks[0],
+              );
             },
           ),
         );

@@ -10,6 +10,7 @@ class AppColors {
   static const Color greenBg = Color(0xff6fcf97);
   static const Color greyText = Color(0xff5d5e5f);
   static const Color backgroundButtonColor = Color(0xFF000000);
+  static const Color backgroundScreen = Color(0xFFF5F6F8);
 
   //text
   static const Color progressBarColor = Color.fromARGB(255, 84, 85, 93);
