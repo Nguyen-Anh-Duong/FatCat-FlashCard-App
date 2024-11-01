@@ -18,8 +18,8 @@ void vah_test() async {
   Database db = await AppDatabase.getInstance();
   print("DB VERSION: " + (await db.getVersion()).toString());
 
-  db.execute('DELETE FROM DECK');
-  db.execute('DELETE FROM CARD');
+  // db.execute('DELETE FROM DECK');
+  // db.execute('DELETE FROM CARD');
 
   DeckModel dummyDeck = DeckModel(
       id: '1',
@@ -29,7 +29,7 @@ void vah_test() async {
       deck_cards_count: '0',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
-  await insertDeck(dummyDeck);
+  // await insertDeck(dummyDeck);
 
   CardModel dummyCard1 = CardModel(
       id: '100',
@@ -49,8 +49,8 @@ void vah_test() async {
       answer: '1',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
-  await insertCard(dummyCard1);
-  await insertCard(dummyCard2);
+  // await insertCard(dummyCard1);
+  // await insertCard(dummyCard2);
 
   // print(await getDeckWithId('1'));
   // print(await getCard(dummyDeck));
