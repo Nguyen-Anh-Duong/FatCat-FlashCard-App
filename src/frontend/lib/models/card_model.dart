@@ -1,4 +1,6 @@
 // lib/models/card_model.dart
+import 'package:FatCat/services/date_time_formatter.dart';
+
 class CardModel {
   final String id;
   final String? userId;
@@ -41,8 +43,8 @@ class CardModel {
       'question': question,
       'imageId': imageId,
       'answer': answer,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'createdAt': time_formatter(createdAt),
+      'updatedAt': time_formatter(updatedAt),
     };
   }
 
