@@ -83,8 +83,7 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
     next();
   });
 });
-
-const verifyAccessTokenInDB = (module.exports = {
+module.exports = {
   authenticateToken,
   accessMiddleware,
-});
+};
