@@ -42,7 +42,7 @@ class AccessService {
 
     const otpCode = await createOtpForUser(user.id);
 
-    await sendVerificationMail(user.email, user.name, otpCode);
+    //await sendVerificationMail(user.email, user.name, otpCode);
 
     return {
       ...pick({ object: user, keys: ["email", "name", "role_system"] }),
@@ -95,8 +95,6 @@ class AccessService {
       role: user.role_system,
     };
 
-    // const refreshToken = await TokenService.generateRefreshToken(payload);
-    // const accessToken = await TokenService.generateAccessToken(payload);
     const accessToken = await TokenService.generateAccessToken(payload);
     await Token.create({
       userId: user.id,
@@ -121,7 +119,7 @@ class AccessService {
     if (user.isVerified)
       throw new ApiError("Your account has already been verified.", 430);
     const newOtpCode = await createOtpForUser(user.id);
-    await sendVerificationMail(user.email, user.name, newOtpCode);
+    //await sendVerificationMail(user.email, user.name, newOtpCode);
     return { newOtpCode };
   };
 
@@ -144,8 +142,7 @@ class AccessService {
       email: user.email,
       role: user.role_system,
     };
-    // const refreshToken = await TokenService.generateRefreshToken(payload);
-    // const accessToken = await TokenService.generateAccessToken(payload);
+
     const accessToken = await TokenService.generateAccessToken(payload);
     await Token.create({
       userId: user.id,
@@ -188,11 +185,12 @@ class AccessService {
       throw new NotFoundError(
         "User not found. Please check the information and try again."
       );
-    await this.logout_all_device({ userId: user.id });
+    //await this.logout_all_device({ userId: user.id });
     const newPassword = generateRandomString();
     user.password = newPassword;
     await user.save();
-    await sendResetPasswordMail({ email, name: user.name, newPassword });
+    //await sendResetPasswordMail({ email, name: user.name, newPassword });
+    return { newPassword };
   };
 
   static change_password = async ({
@@ -212,20 +210,23 @@ class AccessService {
       );
     const comparePassword = await user.comparePassword(oldPassword);
     if (!comparePassword)
-      throw new BadRequestError("Email or password is not correct.");
-    await logout_other_devices({ userId, accessToken });
-    user.password = newPassword;
-    await user.save();
-    await sendSuccessResetPasswordEmail({ email: user.email, name: user.name });
-  };
+      throw new ApiError(
+        "Your password is not correct. Check and try again.",
+        400
+      );
 
-  static logout_other_devices = async ({ userId, accessToken }) => {
+    //logout other device
     await Token.destroy({
       where: {
         userId,
         accessToken: { [Op.ne]: accessToken },
       },
     });
+
+    //save new password
+    user.password = newPassword;
+    await user.save();
+    await sendSuccessResetPasswordEmail({ email: user.email, name: user.name });
   };
 }
 module.exports = AccessService;

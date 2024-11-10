@@ -20,7 +20,7 @@ const accessMiddleware = async (req, res, next) => {
     }
 
     try {
-      const decoded = await TokenService.verifyAccessToken(token);
+      const decoded = TokenService.verifyAccessToken(token);
       req.user = decoded;
       req.refreshToken = refreshToken;
       req.accessToken = token;
@@ -50,16 +50,16 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
   const token = req.headers["authorization"];
   if (!token)
     throw new ApiError(
-      "Access denied: Authorization token missing from request.",
+      "Access denied. Authorization token missing from request.",
       401
     );
-  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+  await jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
       switch (err.name) {
         case "TokenExpiredError":
           throw new ApiError(err.message, 420, err.name);
         default:
-          throw new ApiError(err.message, 421);
+          throw new ApiError(err.message, 421, err.name);
       }
     }
     const user = {
@@ -75,7 +75,7 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
     });
     if (!findToken)
       throw new ApiError(
-        "Access denied: No valid session token. Please re-authenticate.",
+        "Access denied. No valid session token. Please re-authenticate.",
         402
       );
     req.user = user;

@@ -4,29 +4,33 @@ const { sequelize } = require("../database/init.database");
 const Class = require("./class.model");
 const Deck = require("./deck.model");
 
-const ClassDeck = sequelize.define("ClassDeck", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
+const ClassDeck = sequelize.define(
+  "ClassDeck",
+  {
+    // id: {
+    //     type: DataTypes.INTEGER,
+    //     primaryKey: true,
+    //     autoIncrement: true,
+    // },
     group_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Class,
-            key: 'id',
-        },
+      type: DataTypes.INTEGER,
+      references: {
+        model: Class,
+        key: "id",
+      },
     },
     deck_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Deck,
-            key: 'id',
-        },
+      type: DataTypes.INTEGER,
+      references: {
+        model: Deck,
+        key: "id",
+      },
     },
-}, {
+  },
+  {
     tableName: "ClassDecks",
     timestamps: false,
-});
+  }
+);
 
 module.exports = ClassDeck;

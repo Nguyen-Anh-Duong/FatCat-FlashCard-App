@@ -56,8 +56,8 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    verificationToken: {
-      type: DataTypes.STRING,
+    avatar: {
+      type: DataTypes.BLOB("medium"),
       allowNull: true,
     },
   },

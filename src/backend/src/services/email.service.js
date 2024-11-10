@@ -1,6 +1,10 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const { VERIFICATION_EMAIL_TEMPLATE } = require("../templates/index");
+const {
+  VERIFICATION_EMAIL_TEMPLATE,
+  PASSWORD_RESET_REQUEST_TEMPLATE,
+  PASSWORD_RESET_SUCCESS_TEMPLATE,
+} = require("../templates/index");
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -15,7 +19,7 @@ const sendVerificationMail = async (email, name, otpCode) => {
     .replace("{expirationTime}", 5)
     .replace("{appName}", "FatCat");
   await transporter.sendMail({
-    from: '"FatCat" <nguyenanhduong112004@gmail.com>',
+    from: '"FatCat" <service.dichotienloi@gmail.com>',
     to: email,
     subject: "Verify Your Account",
     html,
@@ -28,7 +32,7 @@ const sendResetPasswordMail = async ({ email, name, newPassword }) => {
     .replace("{Your Website Team}", "FatCat Team")
     .replace("{Your Website}", "FatCat");
   await transporter.sendMail({
-    from: '"FatCat" <nguyenanhduong112004@gmail.com>',
+    from: '"FatCat" <service.dichotienloi@gmail.com>',
     to: email,
     subject: "Reset Password",
     html,
@@ -36,12 +40,11 @@ const sendResetPasswordMail = async ({ email, name, newPassword }) => {
 };
 
 const sendSuccessResetPasswordEmail = async ({ email, name }) => {
-  const html = PASSWORD_RESET_SUCCESS_TEMPLATE.replace("{User}", name).replace(
-    "{Your Company}",
-    "FatCat"
-  );
+  const html = PASSWORD_RESET_SUCCESS_TEMPLATE.replace("{User}", name)
+    .replace("{Your Company}", "FatCat")
+    .replace("{Your Company}", "FatCat");
   await transporter.sendMail({
-    from: '"FatCat" <nguyenanhduong112004@gmail.com>',
+    from: '"FatCat" <service.dichotienloi@gmail.com>',
     to: email,
     subject: "Password Changed Successfully",
     html,

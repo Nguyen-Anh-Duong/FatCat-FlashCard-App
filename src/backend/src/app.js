@@ -54,14 +54,16 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.json({
-    status: error.status,
-    code: error.code,
+  const statusCode = error.status || 500;
+  const errorResponse = {
+    status: "error",
+    code: statusCode,
     message:
       error.message || "An unexpected error occurred. Please try again later.",
     stack: error.stack,
-  });
+  };
+  if (process.env.ENViRONMENT === "prod") delete errorResponse.stack;
+  return res.status(statusCode).json(errorResponse);
 });
 
 module.exports = app;
