@@ -34,7 +34,10 @@ class ScreenControl extends StatelessWidget {
         stateManagement: true, // Default is true.
         hideNavigationBarWhenKeyboardAppears: true,
         padding: const EdgeInsets.only(top: 12, bottom: 12),
-        margin: EdgeInsets.only(left: 8, right: 8),
+        margin: const EdgeInsets.only(
+          left: 8,
+          right: 8,
+        ),
         navBarHeight: 72,
         backgroundColor: Colors.white,
         isVisible: true,
@@ -78,7 +81,7 @@ class ScreenControl extends StatelessWidget {
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.square_stack),
         title: ("Bộ thẻ"),
-        activeColorPrimary: Colors.blue,
+        activeColorPrimary: Colors.brown,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
