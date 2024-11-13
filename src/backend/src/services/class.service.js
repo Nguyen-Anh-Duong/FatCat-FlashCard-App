@@ -98,7 +98,7 @@ class ClassService {
         const order = [];
         
         if (sortBy === 'member_count') {
-            order.push(["Class", 'member_count', 'DESC']);
+            order.push([{ model: ClassModel }, 'member_count', 'DESC']);
         } else if (sortBy === 'created_at') {
             order.push([{ model: ClassModel }, 'created_at', 'DESC']);
         } else if (sortBy === 'updated_at') {
@@ -126,7 +126,6 @@ class ClassService {
         }));
     
         return data;
-
     }
     static updateClass = async({classId, name, description}) => {
         if(!name || !description)
