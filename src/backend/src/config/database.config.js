@@ -4,7 +4,7 @@ module.exports = {
   database: process.env.DB_NAME || "fatcat",
   username: process.env.DB_USERNAME || "root",
   password: process.env.DB_PASSWORD || "passroot",
-  port: process.env.DB_PORT || 3307,
+  port: process.env.DB_PORT || 3306,
   define: {
     timestamps: true,
     underscored: true,

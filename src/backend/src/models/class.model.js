@@ -23,6 +23,10 @@ const Class = sequelize.define("Class", {
             key: 'id',
         },
     },
+    member_count: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
     code_invite: {
         type: DataTypes.STRING,
     },

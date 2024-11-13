@@ -1,6 +1,6 @@
 const express = require("express");
-
 const router = express.Router();
+const { authenticateToken } = require("../middlewares/auth.middleware");
 
 router.get("/v1/api", (req, res) => {
   res.status(200).json({
@@ -11,5 +11,6 @@ router.get("/v1/api", (req, res) => {
 router.use("/v1/api/deck", require("./deck/index"));
 router.use("/v1/api/access", require("./access/index"));
 router.use("/v1/api", require("./verify/index"));
+router.use("/v1/api/class", authenticateToken,require("./class/index"));
 
 module.exports = router;

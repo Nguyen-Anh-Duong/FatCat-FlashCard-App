@@ -24,9 +24,9 @@ const Deck = sequelize.define(
         model: User,
         key: "id",
       },
-      allowNull: false,
+      allowNull: true,
     },
-    title: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },

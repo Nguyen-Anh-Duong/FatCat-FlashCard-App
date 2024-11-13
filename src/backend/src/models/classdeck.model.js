@@ -12,7 +12,7 @@ const ClassDeck = sequelize.define(
     //     primaryKey: true,
     //     autoIncrement: true,
     // },
-    group_id: {
+    class_id: {
       type: DataTypes.INTEGER,
       references: {
         model: Class,
