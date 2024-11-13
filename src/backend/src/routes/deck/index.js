@@ -23,4 +23,5 @@ router.post(
   authenticateToken,
   asyncHandler(DeckController.createDeckByCopy)
 );
+router.get("/", asyncHandler(DeckController.getAllDecks));
 module.exports = router;

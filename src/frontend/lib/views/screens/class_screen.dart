@@ -2,6 +2,7 @@ import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/utils/app_text_style.dart';
 import 'package:FatCat/viewmodels/class_viewmodel.dart';
 import 'package:FatCat/views/screens/not_connection_screen.dart';
+import 'package:FatCat/views/widgets/class_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -83,31 +84,31 @@ class ClassScreen extends StatelessWidget {
       builder: (context, viewModel, child) {
         if (viewModel.isLoading) {
           return const Center(
-            child: CircularProgressIndicator(
-              color: Colors.black,
-            ),
+            child: CircularProgressIndicator(color: AppColors.green),
           );
         }
 
-        if (viewModel.ownClasses.isEmpty) {
-          return const Center(
-            child: Text('Bạn chưa tham gia lớp học nào'),
-          );
-        }
-
-        return ListView.builder(
-          itemCount: viewModel.ownClasses.length,
-          itemBuilder: (context, index) {
-            final classItem = viewModel.ownClasses[index];
-            return ListTile(
-              title: Text(classItem.name),
-              subtitle: Text(classItem.description),
-              trailing: Text('Mã lớp: ${classItem.codeInvite}'),
-              onTap: () {
-                // Navigate to class detail
-              },
-            );
-          },
+        return RefreshIndicator(
+          color: AppColors.green,
+          onRefresh: () => viewModel.initData(),
+          child: viewModel.ownClasses.isEmpty
+              ? ListView(
+                  children: const [
+                    Center(
+                      child: Text('Bạn chưa tham gia lớp học nào'),
+                    ),
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: viewModel.ownClasses.length,
+                    itemBuilder: (context, index) {
+                      final classItem = viewModel.ownClasses[index];
+                      return ClassCardWidget(classItem: classItem);
+                    },
+                  ),
+                ),
         );
       },
     );
@@ -118,31 +119,31 @@ class ClassScreen extends StatelessWidget {
       builder: (context, viewModel, child) {
         if (viewModel.isLoading) {
           return const Center(
-            child: CircularProgressIndicator(
-              color: Colors.black,
-            ),
+            child: CircularProgressIndicator(color: AppColors.green),
           );
         }
 
-        if (viewModel.allClasses.isEmpty) {
-          return const Center(
-            child: Text('Không có lớp học nào'),
-          );
-        }
-
-        return ListView.builder(
-          itemCount: viewModel.allClasses.length,
-          itemBuilder: (context, index) {
-            final classItem = viewModel.allClasses[index];
-            return ListTile(
-              title: Text(classItem.name),
-              subtitle: Text(classItem.description),
-              trailing: Text('Mã lớp: ${classItem.codeInvite}'),
-              onTap: () {
-                // Navigate to class detail
-              },
-            );
-          },
+        return RefreshIndicator(
+          color: AppColors.green,
+          onRefresh: () => viewModel.initData(),
+          child: viewModel.allClasses.isEmpty
+              ? ListView(
+                  children: const [
+                    Center(
+                      child: Text('Không có lớp học nào'),
+                    ),
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: viewModel.allClasses.length,
+                    itemBuilder: (context, index) {
+                      final classItem = viewModel.allClasses[index];
+                      return ClassCardWidget(classItem: classItem);
+                    },
+                  ),
+                ),
         );
       },
     );

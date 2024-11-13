@@ -57,6 +57,12 @@ class DeckController {
       }),
     }).send(res);
   }
+  async getAllDecks(req, res, next) {
+    return new SuccessResponse({
+      message: "Get all decks successfully.",
+      metadata: await DeckService.getAllDecks(),
+    }).send(res);
+  }
 }
 
 module.exports = new DeckController();

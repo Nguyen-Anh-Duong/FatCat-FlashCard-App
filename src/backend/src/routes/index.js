@@ -12,6 +12,7 @@ router.use("/v1/api/deck", require("./deck/index"));
 router.use("/v1/api/card", require("./card/index"));
 router.use("/v1/api/access", require("./access/index"));
 router.use("/v1/api", require("./verify/index"));
-router.use("/v1/api/class", authenticateToken,require("./class/index"));
+router.use("/v1/api/class", authenticateToken, require("./class/index"));
+
 
 module.exports = router;

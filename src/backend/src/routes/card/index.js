@@ -5,6 +5,6 @@ const router = express.Router();
 const CardController = require("../../controllers/card.controller");
 const asyncHandler = require("express-async-handler");
 
-router.get("/", asyncHandler(CardController.getCardsByDeckId));
+router.get("/:deck_id", asyncHandler(CardController.getCardsByDeckId));
 
 module.exports = router;

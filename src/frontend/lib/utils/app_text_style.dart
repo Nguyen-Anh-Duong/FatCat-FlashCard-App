@@ -34,4 +34,9 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );
+  static final boldText16 = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
 }

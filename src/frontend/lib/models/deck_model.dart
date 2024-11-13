@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:FatCat/services/date_time_formatter.dart';
 
 class DeckModel {
@@ -6,6 +8,11 @@ class DeckModel {
   String description;
   bool is_published;
   String deck_cards_count;
+  String? user_id;
+  String? category_id;
+  String? category_name;
+  String? question_language;
+  String? answer_language;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -15,22 +22,14 @@ class DeckModel {
     required this.description,
     required this.is_published,
     required this.deck_cards_count,
+    this.user_id,
+    this.category_id,
+    this.category_name,
+    this.question_language,
+    this.answer_language,
     required this.createdAt,
     required this.updatedAt,
   });
-
-  factory DeckModel.fromJson(Map<String, dynamic> json) {
-    final deck = DeckModel(
-      id: json['id'].toString(),
-      name: json['name'],
-      description: json['description'],
-      is_published: json['is_published'],
-      deck_cards_count: json['deck_cards_count'].toString(),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-    );
-    return deck;
-  }
 
   Map<String, Object?> toMap() {
     return {
@@ -39,13 +38,38 @@ class DeckModel {
       'description': description,
       'is_published': is_published.toString(),
       'deck_cards_count': deck_cards_count,
+      'user_id': user_id,
+      'category_id': category_id,
+      'category_name': category_name ?? '',
+      'question_language': question_language ?? 'en',
+      'answer_language': answer_language ?? 'en',
       'createdAt': time_formatter(createdAt),
       'updatedAt': time_formatter(updatedAt),
     };
   }
 
+  factory DeckModel.fromJson(Map<String, dynamic> json) {
+    print('222');
+    DeckModel deck = DeckModel(
+      id: json['id'].toString(),
+      name: json['name'],
+      description: json['description'],
+      is_published: json['is_published'] == 'false',
+      deck_cards_count: json['deck_cards_count'].toString(),
+      user_id: json['user_id']?.toString() ?? '',
+      category_id: json['category_id']?.toString() ?? '',
+      category_name: json['category_name'] ?? '',
+      question_language: json['question_language'] ?? 'en',
+      answer_language: json['answer_language'] ?? 'en',
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+    );
+    print(deck.toString());
+    return deck;
+  }
+
   @override
   String toString() {
-    return 'Deck{id: $id, name: $name, description: $description, is_published: $is_published, deck_cards_count: $deck_cards_count, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Deck{id: $id, name: $name, description: $description, is_published: $is_published, deck_cards_count: $deck_cards_count, user_id: $user_id, category_id: $category_id, question_language: $question_language, answer_language: $answer_language, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

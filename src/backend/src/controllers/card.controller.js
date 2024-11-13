@@ -7,7 +7,7 @@ class CardController {
     static async getCardsByDeckId(req, res, next) {
         new SuccessResponse({
             message: "Get cards by deck id successfully",
-            metadata: await CardService.getCardsByDeckId({...req.query})
+            metadata: await CardService.getCardsByDeckId({ deckId: req.params.deck_id})
         }).send(res);
     }
 }
