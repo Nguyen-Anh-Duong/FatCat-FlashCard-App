@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class ClassViewModel extends ChangeNotifier {
   ClassViewModel() {
-    _initData();
+    initData();
   }
 
   final ClassService _classService = ClassService();
@@ -20,40 +20,35 @@ class ClassViewModel extends ChangeNotifier {
   List<ClassModel> get ownClasses => _ownClasses;
   List<ClassModel> get allClasses => _allClasses;
 
-  Future<void> _initData() async {
-    await Future.wait([
-      fetchOwnClasses(),
-      fetchAllClasses(),
-    ]);
-  }
+  Future<void> initData() async {
+    _isLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(seconds: 1));
 
-  Future<void> fetchOwnClasses() async {
     try {
-      _isLoading = true;
-      //smooth =))
-      await Future.delayed(const Duration(seconds: 1));
-      notifyListeners();
-
-      _ownClasses = await _classService.getOwnClasses();
-    } catch (e) {
-      print('Error fetching own classes: $e');
+      await Future.wait([
+        fetchOwnClasses(),
+        fetchAllClasses(),
+      ]);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
+  Future<void> fetchOwnClasses() async {
+    try {
+      _ownClasses = await _classService.getOwnClasses();
+    } catch (e) {
+      print('Error fetching own classes: $e');
+    }
+  }
+
   Future<void> fetchAllClasses() async {
     try {
-      _isLoading = true;
-      notifyListeners();
-
       _allClasses = await _classService.getAllClasses();
     } catch (e) {
       print('Error fetching all classes: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 

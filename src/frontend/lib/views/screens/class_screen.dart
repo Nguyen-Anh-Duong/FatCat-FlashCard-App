@@ -23,8 +23,7 @@ class ClassScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.refresh),
                     onPressed: () async {
-                      await context.read<ClassViewModel>().fetchAllClasses();
-                      await context.read<ClassViewModel>().fetchOwnClasses();
+                      await context.read<ClassViewModel>().initData();
                     },
                   ),
                   Padding(
@@ -83,7 +82,11 @@ class ClassScreen extends StatelessWidget {
     return Consumer<ClassViewModel>(
       builder: (context, viewModel, child) {
         if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          );
         }
 
         if (viewModel.ownClasses.isEmpty) {
@@ -114,7 +117,11 @@ class ClassScreen extends StatelessWidget {
     return Consumer<ClassViewModel>(
       builder: (context, viewModel, child) {
         if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          );
         }
 
         if (viewModel.allClasses.isEmpty) {
