@@ -30,6 +30,7 @@ class ClassViewModel extends ChangeNotifier {
   Future<void> fetchOwnClasses() async {
     try {
       _isLoading = true;
+      await Future.delayed(const Duration(seconds: 1));
       notifyListeners();
 
       _ownClasses = await _classService.getOwnClasses();
