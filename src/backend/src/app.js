@@ -4,11 +4,20 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 require("dotenv").config();
-const {sequelize} = require("./database/init.database")
-const {User, Deck, Card, Image, Class, ClassMember, ClassDeck, Category} = require("./models")
-const seedLanguageData = require("./utils/seedLanguageData")
-const seedUserData = require("./utils/seedUserData");
-const seedData = require("./utils/seedData");
+const { sequelize } = require("./database/init.database");
+const {
+  User,
+  Deck,
+  Card,
+  Image,
+  Class,
+  ClassMember,
+  ClassDeck,
+  Category,
+  Token,
+} = require("./models");
+const seedAllData = require("./scripts/seedAllData");
+const seedClassData = require("./scripts/seedClassData");
 
 const app = express();
 
@@ -18,12 +27,17 @@ app.use(compression());
 app.use(express.json());
 
 //init database
-sequelize.sync({ force: true}).then(async () => {
+
+sequelize
+  .sync({ force: true })
+  .then(async () => {
     console.log("All models were synchronized successfully.");
-    await seedData();
-}).catch((error) => {
+    await seedAllData();
+    await seedClassData();
+  })
+  .catch((error) => {
     console.error("Error synchronizing models:", error);
-});
+  });
 
 //init routes
 app.use("/", require("./routes"));

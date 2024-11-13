@@ -1,7 +1,7 @@
 import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/viewmodels/screen_control_viewmodel.dart';
 import 'package:FatCat/views/screens/decks_control_screen.dart';
-import 'package:FatCat/views/screens/group_screen.dart';
+import 'package:FatCat/views/screens/class_screen.dart';
 import 'package:FatCat/views/screens/home_screen.dart';
 import 'package:FatCat/views/screens/library_screen.dart';
 import 'package:FatCat/views/screens/settings_screen.dart';
@@ -25,6 +25,10 @@ class ScreenControl extends StatelessWidget {
             width: 1.5,
           ),
         ),
+        margin: const EdgeInsets.only(
+          left: 8,
+          right: 8,
+        ),
         context,
         controller: viewModel.controller,
         screens: _buildScreens(),
@@ -34,10 +38,6 @@ class ScreenControl extends StatelessWidget {
         stateManagement: true, // Default is true.
         hideNavigationBarWhenKeyboardAppears: true,
         padding: const EdgeInsets.only(top: 12, bottom: 12),
-        margin: const EdgeInsets.only(
-          left: 8,
-          right: 8,
-        ),
         navBarHeight: 72,
         backgroundColor: Colors.white,
         isVisible: true,
@@ -54,7 +54,7 @@ class ScreenControl extends StatelessWidget {
         ),
         confineToSafeArea: true,
         navBarStyle:
-            NavBarStyle.style9, // Choose the nav bar style with this property
+            NavBarStyle.style6, // Choose the nav bar style with this property
         hideOnScrollSettings: HideOnScrollSettings(),
       ),
     );
@@ -65,7 +65,7 @@ class ScreenControl extends StatelessWidget {
       Home(),
       DecksControl(),
       LibraryScreen(),
-      GroupScreen(),
+      ClassScreen(),
       Settings(),
     ];
   }

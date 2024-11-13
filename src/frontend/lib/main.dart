@@ -8,9 +8,11 @@ import 'package:FatCat/views/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:FatCat/services/DatabaseHelper.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
   vah_test();
+  await dotenv.load(fileName: ".env");
   runApp(
     MultiProvider(
       providers: [

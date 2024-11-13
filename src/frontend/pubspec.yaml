@@ -45,6 +45,7 @@ dependencies:
   http: ^1.2.2
   persistent_bottom_nav_bar: ^6.2.1
   connectivity_plus: ^6.1.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -118,7 +119,7 @@ flutter:
     - assets/default.jpg
     - assets/icons/
     - assets/fatcat.png
-    
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

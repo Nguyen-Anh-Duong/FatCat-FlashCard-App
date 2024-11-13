@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database/init.database");
 const User = require("./user.model");
-const Class = require("./class.model");
+const ClassModel = require("./class.model");
 
 const ClassMember = sequelize.define("ClassMember", {
     id: {
@@ -16,12 +16,16 @@ const ClassMember = sequelize.define("ClassMember", {
             key: 'id',
         },
     },
-    group_id: {
+    class_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: Class,
+            model: ClassModel,
             key: 'id',
         },
+    },
+    role: {
+        type: DataTypes.STRING,
+        defaultValue: "member",
     },
     joined_at: {
         type: DataTypes.DATE,

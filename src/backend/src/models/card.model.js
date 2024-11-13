@@ -5,52 +5,46 @@ const User = require("./user.model");
 const Deck = require("./deck.model");
 const Image = require("./image.model");
 
-const Card = sequelize.define("Card", {
+const Card = sequelize.define(
+  "Card",
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id',
-        },
-    },
+
     deck_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Deck,
-            key: 'id',
-        },
+      type: DataTypes.INTEGER,
+      references: {
+        model: Deck,
+        key: "id",
+      },
     },
     question: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-    question_language: {
-        type: DataTypes.TEXT,
-        defaultValue: "en"
-    },
-    image_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Image,
-            key: 'id',
-        },
+    // image_id: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Image,
+    //     key: "id",
+    //   },
+    // },
+    image: {
+      type: DataTypes.BLOB,
+      allowNull: true,
     },
     answer: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-    answer_language: {
-         type: DataTypes.TEXT,
-        defaultValue: "en"
-    }
-}, {
+  },
+  {
     tableName: "Cards",
     timestamps: true,
-});
+  }
+);
 
 module.exports = Card;
