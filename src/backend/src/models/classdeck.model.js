@@ -7,11 +7,11 @@ const Deck = require("./deck.model");
 const ClassDeck = sequelize.define(
   "ClassDeck",
   {
-    // id: {
-    //     type: DataTypes.INTEGER,
-    //     primaryKey: true,
-    //     autoIncrement: true,
-    // },
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
     class_id: {
       type: DataTypes.INTEGER,
       references: {

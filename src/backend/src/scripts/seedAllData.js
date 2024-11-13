@@ -18,7 +18,7 @@ const seedAllData = async () => {
           userId: adminUser.id,
           accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMxMzc5MDA2LCJleHAiOjE3MzkxNTUwMDZ9.UCUJ512XTdkciDexOcNRzRQ6SStmlSju9IdtFbyYdEk",
         }, { transaction: t });
-        console.log(`adminEmail:: ${adminUser.email}\nadminRole:: ${adminUser.role_system}\nadminToken:: ${newToken.accessToken}`)
+        console.log(`adminEmail:: ${adminUser.email}\npassword:: ${adminUser.password}\nadminRole:: ${adminUser.role_system}\nadminToken:: ${newToken.accessToken}`)
       }
 
       const regularUser = await User.create({
@@ -28,8 +28,18 @@ const seedAllData = async () => {
         role_system: 'user',
         isVerified: true,
       }, { transaction: t });
+      if (regularUser) {
+        const userToken = await Token.create({  
+          userId: regularUser.id,
+          accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoidXNlckBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTczMTQ3MDI5MiwiZXhwIjoxNzM5MjQ2MjkyfQ.5xB0SWzFFVVpz7yXYbiBdNycBLfxkKggdB_qncvKF3A",
+        }, { transaction: t });
+        console.log(`userEmail:: ${regularUser.email}\npassword:: ${regularUser.password}\nuserRole:: ${regularUser.role_system}\nuserToken:: ${userToken.accessToken}`)
+      }
 
       // Seed Categories
+      const unknownCategory = await Category.create({
+        name: 'Không xác định',
+      }, { transaction: t }); 
       const languageCategory = await Category.create({
         name: 'Ngôn ngữ',
       }, { transaction: t });

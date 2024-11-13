@@ -50,11 +50,11 @@ const Deck = sequelize.define(
     },
     question_language: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      defaultValue: "en",
     },
     answer_language: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      defaultValue: "en",
     },
   },
   {
