@@ -1,9 +1,10 @@
 const { Sequelize } = require("sequelize");
 const databaseConfig = require("../config/database.config");
 
-const sequelize = new Sequelize(databaseConfig);
+const sequelize = new Sequelize({ ...databaseConfig, minifyAliases: true });
 
 try {
+  console.log(databaseConfig.host);
   sequelize.authenticate();
   console.log("Connection has been established successfully.");
 } catch (error) {

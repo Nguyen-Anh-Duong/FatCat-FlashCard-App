@@ -33,8 +33,8 @@ User.hasMany(ClassModel, { foreignKey: "host_user_id", onDelete: "CASCADE" });
 ClassModel.belongsTo(User, { foreignKey: "host_user_id" });
 
 // Class-ClassMember
-ClassModel.hasMany(ClassMember, { foreignKey: "class_id", onDelete: "CASCADE" });
-ClassMember.belongsTo(ClassModel, { foreignKey: "class_id" });
+ClassModel.hasMany(ClassMember, { foreignKey: "class_id", onDelete: "CASCADE"});
+ClassMember.belongsTo(ClassModel, { foreignKey: "class_id", as: "Class"});
 
 // User-ClassMember
 User.hasMany(ClassMember, { foreignKey: 'user_id', onDelete: 'CASCADE' });
