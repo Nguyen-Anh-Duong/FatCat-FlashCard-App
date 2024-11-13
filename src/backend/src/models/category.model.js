@@ -10,11 +10,15 @@ const Category = sequelize.define("Category", {
     },
     name: {
         type: DataTypes.STRING,
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_unicode_ci',
         allowNull: false,
     },
 }, {
     tableName: "Categories",
     timestamps: true,
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
 });
 
 module.exports = Category;
