@@ -9,17 +9,11 @@ module.exports = {
     timestamps: true,
     underscored: true,
   },
-  dialectOptions: {
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci',
-    supportBigNumbers: true,
-    bigNumberStrings: true
-  },
   logging: false,
   pool: {
     max: 5,
     min: 0,
     acquire: 30000,
     idle: 10000,
-  }
+  },
 };
