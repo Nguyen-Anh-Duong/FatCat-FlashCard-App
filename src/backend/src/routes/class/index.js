@@ -4,7 +4,7 @@ const express = require('express')
 const expressAsyncHandler = require('express-async-handler')
 const router = express.Router()
 const ClassController = require('../../controllers/class.controller')
-const ClassAccessMiddleware = require('../../middlewares/classAccess.middleware')
+const ClassAccessMiddleware = require('../../middlewares/classaccess.middleware')
 
 // GET
 router.get('/', expressAsyncHandler(ClassController.getAllClasses)) //OK

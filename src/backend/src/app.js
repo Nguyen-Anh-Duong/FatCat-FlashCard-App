@@ -1,11 +1,11 @@
 "use strict";
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 const { sequelize } = require("./database/init.database");
 const cors = require("cors");
-require("dotenv").config();
 const {
   User,
   Deck,
