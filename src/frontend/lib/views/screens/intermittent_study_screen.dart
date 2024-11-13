@@ -68,24 +68,32 @@ class IntermittentStudyScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   // Card Swiper
                   Expanded(
-                    child: CardSwiper(
-                      controller: viewModel.cardSwiperController,
-                      cardsCount: viewModel.cards.length,
-                      isLoop: false,
-                      numberOfCardsDisplayed: 2,
-                      scale: 1,
-                      backCardOffset: const Offset(0, 0),
-                      allowedSwipeDirection: const AllowedSwipeDirection.none(),
-                      duration: const Duration(milliseconds: 300),
-                      onSwipe: viewModel.onSwipe,
-                      cardBuilder: (context, index, _, __) {
-                        return FlipCard(
-                          key: viewModel.cardKeys[index],
-                          front:
-                              _buildCardSide(viewModel.cards[index].question),
-                          back: _buildCardSide(viewModel.cards[index].answer),
-                        );
-                      },
+                    child: Center(
+                      child: SizedBox(
+                        height: 630,
+                        width: 390,
+                        child: CardSwiper(
+                          controller: viewModel.cardSwiperController,
+                          cardsCount: viewModel.cards.length,
+                          isLoop: false,
+                          numberOfCardsDisplayed: 2,
+                          scale: 1,
+                          backCardOffset: const Offset(0, 0),
+                          allowedSwipeDirection:
+                              const AllowedSwipeDirection.none(),
+                          duration: const Duration(milliseconds: 200),
+                          onSwipe: viewModel.onSwipe,
+                          cardBuilder: (context, index, _, __) {
+                            return FlipCard(
+                              key: viewModel.cardKeys[index],
+                              front: _buildCardSide(
+                                  viewModel.cards[index].question),
+                              back:
+                                  _buildCardSide(viewModel.cards[index].answer),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
 
