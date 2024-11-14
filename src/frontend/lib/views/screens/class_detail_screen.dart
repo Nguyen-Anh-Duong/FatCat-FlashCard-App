@@ -1,3 +1,4 @@
+import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/models/class_model.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/viewmodels/class_detail_viewmodel.dart';
@@ -14,22 +15,69 @@ class ClassDetailScreen extends StatelessWidget {
       create: (_) => ClassDetailViewmodel(),
       child: Consumer<ClassDetailViewmodel>(
         builder: (context, viewModel, child) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("Deck Detail"),
-            ),
-            body: Center(
-              child: Column(
+          return DefaultTabController(
+            length: 2, // Number of tabs
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text("${mClass.name}"),
+                bottom: TabBar(
+                  labelStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.blackText,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: 16,
+                  ),
+                  indicatorColor: AppColors.green,
+                  labelColor: AppColors.green,
+                  tabs: [
+                    Tab(
+                      text: "Decks",
+                    ),
+                    Tab(text: "Members"),
+                  ],
+                ),
+              ),
+              body: TabBarView(
                 children: [
-                  Text('${mClass.id}'),
-                  Text('${mClass.name}'),
-                  Text('${mClass.description}'),
+                  DecksTab(mClass: mClass), // Tab 1: Decks
+                  MembersTab(), // Tab 2: Members
                 ],
               ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+class DecksTab extends StatelessWidget {
+  final ClassModel mClass;
+  const DecksTab({super.key, required this.mClass});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          Text('${mClass.id}'),
+          Text('${mClass.name}'),
+          Text('${mClass.description}'),
+        ],
+      ),
+    );
+  }
+}
+
+class MembersTab extends StatelessWidget {
+  const MembersTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Members content goes here"),
     );
   }
 }

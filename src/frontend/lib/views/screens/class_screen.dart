@@ -1,9 +1,11 @@
 import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/utils/app_text_style.dart';
 import 'package:FatCat/viewmodels/class_viewmodel.dart';
+import 'package:FatCat/views/screens/class_detail_screen.dart';
 import 'package:FatCat/views/screens/not_connection_screen.dart';
 import 'package:FatCat/views/widgets/class_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
 class ClassScreen extends StatelessWidget {
@@ -121,7 +123,18 @@ class ClassScreen extends StatelessWidget {
                     itemCount: viewModel.ownClasses.length,
                     itemBuilder: (context, index) {
                       final classItem = viewModel.ownClasses[index];
-                      return ClassCardWidget(classItem: classItem);
+                      return ClassCardWidget(
+                        classItem: classItem,
+                        onTap: () {
+                          PersistentNavBarNavigator.pushNewScreen(
+                            context,
+                            screen: ClassDetailScreen(mClass: classItem),
+                            withNavBar: false,
+                            pageTransitionAnimation:
+                                PageTransitionAnimation.cupertino,
+                          );
+                        },
+                      );
                     },
                   ),
                 ),
