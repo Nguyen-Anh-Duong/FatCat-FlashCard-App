@@ -7,13 +7,14 @@ const ApiError = require("../utils/ApiError");
 
 class DeckService {
   static async getAllDecks() {
-    const decks = await Deck.findAll({ include: [{ model: Category, attributes: ["name"] }] });
+    const decks = await Deck.findAll({ include: [{ model: Category, attributes: ["name"] }, {model: User, attributes: ["name"]}] });
 
     const data = decks.map(deck => ({
       id: deck.id,
       name: deck.name,
       description: deck.description,
       user_id: deck.user_id,
+      user_name: deck.User?.name || "",
       issuer_id: deck.issuer_id,
       category_id: deck.category_id,
       deck_cards_count: deck.deck_cards_count,
