@@ -85,10 +85,10 @@ class ClassService {
   Future<void> joinClass(String codeInvite) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/classes/$codeInvite'),
+        Uri.parse('$baseUrl/class/$codeInvite'),
         headers: _headers,
       );
-
+      print(response.body);
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw Exception('Failed to join class: ${response.statusCode}');
       }
@@ -130,6 +130,12 @@ class ClassService {
     } catch (e) {
       throw Exception('Failed to fetch class members: $e');
     }
+  }
+
+  // Rời lớp
+  Future<void> leaveClass(String classId) async {
+    await http.delete(Uri.parse('$baseUrl/class/leave/$classId'),
+        headers: _headers);
   }
 
   // Lấy decks của lớp

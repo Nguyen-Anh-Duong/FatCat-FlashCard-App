@@ -91,13 +91,15 @@ class CardsScreen extends StatelessWidget {
                         pathName: 'mode_red.png',
                         text: "Tự học",
                         onTap: () {
-                          PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: SelfStudyScreen(cards: cardData),
-                            withNavBar: false,
-                            pageTransitionAnimation:
-                                PageTransitionAnimation.cupertino,
-                          );
+                          if (!cardData.isEmpty) {
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: SelfStudyScreen(cards: cardData),
+                              withNavBar: false,
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          }
                         }),
                     SizedBox(
                       height: 20,
@@ -106,13 +108,15 @@ class CardsScreen extends StatelessWidget {
                         pathName: 'mode_blue.png',
                         text: "Học theo tiến trình",
                         onTap: () {
-                          PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: IntermittentStudyScreen(cards: cardData),
-                            withNavBar: false,
-                            pageTransitionAnimation:
-                                PageTransitionAnimation.cupertino,
-                          );
+                          if (!cardData.isEmpty) {
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: IntermittentStudyScreen(cards: cardData),
+                              withNavBar: false,
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          }
                         }),
                     SizedBox(
                       height: 20,
@@ -120,7 +124,17 @@ class CardsScreen extends StatelessWidget {
                     actionButtonWidget(
                         pathName: 'mode_green.png',
                         text: "Học chọn nhiều đáp án",
-                        onTap: () {}),
+                        onTap: () {
+                          if (!cardData.isEmpty) {
+                            // PersistentNavBarNavigator.pushNewScreen(
+                            //   context,
+                            //   screen: MultipleChoiceStudyScreen(cards: cardData),
+                            //   withNavBar: false,
+                            //   pageTransitionAnimation:
+                            //       PageTransitionAnimation.cupertino,
+                            // );
+                          }
+                        }),
                     SizedBox(
                       height: 20,
                     ),

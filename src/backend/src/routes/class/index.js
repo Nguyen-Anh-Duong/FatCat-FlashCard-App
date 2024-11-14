@@ -18,6 +18,8 @@ router.post('/:code_invite', expressAsyncHandler(ClassController.joinClass)) //O
 // DELETE
 router.delete('/:class_id', expressAsyncHandler(ClassController.deleteClass)) //OK  
 router.delete('/:class_id/members/:user_id', expressAsyncHandler(ClassController.deleteMember)) //OK
+router.delete('/leave/:class_id', expressAsyncHandler(ClassController.leaveClass)) //OK
+
 
 // PATCH
 router.patch('/:class_id', expressAsyncHandler(ClassController.updateClass)) //OK

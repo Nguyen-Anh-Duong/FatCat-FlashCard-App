@@ -4,6 +4,7 @@ import 'package:FatCat/viewmodels/class_viewmodel.dart';
 import 'package:FatCat/views/screens/class_detail_screen.dart';
 import 'package:FatCat/views/screens/not_connection_screen.dart';
 import 'package:FatCat/views/widgets/class_card_widget.dart';
+import 'package:FatCat/views/widgets/class_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
@@ -39,12 +40,17 @@ class ClassScreen extends StatelessWidget {
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           value: 'create',
-                          onTap: () {},
+                          onTap: () {
+                            ClassDialog.showCreateClassDialog(
+                                context, viewModel);
+                          },
                           child: Text('Tạo nhóm'),
                         ),
                         PopupMenuItem(
                           value: 'join',
-                          onTap: () {},
+                          onTap: () {
+                            ClassDialog.showJoinClassDialog(context, viewModel);
+                          },
                           child: Text('Tham gia nhóm'),
                         ),
                       ],

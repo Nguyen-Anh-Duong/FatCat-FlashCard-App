@@ -75,9 +75,8 @@ class ClassViewModel extends ChangeNotifier {
     try {
       _isLoading = true;
       notifyListeners();
-
       await _classService.joinClass(codeInvite);
-      await fetchOwnClasses(); // Refresh the list after joining
+      await fetchOwnClasses();
     } catch (e) {
       print('Error joining class: $e');
       rethrow;

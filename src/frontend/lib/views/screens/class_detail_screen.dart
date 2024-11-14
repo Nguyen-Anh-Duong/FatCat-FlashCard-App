@@ -12,7 +12,7 @@ class ClassDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ClassDetailViewmodel(),
+      create: (_) => ClassDetailViewmodel(mClass: mClass),
       child: Consumer<ClassDetailViewmodel>(
         builder: (context, viewModel, child) {
           return DefaultTabController(
@@ -20,6 +20,37 @@ class ClassDetailScreen extends StatelessWidget {
             child: Scaffold(
               appBar: AppBar(
                 title: Text("${mClass.name}"),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: PopupMenuButton(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'leave',
+                          onTap: () {
+                            viewModel.leaveClass();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Rời nhóm',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'share',
+                          onTap: () {},
+                          child: Text(
+                            'Chia sẻ',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 bottom: TabBar(
                   labelStyle: TextStyle(
                     fontSize: 16,

@@ -66,7 +66,19 @@ const seedClassData = async () => {
         }, { transaction: t });
         users.push(user);
       }
-
+      // Tao class host User
+      const userClass = await ClassModel.create({
+        name: 'User Class',
+        description: 'A class for User tao.',
+        host_user_id: users[0].id,
+        code_invite: 'USER1234',
+        member_count: 1
+      }, { transaction: t })
+      await ClassMember.create({
+        user_id: users[0].id,
+        class_id: userClass.id,
+        role: "manager"
+      }, { transaction: t })
       // Add users to math class
       for (const user of users) {
         await ClassMember.create({
