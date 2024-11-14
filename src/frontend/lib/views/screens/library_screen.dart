@@ -67,31 +67,53 @@ class LibraryScreen extends StatelessWidget {
       return const Center(
           child: CircularProgressIndicator(color: Colors.purple));
     }
-    if (viewModel.error != null) {
-      return Center(child: Text(viewModel.error!));
-    }
 
     return RefreshIndicator(
       color: Colors.purple,
       onRefresh: viewModel.fetchDecks,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(top: 16),
-        itemCount: filteredDecks.length,
-        itemBuilder: (context, index) {
-          final deck = filteredDecks[index];
-          return DeckLibWidget(
-            deck: deck,
-            onTap: () async {
-              PersistentNavBarNavigator.pushNewScreen(
-                context,
-                screen: CardsScreen(deck: deck),
-                withNavBar: false,
-                pageTransitionAnimation: PageTransitionAnimation.cupertino,
-              );
-            },
-          );
-        },
-      ),
+      child: viewModel.error != null
+          ? ListView(
+              children: [
+                Container(
+                  height: 450,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Center(
+                        child: Text(
+                          'Không có bộ bài nào\nKéo xuống để tải lại',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.only(top: 16),
+              itemCount: filteredDecks.length,
+              itemBuilder: (context, index) {
+                final deck = filteredDecks[index];
+                return DeckLibWidget(
+                  deck: deck,
+                  onTap: () async {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: CardsScreen(deck: deck),
+                      withNavBar: false,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }

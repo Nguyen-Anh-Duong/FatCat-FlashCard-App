@@ -93,9 +93,25 @@ class ClassScreen extends StatelessWidget {
           onRefresh: () => viewModel.initData(),
           child: viewModel.ownClasses.isEmpty
               ? ListView(
-                  children: const [
-                    Center(
-                      child: Text('Bạn chưa tham gia lớp học nào'),
+                  children: [
+                    Container(
+                      height: 450,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Center(
+                            child: Text(
+                              'Không có lớp học nào\nKéo xuống để tải lại',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 )

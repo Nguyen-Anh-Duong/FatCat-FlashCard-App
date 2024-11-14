@@ -61,7 +61,7 @@ class ClassViewModel extends ChangeNotifier {
         name: name,
         description: description,
       );
-      await fetchOwnClasses(); // Refresh the list after creating
+      await fetchOwnClasses();
     } catch (e) {
       print('Error creating class: $e');
       rethrow;

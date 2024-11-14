@@ -71,6 +71,14 @@ class DeckLibWidget extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              const SizedBox(height: 8),
+              Text(
+                'Tác giả: ${deck.user_name}',
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 13,
+                ),
+              ),
             ],
           ),
         ),

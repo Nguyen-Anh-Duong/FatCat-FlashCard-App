@@ -9,6 +9,7 @@ class DeckModel {
   bool is_published;
   String deck_cards_count;
   String? user_id;
+  String? user_name;
   String? category_id;
   String? category_name;
   String? question_language;
@@ -23,6 +24,7 @@ class DeckModel {
     required this.is_published,
     required this.deck_cards_count,
     this.user_id,
+    this.user_name,
     this.category_id,
     this.category_name,
     this.question_language,
@@ -39,6 +41,7 @@ class DeckModel {
       'is_published': is_published.toString(),
       'deck_cards_count': deck_cards_count,
       'user_id': user_id,
+      'user_name': user_name,
       'category_id': category_id,
       'category_name': category_name ?? '',
       'question_language': question_language ?? 'en',
@@ -57,6 +60,7 @@ class DeckModel {
       is_published: json['is_published'] == 'false',
       deck_cards_count: json['deck_cards_count'].toString(),
       user_id: json['user_id']?.toString() ?? '',
+      user_name: json['user_name'] ?? '',
       category_id: json['category_id']?.toString() ?? '',
       category_name: json['category_name'] ?? '',
       question_language: json['question_language'] ?? 'en',

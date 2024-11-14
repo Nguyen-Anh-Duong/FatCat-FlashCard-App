@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:FatCat/constants/seed_data.dart';
 import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/models/progress_model.dart';

@@ -1,3 +1,4 @@
+import 'package:FatCat/constants/seed_data.dart';
 import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/card_provider.dart';
 import 'package:FatCat/models/deck_provider.dart';

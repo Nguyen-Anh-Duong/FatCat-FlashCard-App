@@ -92,7 +92,7 @@ class ScreenControl extends StatelessWidget {
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.group),
-        title: ("Nhóm"),
+        title: ("Lớp học"),
         activeColorPrimary: Colors.green,
         inactiveColorPrimary: Colors.grey,
       ),
