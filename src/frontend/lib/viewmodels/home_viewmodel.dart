@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:FatCat/models/deck_model.dart';
+import 'package:FatCat/services/DatabaseHelper.dart';
 import 'package:FatCat/services/connectivity_service.dart';
 import 'package:FatCat/services/deck_service.dart';
 import 'package:FatCat/views/screens/category_screen.dart';
@@ -13,8 +14,20 @@ import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 class HomeViewModel extends ChangeNotifier {
   final DeckService deckService = DeckService();
   List<DeckModel> _decks = [];
-
+  String _error = '';
   List<DeckModel> get decks => _decks;
+  String get error => _error;
+
+  Future<void> fetchDecks() async {
+    try {
+      List<DeckModel> decks = await getAllDeck('createdAt DESC');
+      _decks = decks;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
 
   Future<void> openCategoryScreen(BuildContext context, String category) async {
     try {

@@ -41,23 +41,30 @@ class DecksControl extends StatelessWidget {
               _buildDownloadedDecks(),
             ],
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              PersistentNavBarNavigator.pushNewScreen(
-                context,
-                screen: CreateOrUpdateDeckScreen(),
-                withNavBar: false,
-                pageTransitionAnimation: PageTransitionAnimation.cupertino,
-              );
-            },
-            backgroundColor: Colors.brown,
-            icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text(
-              'Tạo bộ thẻ',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600),
+          floatingActionButton: Consumer<DecksControlViewModel>(
+            builder: (context, viewModel, child) =>
+                FloatingActionButton.extended(
+              onPressed: () {
+                PersistentNavBarNavigator.pushNewScreen(
+                  context,
+                  screen: CreateOrUpdateDeckScreen(
+                    onDelete: () async {
+                      await viewModel.fetchDecks();
+                    },
+                  ),
+                  withNavBar: false,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              },
+              backgroundColor: Colors.brown,
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text(
+                'Tạo bộ thẻ',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ),
@@ -72,22 +79,35 @@ class DecksControl extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (viewModel.error != null) {
           return RefreshIndicator(
-            onRefresh: () async {
-              await viewModel.fetchDecks();
-            },
-            child: Center(
-              child: Text('Error: ${viewModel.error}'),
-            ),
-          );
+              onRefresh: () async {
+                await viewModel.fetchDecks();
+              },
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: Center(
+                      child: Text(
+                          'Không có bộ thẻ nào.\nError: ${viewModel.error}'),
+                    ),
+                  ),
+                ],
+              ));
         } else if (viewModel.decks.isEmpty) {
           return RefreshIndicator(
-            onRefresh: () async {
-              await viewModel.fetchDecks();
-            },
-            child: const Center(
-              child: Text('Không có bộ thẻ nào.'),
-            ),
-          );
+              onRefresh: () async {
+                await viewModel.fetchDecks();
+              },
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const Center(
+                      child: Text('Không có bộ thẻ nào.'),
+                    ),
+                  ),
+                ],
+              ));
         } else {
           return RefreshIndicator(
             onRefresh: () async {
@@ -134,16 +154,31 @@ class DecksControl extends StatelessWidget {
               onRefresh: () async {
                 await viewModel.fetchDecksDownloaded();
               },
-              child: Center(
-                child: Text('Error: ${viewModel.error}'),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: Center(
+                      child: Text(
+                          'Không có bộ thẻ nào.\nError: ${viewModel.error}'),
+                    ),
+                  ),
+                ],
               ));
         } else if (viewModel.decks.isEmpty) {
           return RefreshIndicator(
               onRefresh: () async {
                 await viewModel.fetchDecksDownloaded();
               },
-              child: const Center(
-                child: Text('Không có bộ thẻ nào.'),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const Center(
+                      child: Text('Không có bộ thẻ nào.'),
+                    ),
+                  ),
+                ],
               ));
         } else {
           return RefreshIndicator(

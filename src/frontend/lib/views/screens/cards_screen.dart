@@ -57,21 +57,29 @@ class CardsScreen extends StatelessWidget {
               centerTitle: true,
               elevation: 0,
               actions: [
-                if (isLocal == false) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: IconButton(
-                      icon: const Icon(Icons.more_vert,
-                          size: 28, color: Colors.black),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(24)),
-                          ),
-                          builder: (context) => ActionBottomSheet(
-                            actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.more_vert,
+                        size: 28, color: Colors.black),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(24)),
+                        ),
+                        builder: (context) => ActionBottomSheet(
+                          actions: [
+                            if (isLocal == false) ...[
+                              ActionItem(
+                                icon: CupertinoIcons.share,
+                                title: 'Sao chép bộ thẻ',
+                                isDestructive: false,
+                                onTap: () {},
+                              ),
+                            ],
+                            if (isLocal == true) ...[
                               ActionItem(
                                 icon: CupertinoIcons.square_pencil,
                                 title: 'Chỉnh sửa',
@@ -131,94 +139,13 @@ class CardsScreen extends StatelessWidget {
                                   }
                                 },
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                            ]
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                ],
-                if (isLocal == true) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: IconButton(
-                      icon: const Icon(Icons.more_vert,
-                          size: 28, color: Colors.black),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(24)),
-                          ),
-                          builder: (context) => ActionBottomSheet(
-                            actions: [
-                              ActionItem(
-                                icon: CupertinoIcons.square_pencil,
-                                title: 'Chỉnh sửa',
-                                onTap: () {
-                                  PersistentNavBarNavigator.pushNewScreen(
-                                    context,
-                                    screen: CreateOrUpdateDeckScreen(
-                                      deckId: deck.id,
-                                      initialDeck: deck,
-                                      onDelete: () async {
-                                        await viewModel.loadCards();
-                                      },
-                                      initialCards: cardData,
-                                    ),
-                                    withNavBar: false,
-                                    pageTransitionAnimation:
-                                        PageTransitionAnimation.cupertino,
-                                  );
-                                },
-                              ),
-                              ActionItem(
-                                icon: Icons.share,
-                                title: 'Chia sẻ với mọi người',
-                                isDestructive: false,
-                                onTap: () async {
-                                  Fluttertoast.showToast(
-                                    msg: 'Chia sẻ thành công',
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.white,
-                                    textColor: Colors.black,
-                                    fontSize: 16.0,
-                                  );
-                                },
-                              ),
-                              ActionItem(
-                                icon: CupertinoIcons.delete,
-                                title: 'Xóa',
-                                isDestructive: true,
-                                onTap: () async {
-                                  if (await viewModel
-                                      .deleteAllCardsForDeck(deck.id!)) {
-                                    if (onDelete != null) {
-                                      onDelete!();
-                                    }
-                                    Navigator.pop(context);
-                                    Fluttertoast.showToast(
-                                      msg: "Xóa thành công",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.white,
-                                      textColor: Colors.black,
-                                      fontSize: 16.0,
-                                    );
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ]
+                ),
               ],
             ),
             body: SingleChildScrollView(

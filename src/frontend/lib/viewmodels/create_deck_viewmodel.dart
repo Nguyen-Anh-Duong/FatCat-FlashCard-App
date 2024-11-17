@@ -3,6 +3,7 @@ import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:flutter/material.dart';
 import 'package:FatCat/services/DatabaseHelper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateOrUpdateDeckViewModel extends ChangeNotifier {
   final String? deckId;
@@ -89,6 +90,14 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
 
   Future<void> saveDeck() async {
     if (titleController.text.isEmpty) {
+      Fluttertoast.showToast(
+        msg: 'Tiêu đề không được để trống',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
       throw Exception('Tiêu đề không được để trống');
     }
     final deckData = {
@@ -113,6 +122,14 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
       if (!success) {
         throw Exception('Không thể lưu deck và cards');
       }
+      Fluttertoast.showToast(
+        msg: 'Tạo bộ thẻ thành công',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
     } else {
       try {
         print('====Update deck====');
@@ -139,6 +156,14 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
         }
 
         notifyListeners();
+        Fluttertoast.showToast(
+          msg: 'Cập nhật bộ thẻ thành công',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
       } catch (e) {
         throw Exception('Không thể cập nhật deck và cards: $e');
       }

@@ -11,49 +11,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 void vah_test() async {
-  // User testUser = User(c_id: 1, c_name: 'Vu Anh Huy');
-  // // print(join("User : ", testUser.toString()));
-  // int i = await insertUser(testUser);
-
   Database db = await AppDatabase.getInstance();
   print("DB VERSION: " + (await db.getVersion()).toString());
-
-  // db.execute('DELETE FROM DECK');
-  // db.execute('DELETE FROM CARD');
-
-  DeckModel dummyDeck = DeckModel(
-      id: '1',
-      name: 'number',
-      description: '',
-      is_published: false,
-      deck_cards_count: '0',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now());
-  // await insertDeck(dummyDeck);
-
-  CardModel dummyCard1 = CardModel(
-      id: '100',
-      userId: '1',
-      deckId: '1',
-      question: '1',
-      imageId: '',
-      answer: '1',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now());
-  CardModel dummyCard2 = CardModel(
-      id: '200',
-      userId: '1',
-      deckId: '1',
-      question: '1',
-      imageId: '',
-      answer: '1',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now());
-  // await insertCard(dummyCard1);
-  // await insertCard(dummyCard2);
-
-  // print(await getDeckWithId('1'));
-  // print(await getCard(dummyDeck));
 }
 
 class AppDatabase {
@@ -76,8 +35,71 @@ class AppDatabase {
       onOpen: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
-      onUpgrade: (db, oldVersion, newVersion) {},
-      version: 3,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < newVersion) {
+          await db.transaction((txn) async {
+            await txn.execute('PRAGMA foreign_keys = OFF');
+
+            try {
+              // Drop
+              await txn.execute('DROP TABLE IF EXISTS PROGRESS');
+              await txn.execute('DROP TABLE IF EXISTS CARD');
+              await txn.execute('DROP TABLE IF EXISTS DECK');
+              await txn.execute('DROP TABLE IF EXISTS USER');
+
+              print('Tables dropped successfully');
+
+              // Create
+              await txn.execute(
+                  'CREATE TABLE USER(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
+
+              await txn.execute('''CREATE TABLE DECK(
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                name TEXT, 
+                description TEXT, 
+                is_published TEXT, 
+                deck_cards_count INTEGER, 
+                question_language TEXT, 
+                answer_language TEXT, 
+                category_name TEXT,
+                is_cloned TEXT, 
+                createdAt TEXT, 
+                updatedAt TEXT
+              )''');
+
+              await txn.execute('''CREATE TABLE CARD(
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                userId INTEGER, 
+                deckId INTEGER, 
+                question TEXT, 
+                imageId TEXT, 
+                answer TEXT, 
+                createdAt TEXT, 
+                updatedAt TEXT, 
+                FOREIGN KEY (deckId) REFERENCES DECK(id) ON DELETE CASCADE
+              )''');
+
+              await txn.execute('''CREATE TABLE PROGRESS(
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                userId INTEGER, 
+                cardId INTEGER, 
+                lastReviewedAt TEXT, 
+                reviewCount TEXT, 
+                nextReviewAt TEXT, 
+                FOREIGN KEY (cardId) REFERENCES CARD(id) ON DELETE CASCADE
+              )''');
+
+              await txn.execute('PRAGMA foreign_keys = ON');
+
+              print('Tables recreated successfully');
+            } catch (e) {
+              print('Error during upgrade: $e');
+              rethrow; // Rethrow to trigger rollback
+            }
+          });
+        }
+      },
+      version: 4,
     );
     return database!;
   }
