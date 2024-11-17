@@ -11,7 +11,6 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 void vah_test() async {
-  WidgetsFlutterBinding.ensureInitialized();
   // User testUser = User(c_id: 1, c_name: 'Vu Anh Huy');
   // // print(join("User : ", testUser.toString()));
   // int i = await insertUser(testUser);
@@ -64,16 +63,21 @@ class AppDatabase {
     database ??= await openDatabase(
       join(await getDatabasesPath(), 'app.db'),
       onCreate: (db, version) {
-        db.execute('CREATE TABLE USER(id TEXT PRIMARY KEY, name TEXT)');
+        db.execute('PRAGMA foreign_keys = ON');
         db.execute(
-            'CREATE TABLE DECK(id TEXT PRIMARY KEY, name TEXT, description TEXT, is_published TEXT, deck_cards_count INTEGER, createdAt TEXT, updatedAt TEXT)');
+            'CREATE TABLE USER(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
         db.execute(
-            'CREATE TABLE CARD(id TEXT PRIMARY KEY, userId TEXT, deckId TEXT, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT)');
+            'CREATE TABLE DECK(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, is_published TEXT, deck_cards_count INTEGER, question_language TEXT, answer_language TEXT, category_name TEXT,is_cloned TEXT, createdAt TEXT, updatedAt TEXT)');
         db.execute(
-            'CREATE TABLE PROGRESS(id TEXT PRIMARY KEY, userId TEXT, cardId TEXT, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT)');
+            'CREATE TABLE CARD(id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, deckId INTEGER, question TEXT, imageId TEXT, answer TEXT, createdAt TEXT, updatedAt TEXT, FOREIGN KEY (deckId) REFERENCES DECK(id) ON DELETE CASCADE)');
+        db.execute(
+            'CREATE TABLE PROGRESS(id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, cardId INTEGER, lastReviewedAt TEXT, reviewCount TEXT, nextReviewAt TEXT, FOREIGN KEY (cardId) REFERENCES CARD(id) ON DELETE CASCADE)');
+      },
+      onOpen: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
       },
       onUpgrade: (db, oldVersion, newVersion) {},
-      version: 1,
+      version: 3,
     );
     return database!;
   }
@@ -122,23 +126,25 @@ Future<List<UserModel>> getAllUser() async {
 //Deck data
 Future<int> insertDeck(DeckModel deck) async {
   try {
+    print("INSERT DECK: ");
     Database db = await AppDatabase.getInstance();
     int lastInsertedRow = await db.insert(
       'DECK',
       deck.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    print('okk');
     return lastInsertedRow;
   } catch (ex) {
     return -1;
   }
 }
 
-Future<int> deleteDeck(DeckModel deck) async {
+Future<int> deleteDeck(String deckId) async {
   try {
     Database db = await AppDatabase.getInstance();
     int numberOfRowEffected =
-        await db.delete('DECK', where: "id = ?", whereArgs: [deck.id]);
+        await db.delete('DECK', where: "id = ?", whereArgs: [deckId]);
     return 1;
   } catch (ex) {
     return -1;
@@ -176,7 +182,7 @@ Future<List<DeckModel>> getAllDeck(String orderBy) async {
       await db.query('DECK', orderBy: orderBy);
   return [
     for (final {
-          'id': id as String,
+          'id': id as int,
           'name': name as String,
           'description': description as String,
           'is_published': is_published as String,
@@ -185,7 +191,32 @@ Future<List<DeckModel>> getAllDeck(String orderBy) async {
           'updatedAt': updatedAt as String,
         } in deckMaps)
       DeckModel(
-          id: id,
+          id: id.toString(),
+          name: name,
+          description: description,
+          is_published: is_published.toBoolean(),
+          deck_cards_count: deck_cards_count.toString(),
+          createdAt: DateTime.parse(createdAt),
+          updatedAt: DateTime.parse(updatedAt))
+  ];
+}
+
+Future<List<DeckModel>> getAllDeckDownloaded(String orderBy) async {
+  Database db = await AppDatabase.getInstance();
+  final List<Map<String, Object?>> deckMaps = await db.query('DECK',
+      where: 'is_cloned = ?', whereArgs: ['true'], orderBy: orderBy);
+  return [
+    for (final {
+          'id': id as int,
+          'name': name as String,
+          'description': description as String,
+          'is_published': is_published as String,
+          'deck_cards_count': deck_cards_count as int,
+          'createdAt': createdAt as String,
+          'updatedAt': updatedAt as String,
+        } in deckMaps)
+      DeckModel(
+          id: id.toString(),
           name: name,
           description: description,
           is_published: is_published.toBoolean(),
@@ -196,13 +227,12 @@ Future<List<DeckModel>> getAllDeck(String orderBy) async {
 }
 
 ///Update the deck that has the same DeckModel's id
-Future<void> updateDeck(DeckModel deck) async {
+Future<void> updateDeck(String deckId, Map<String, String> deckData) async {
   try {
     Database db = await AppDatabase.getInstance();
-    deck.updatedAt = DateTime.now();
+    deckData['updatedAt'] = DateTime.now().toIso8601String();
 
-    await db
-        .update('DECK', deck.toMap(), where: 'id = ?', whereArgs: [deck.id]);
+    await db.update('DECK', deckData, where: 'id = ?', whereArgs: [deckId]);
   } catch (ex) {
     print(ex);
   }
@@ -222,7 +252,7 @@ Future<int> insertCard(CardModel card) async {
     DeckModel deck = decks[0];
 
     deck.deck_cards_count = (int.parse(deck.deck_cards_count) + 1).toString();
-    await updateDeck(deck);
+    // await updateDeck(deck);
 
     return lastInsertedRow;
   } catch (ex) {
@@ -230,22 +260,105 @@ Future<int> insertCard(CardModel card) async {
   }
 }
 
-Future<int> deleteCard(CardModel card) async {
+Future<void> increaseCountByOne(String deckId) async {
+  List<DeckModel> decks = await getDeckWithId(deckId);
+  DeckModel deck = decks[0];
+
+  deck.deck_cards_count = (int.parse(deck.deck_cards_count) + 1).toString();
+  await updateDeckByDeckModel(deck);
+}
+
+Future<void> decreaseCountByOne(String deckId) async {
+  List<DeckModel> decks = await getDeckWithId(deckId);
+  DeckModel deck = decks[0];
+
+  deck.deck_cards_count = (int.parse(deck.deck_cards_count) - 1).toString();
+  await updateDeckByDeckModel(deck);
+}
+
+Future<void> updateDeckByDeckModel(DeckModel deck) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+
+    // Update the deck with data from DeckModel
+    await db.update(
+      'DECK',
+      deck.toMap(),
+      where: 'id = ?',
+      whereArgs: [deck.id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } catch (ex) {
+    print('Error updating deck by model: $ex');
+    throw ex;
+  }
+}
+
+Future<int> deleteCard(String cardId) async {
   try {
     Database db = await AppDatabase.getInstance();
     int numberOfRowEffected =
-        await db.delete('CARD', where: "id = ?", whereArgs: [card.id]);
-
-    List<DeckModel> decks = await getDeckWithId(card.deckId);
-    DeckModel deck = decks[0];
-
-    deck.deck_cards_count = (int.parse(deck.deck_cards_count) - 1).toString();
-    await updateDeck(deck);
+        await db.delete('CARD', where: "id = ?", whereArgs: [cardId]);
 
     return 1;
   } catch (ex) {
     print(ex);
     return -1;
+  }
+}
+
+Future<bool> createDeckWithCards({
+  required Map<String, String> deckData,
+  required List<Map<String, String>> cards,
+}) async {
+  try {
+    Database db = await AppDatabase.getInstance();
+
+    return await db.transaction((txn) async {
+      // 1Tạo deck mới
+      final deck = {
+        'name': deckData['name'],
+        'description': deckData['description'],
+        'deck_cards_count': cards.length.toString(),
+        'is_published': 'true',
+        'question_language': deckData['question_language'] ?? 'en',
+        'answer_language': deckData['answer_language'] ?? 'en',
+        'category_name': deckData['category_name'] ?? 'unknown',
+        'createdAt': DateTime.now().toIso8601String(),
+        'updatedAt': DateTime.now().toIso8601String(),
+      };
+
+      print('===');
+      final deckId = await txn.insert(
+        'DECK',
+        deck,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      print("OKK deckId:: $deckId");
+
+      for (var cardData in cards) {
+        final card = {
+          'userId': '1',
+          'deckId': deckId,
+          'question': cardData['question'] ?? '',
+          'answer': cardData['answer'] ?? '',
+          'imageId': '',
+          'createdAt': DateTime.now().toIso8601String(),
+          'updatedAt': DateTime.now().toIso8601String(),
+        };
+
+        await txn.insert(
+          'CARD',
+          card,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+
+      return true;
+    });
+  } catch (e) {
+    print('Error creating deck with cards: $e');
+    return false;
   }
 }
 
@@ -261,31 +374,23 @@ Future<void> updateCard(CardModel card) async {
 }
 
 ///Get card with DeckModel
-Future<List<CardModel>> getCard(DeckModel deck) async {
+Future<List<CardModel>> getCard(String deckId) async {
   Database db = await AppDatabase.getInstance();
-  final List<Map<String, Object?>> cardMaps =
-      await (db.query('CARD', where: 'deckId = ?', whereArgs: [deck.id]));
-  return [
-    for (final {
-          'id': id as String,
-          'userId': userId as String,
-          'deckId': deckId as String,
-          'question': question as String,
-          'imageId': imageId as String,
-          'answer': answer as String,
-          'createdAt': createdAt as String,
-          'updatedAt': updatedAt as String,
-        } in cardMaps)
-      CardModel(
-          id: id,
-          userId: userId,
-          deckId: deckId,
-          question: question,
-          imageId: imageId,
-          answer: answer,
-          createdAt: DateTime.parse(createdAt),
-          updatedAt: DateTime.parse(updatedAt))
-  ];
+  final List<Map<String, dynamic>> cardMaps =
+      await db.query('CARD', where: 'deckId = ?', whereArgs: [deckId]);
+
+  return cardMaps
+      .map((map) => CardModel(
+            id: map['id'].toString(),
+            userId: map['userId'].toString(),
+            deckId: map['deckId'].toString(),
+            question: map['question'].toString(),
+            imageId: map['imageId']?.toString() ?? '',
+            answer: map['answer'].toString(),
+            createdAt: DateTime.parse(map['createdAt'].toString()),
+            updatedAt: DateTime.parse(map['updatedAt'].toString()),
+          ))
+      .toList();
 }
 
 //Progress Data

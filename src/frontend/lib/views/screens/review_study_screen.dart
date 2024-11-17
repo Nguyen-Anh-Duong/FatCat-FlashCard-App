@@ -121,21 +121,13 @@ class ReviewStudyScreen extends StatelessWidget {
                         'Ôn luyện lại trong chế độ học',
                         double.infinity,
                         () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const ScreenControl()),
-                            (Route<dynamic> route) => false,
-                          );
+                          Navigator.pop(context);
                         },
                       ),
                       const SizedBox(height: 8),
                       primaryOutlineButton(
                           'Đặt lại thẻ ghi nhớ', double.infinity, () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => const ScreenControl()),
-                          (Route<dynamic> route) => false,
-                        );
+                        Navigator.pop(context);
                       })
                     ],
                   ),

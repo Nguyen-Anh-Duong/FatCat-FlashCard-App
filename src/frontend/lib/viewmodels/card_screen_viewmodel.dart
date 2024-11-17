@@ -1,3 +1,4 @@
+import 'package:FatCat/services/DatabaseHelper.dart';
 import 'package:FatCat/services/card_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,12 +8,23 @@ import '../models/deck_model.dart';
 
 class CardScreenViewModel extends ChangeNotifier {
   final DeckModel deck;
+  final bool? isLocal;
   List<CardModel> _cards = [];
   bool _isLoading = false;
   String? _error;
 
-  CardScreenViewModel(this.deck) {
-    fetchCards();
+  CardScreenViewModel(this.deck, {this.isLocal}) {
+    loadCards();
+  }
+  loadCards() async {
+    print('====loadCards====');
+    if (isLocal != null && isLocal == true) {
+      _cards = await getCard(deck.id!);
+      notifyListeners();
+    } else {
+      _cards = await CardService.instance.getCardsByDeckId(deck.id!);
+      notifyListeners();
+    }
   }
 
   List<CardModel> get cards => _cards;
@@ -25,7 +37,7 @@ class CardScreenViewModel extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      final response = await CardService.instance.getCardsByDeckId(deck.id);
+      final response = await CardService.instance.getCardsByDeckId(deck.id!);
       _cards = response;
     } catch (e) {
       _error = e.toString();
@@ -33,5 +45,14 @@ class CardScreenViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<bool> deleteAllCardsForDeck(String deckId) async {
+    int rs = await deleteDeck(deckId);
+    if (rs == 1) {
+      loadCards();
+      return true;
+    }
+    return false;
   }
 }

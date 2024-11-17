@@ -134,7 +134,14 @@ class ClassScreen extends StatelessWidget {
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(
                             context,
-                            screen: ClassDetailScreen(mClass: classItem),
+                            screen: ClassDetailScreen(
+                              mClass: classItem,
+                              role: classItem.role,
+                              inviteCode: classItem.codeInvite,
+                              onDelete: () async {
+                                await viewModel.fetchOwnClasses();
+                              },
+                            ),
                             withNavBar: false,
                             pageTransitionAnimation:
                                 PageTransitionAnimation.cupertino,
@@ -175,7 +182,24 @@ class ClassScreen extends StatelessWidget {
                     itemCount: viewModel.allClasses.length,
                     itemBuilder: (context, index) {
                       final classItem = viewModel.allClasses[index];
-                      return ClassCardWidget(classItem: classItem);
+                      return ClassCardWidget(
+                        classItem: classItem,
+                        onTap: () {
+                          PersistentNavBarNavigator.pushNewScreen(
+                            context,
+                            screen: ClassDetailScreen(
+                              mClass: classItem,
+                              inviteCode: classItem.codeInvite,
+                              onDelete: () async {
+                                await viewModel.fetchAllClasses();
+                              },
+                            ),
+                            withNavBar: false,
+                            pageTransitionAnimation:
+                                PageTransitionAnimation.cupertino,
+                          );
+                        },
+                      );
                     },
                   ),
                 ),

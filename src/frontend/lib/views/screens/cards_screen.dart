@@ -1,33 +1,54 @@
 import 'package:FatCat/constants/colors.dart';
+import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/card_provider.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/viewmodels/card_screen_viewmodel.dart';
+import 'package:FatCat/views/screens/create_or_update_deck_screen.dart';
 import 'package:FatCat/views/screens/intermittent_study_screen.dart';
+import 'package:FatCat/views/screens/multiplechoice_study_screen.dart';
 import 'package:FatCat/views/screens/self_study_screen.dart';
+import 'package:FatCat/views/widgets/action_bottom_sheet_widget.dart';
 import 'package:FatCat/views/widgets/action_button_widget.dart';
+import 'package:FatCat/views/widgets/card_item_widget.dart';
 import 'package:FatCat/views/widgets/text_and_showall_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/card_item_widget.dart';
-
 class CardsScreen extends StatelessWidget {
   final DeckModel deck;
-  const CardsScreen({super.key, required this.deck});
+  final bool? isLocal;
+  final VoidCallback? onDelete;
+  const CardsScreen(
+      {super.key, required this.deck, this.isLocal, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CardScreenViewModel(deck),
+      create: (_) => CardScreenViewModel(
+        deck,
+        isLocal: isLocal ?? false,
+      ),
       child: Consumer<CardScreenViewModel>(
         builder: (context, viewModel, child) {
-          final cardData = viewModel.cards;
+          List<CardModel> cardData = [];
+          if (isLocal == true) {
+            cardData = viewModel.cards;
+          } else {
+            cardData = viewModel.cards;
+          }
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              title: const Text("Cards",
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: const Text("Thẻ học",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 24,
@@ -35,6 +56,170 @@ class CardsScreen extends StatelessWidget {
               backgroundColor: Colors.white,
               centerTitle: true,
               elevation: 0,
+              actions: [
+                if (isLocal == false) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: IconButton(
+                      icon: const Icon(Icons.more_vert,
+                          size: 28, color: Colors.black),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(24)),
+                          ),
+                          builder: (context) => ActionBottomSheet(
+                            actions: [
+                              ActionItem(
+                                icon: CupertinoIcons.square_pencil,
+                                title: 'Chỉnh sửa',
+                                onTap: () {
+                                  PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    screen: CreateOrUpdateDeckScreen(
+                                      deckId: deck.id,
+                                      initialDeck: deck,
+                                      onDelete: () async {
+                                        await viewModel.loadCards();
+                                      },
+                                      initialCards: cardData,
+                                    ),
+                                    withNavBar: false,
+                                    pageTransitionAnimation:
+                                        PageTransitionAnimation.cupertino,
+                                  );
+                                },
+                              ),
+                              ActionItem(
+                                icon: Icons.share,
+                                title: 'Chia sẻ với mọi người',
+                                isDestructive: false,
+                                onTap: () async {
+                                  Fluttertoast.showToast(
+                                    msg: 'Chia sẻ thành công',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.white,
+                                    textColor: Colors.black,
+                                    fontSize: 16.0,
+                                  );
+                                },
+                              ),
+                              ActionItem(
+                                icon: CupertinoIcons.delete,
+                                title: 'Xóa',
+                                isDestructive: true,
+                                onTap: () async {
+                                  if (await viewModel
+                                      .deleteAllCardsForDeck(deck.id!)) {
+                                    if (onDelete != null) {
+                                      onDelete!();
+                                    }
+                                    Navigator.pop(context);
+                                    Fluttertoast.showToast(
+                                      msg: "Xóa thành công",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.white,
+                                      textColor: Colors.black,
+                                      fontSize: 16.0,
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+                if (isLocal == true) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: IconButton(
+                      icon: const Icon(Icons.more_vert,
+                          size: 28, color: Colors.black),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(24)),
+                          ),
+                          builder: (context) => ActionBottomSheet(
+                            actions: [
+                              ActionItem(
+                                icon: CupertinoIcons.square_pencil,
+                                title: 'Chỉnh sửa',
+                                onTap: () {
+                                  PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    screen: CreateOrUpdateDeckScreen(
+                                      deckId: deck.id,
+                                      initialDeck: deck,
+                                      onDelete: () async {
+                                        await viewModel.loadCards();
+                                      },
+                                      initialCards: cardData,
+                                    ),
+                                    withNavBar: false,
+                                    pageTransitionAnimation:
+                                        PageTransitionAnimation.cupertino,
+                                  );
+                                },
+                              ),
+                              ActionItem(
+                                icon: Icons.share,
+                                title: 'Chia sẻ với mọi người',
+                                isDestructive: false,
+                                onTap: () async {
+                                  Fluttertoast.showToast(
+                                    msg: 'Chia sẻ thành công',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.white,
+                                    textColor: Colors.black,
+                                    fontSize: 16.0,
+                                  );
+                                },
+                              ),
+                              ActionItem(
+                                icon: CupertinoIcons.delete,
+                                title: 'Xóa',
+                                isDestructive: true,
+                                onTap: () async {
+                                  if (await viewModel
+                                      .deleteAllCardsForDeck(deck.id!)) {
+                                    if (onDelete != null) {
+                                      onDelete!();
+                                    }
+                                    Navigator.pop(context);
+                                    Fluttertoast.showToast(
+                                      msg: "Xóa thành công",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.white,
+                                      textColor: Colors.black,
+                                      fontSize: 16.0,
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ]
+              ],
             ),
             body: SingleChildScrollView(
               child: Padding(
@@ -54,7 +239,7 @@ class CardsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Admin tạo',
+                          'Tác giả: ${deck.user_name ?? 'Bạn'}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.brown,
@@ -126,13 +311,14 @@ class CardsScreen extends StatelessWidget {
                         text: "Học chọn nhiều đáp án",
                         onTap: () {
                           if (!cardData.isEmpty) {
-                            // PersistentNavBarNavigator.pushNewScreen(
-                            //   context,
-                            //   screen: MultipleChoiceStudyScreen(cards: cardData),
-                            //   withNavBar: false,
-                            //   pageTransitionAnimation:
-                            //       PageTransitionAnimation.cupertino,
-                            // );
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen:
+                                  MultipleChoiceStudyScreen(cards: cardData),
+                              withNavBar: false,
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
                           }
                         }),
                     SizedBox(

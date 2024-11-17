@@ -9,9 +9,25 @@ class ClassDialog {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Tạo nhóm mới'),
-        content: TextField(
-          decoration: InputDecoration(
-            hintText: 'Nhập tên nhóm',
+        content: SizedBox(
+          height: 100,
+          child: Column(
+            children: [
+              TextField(
+                controller: viewModel.nameController,
+                decoration: InputDecoration(
+                    hintText: 'Nhập tên nhóm',
+                    contentPadding: EdgeInsets.all(4)),
+                cursorColor: AppColors.green,
+              ),
+              TextField(
+                controller: viewModel.desController,
+                decoration: InputDecoration(
+                  hintText: 'Nhập mô tả nhóm',
+                ),
+                cursorColor: AppColors.green,
+              )
+            ],
           ),
         ),
         actions: [
@@ -21,7 +37,8 @@ class ClassDialog {
           ),
           TextButton(
             onPressed: () {
-              // TODO: Xử lý tạo nhóm
+              viewModel.createClass(
+                  viewModel.nameController.text, viewModel.desController.text);
               Navigator.pop(context);
             },
             child: Text('Tạo'),

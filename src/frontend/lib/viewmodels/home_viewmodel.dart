@@ -8,6 +8,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+
 class HomeViewModel extends ChangeNotifier {
   final DeckService deckService = DeckService();
   List<DeckModel> _decks = [];
@@ -19,11 +21,12 @@ class HomeViewModel extends ChangeNotifier {
       List<DeckModel> decks = await deckService.getDecks(category);
       _decks = decks;
       notifyListeners();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  CategoryScreen(category: category, decks: decks)));
+      PersistentNavBarNavigator.pushNewScreen(
+        context,
+        screen: CategoryScreen(category: category, decks: decks),
+        withNavBar: false,
+        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+      );
     } catch (e) {
       print(e);
     }

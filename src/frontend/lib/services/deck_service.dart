@@ -18,7 +18,7 @@ class DeckService {
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body)['metadata'];
         print(jsonData[0]);
-        await Future.delayed(const Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 100));
         return jsonData.map((json) => DeckModel.fromJson(json)).toList();
       } else {
         throw Exception(

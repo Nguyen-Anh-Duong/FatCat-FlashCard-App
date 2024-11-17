@@ -30,30 +30,43 @@ class IntermittentStudyScreen extends StatelessWidget {
             body: SafeArea(
               child: Column(
                 children: [
-                  // Top navigation
+                  // Top navigation bar
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.close),
+                          icon: const Icon(
+                            Icons.close,
+                            size: 32,
+                            color: AppColors.greyIcon,
+                          ),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.of(context).pop();
                           },
                         ),
-                        Text(
-                          '${viewModel.studiedCards} / ${viewModel.totalCards}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'Học theo tiến trình\n${viewModel.studiedCards} / ${viewModel.cards.length}',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {
-                            // Handle settings action
-                          },
+                          icon: const Icon(
+                            Icons.settings,
+                            size: 32,
+                            color: AppColors.greyIcon,
+                          ),
+                          onPressed: () {},
                         ),
                       ],
                     ),
@@ -85,6 +98,7 @@ class IntermittentStudyScreen extends StatelessWidget {
                           onSwipe: viewModel.onSwipe,
                           cardBuilder: (context, index, _, __) {
                             return FlipCard(
+                              speed: 300,
                               key: viewModel.cardKeys[index],
                               front: _buildCardSide(
                                   viewModel.cards[index].question),

@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:FatCat/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import '../models/class_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ClassService {
-  final String baseUrl = dotenv.get('BASE_URL') ?? 'http://localhost:3000';
+  final String baseUrl =
+      dotenv.get('BASE_URL') ?? 'http://localhost:3000/v1/api';
   final String authorization = dotenv.get('AUTHORIZATION') ??
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMxMzc5MDA2LCJleHAiOjE3MzkxNTUwMDZ9.UCUJ512XTdkciDexOcNRzRQ6SStmlSju9IdtFbyYdEk';
 
@@ -18,10 +20,12 @@ class ClassService {
   Future<List<ClassModel>> getAllClasses() async {
     print(baseUrl);
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/class'),
-        headers: _headers,
-      );
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/class'),
+            headers: _headers,
+          )
+          .timeout(const Duration(seconds: 5));
       print(response.body);
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
@@ -70,9 +74,13 @@ class ClassService {
           'description': description,
         }),
       );
+      print(response.body);
+      print(response.statusCode);
 
-      if (response.statusCode == 201) {
-        return ClassModel.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+
+        return ClassModel.fromJson(data['metadata']);
       } else {
         throw Exception('Failed to create class: ${response.statusCode}');
       }
@@ -114,15 +122,19 @@ class ClassService {
   }
 
   // Lấy thành viên của lớp
-  Future<List<dynamic>> getClassMembers(String classId) async {
+  Future<List<UserModel>> getClassMembers(String classId) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/classes/$classId/members'),
+        Uri.parse('$baseUrl/class/$classId/members'),
         headers: _headers,
       );
-
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final Map<String, dynamic> membersData = json.decode(response.body);
+        final List<dynamic> data = membersData['metadata']['members'];
+        List<UserModel> members =
+            data.map((item) => UserModel.fromJson(item)).toList();
+
+        return members;
       } else {
         throw Exception(
             'Failed to fetch class members: ${response.statusCode}');

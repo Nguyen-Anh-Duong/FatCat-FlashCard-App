@@ -37,21 +37,21 @@ const seedClassData = async () => {
       await ClassMember.create({
         user_id: adminUser.id,
         class_id: mathClass.id,
-        role: "manager"
+        role: "host"
       }, { transaction: t })
       await mathClass.update({member_count: mathClass.member_count + 1}, {transaction: t})
 
       await ClassMember.create({
         user_id: adminUser.id,
         class_id: scienceClass.id,
-        role: "manager"
+        role: "host"
       }, { transaction: t })
       await scienceClass.update({member_count: scienceClass.member_count + 1}, {transaction: t})
 
       await ClassMember.create({
         user_id: adminUser.id,
         class_id: literatureClass.id,
-        role: "manager"
+        role: "host"
       }, { transaction: t })
       await literatureClass.update({member_count: literatureClass.member_count + 1}, {transaction: t})
       // Seed additional users
@@ -77,7 +77,19 @@ const seedClassData = async () => {
       await ClassMember.create({
         user_id: users[0].id,
         class_id: userClass.id,
-        role: "manager"
+        role: "host"
+      }, { transaction: t })
+      const class2 = await ClassModel.create({
+        name: 'Class 2 cua user',
+        description: 'A class for User tao.',
+        host_user_id: users[1].id,
+        code_invite: 'USER2345',
+        member_count: 1
+      }, { transaction: t })
+      await ClassMember.create({
+        user_id: users[1].id,
+        class_id: class2.id,
+        role: "host"
       }, { transaction: t })
       // Add users to math class
       for (const user of users) {

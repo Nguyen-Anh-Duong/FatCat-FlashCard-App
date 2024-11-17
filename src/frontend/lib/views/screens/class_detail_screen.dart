@@ -1,13 +1,32 @@
+// ignore_for_file: unnecessary_string_interpolations
+
 import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/models/class_model.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/viewmodels/class_detail_viewmodel.dart';
+import 'package:FatCat/views/screens/cards_screen.dart';
+import 'package:FatCat/views/widgets/action_bottom_sheet_widget.dart';
+import 'package:FatCat/views/widgets/confirm_bottomsheet_widget.dart';
+import 'package:FatCat/views/widgets/deck_lib_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
 class ClassDetailScreen extends StatelessWidget {
   final ClassModel mClass;
-  const ClassDetailScreen({super.key, required this.mClass});
+  final String? role;
+  final VoidCallback? onDelete;
+  final String? inviteCode;
+  const ClassDetailScreen({
+    super.key,
+    required this.mClass,
+    this.onDelete,
+    this.role,
+    this.inviteCode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,38 +35,83 @@ class ClassDetailScreen extends StatelessWidget {
       child: Consumer<ClassDetailViewmodel>(
         builder: (context, viewModel, child) {
           return DefaultTabController(
-            length: 2, // Number of tabs
+            length: 3,
             child: Scaffold(
               appBar: AppBar(
                 title: Text("${mClass.name}"),
                 actions: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: PopupMenuButton(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'leave',
-                          onTap: () {
-                            viewModel.leaveClass();
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'Rời nhóm',
-                            style: TextStyle(color: Colors.red),
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: IconButton(
+                      icon: const Icon(Icons.more_vert,
+                          size: 28, color: Colors.black),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(24)),
                           ),
-                        ),
-                        PopupMenuItem(
-                          value: 'share',
-                          onTap: () {},
-                          child: Text(
-                            'Chia sẻ',
+                          builder: (context) => ActionBottomSheet(
+                            actions: [
+                              if (role == null)
+                                ActionItem(
+                                  icon: Icons.login,
+                                  title: 'Tham gia nhóm',
+                                  onTap: () {
+                                    if (inviteCode != null) {
+                                      viewModel.joinClass(inviteCode!);
+                                    }
+                                  },
+                                ),
+                              if (role != null && role == 'host' ||
+                                  role == 'manager')
+                                ActionItem(
+                                  icon: CupertinoIcons.add,
+                                  title: 'Tạo bộ thẻ',
+                                  onTap: () {},
+                                ),
+                              ActionItem(
+                                icon: Icons.share,
+                                title: 'Chia sẻ mã nhóm',
+                                isDestructive: false,
+                                onTap: () async {
+                                  if (inviteCode != null) {
+                                    await Clipboard.setData(
+                                        ClipboardData(text: inviteCode!));
+                                    Fluttertoast.showToast(
+                                      msg: "Đã sao chép mã nhóm",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.white,
+                                      textColor: Colors.black,
+                                      fontSize: 16.0,
+                                    );
+                                  }
+                                },
+                              ),
+                              if (role != null && role != 'host')
+                                ActionItem(
+                                  icon: Icons.logout,
+                                  title: 'Rời nhóm',
+                                  isDestructive: true,
+                                  onTap: () async {
+                                    showConfirmBottomSheet(
+                                        context, 'Bạn sẽ rời khỏi nhóm này',
+                                        onConfirm: () async {
+                                      await viewModel.leaveClass();
+                                      if (onDelete != null) {
+                                        print('===onDelete');
+                                        onDelete!();
+                                      }
+                                      // Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -64,16 +128,21 @@ class ClassDetailScreen extends StatelessWidget {
                   labelColor: AppColors.green,
                   tabs: [
                     Tab(
-                      text: "Decks",
+                      text: "Bộ thẻ",
                     ),
-                    Tab(text: "Members"),
+                    Tab(text: "Thành viên"),
+                    Tab(text: 'Xếp hạng')
                   ],
                 ),
               ),
               body: TabBarView(
                 children: [
-                  DecksTab(mClass: mClass), // Tab 1: Decks
-                  MembersTab(), // Tab 2: Members
+                  DecksTab(
+                    mClass: mClass,
+                    viewmodel: viewModel,
+                  ), // Tab 1: Decks
+                  MembersTab(viewmodel: viewModel), // Tab 2: Members
+                  MembersRankingTab(), // Tab 3: Members Ranking
                 ],
               ),
             ),
@@ -86,24 +155,91 @@ class ClassDetailScreen extends StatelessWidget {
 
 class DecksTab extends StatelessWidget {
   final ClassModel mClass;
-  const DecksTab({super.key, required this.mClass});
+  final ClassDetailViewmodel viewmodel;
+  const DecksTab({super.key, required this.mClass, required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text('${mClass.id}'),
-          Text('${mClass.name}'),
-          Text('${mClass.description}'),
-        ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: Column(
+          children: [
+            ListView.builder(
+              padding: const EdgeInsets.only(top: 16),
+              itemCount: viewmodel.decks.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final deck = viewmodel.decks[index];
+                return DeckLibWidget(
+                  deck: deck,
+                  color: AppColors.green,
+                  onTap: () async {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: CardsScreen(deck: deck, isLocal: false),
+                      withNavBar: false,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class MembersTab extends StatelessWidget {
-  const MembersTab({super.key});
+  final ClassDetailViewmodel viewmodel;
+  const MembersTab({super.key, required this.viewmodel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 16),
+        itemCount: viewmodel.classMembers.length,
+        itemBuilder: (context, index) {
+          final user = viewmodel.classMembers[index];
+          return ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            leading: CircleAvatar(
+              backgroundColor: AppColors.green,
+              child: Text(
+                user.name[0].toUpperCase(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            title: Text(
+              user.name,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            subtitle: Text(
+              'Tham gia: ${user.joinedAt?.substring(0, 10)}\tRole: ${user.role}',
+              style: TextStyle(
+                color: Colors.grey[600],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class MembersRankingTab extends StatelessWidget {
+  const MembersRankingTab({super.key});
 
   @override
   Widget build(BuildContext context) {

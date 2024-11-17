@@ -29,7 +29,6 @@ class LibraryViewModel extends ChangeNotifier {
     try {
       await Future.delayed(const Duration(milliseconds: 1000));
       _decks = await DeckService.fetchDecks();
-      print('222');
     } catch (e) {
       _error = e.toString();
       _isConnected = false;

@@ -34,10 +34,7 @@ class ClassService {
         if(!newMember)
             throw new NotFoundError("Create member failed")
    
-        return {
-            class: pick(newClass, ["id", "name", "description", "code_invite"]),
-            member: pick(newMember, ["id", "user_id", "class_id", "role"]),
-        }
+        return newClass;
     }
     static getClassesForHost = async({userId}) => {
         const classes = await ClassModel.findAll({where: {host_user_id: userId}})
@@ -110,21 +107,24 @@ class ClassService {
             include: [{
                 model: ClassModel,
                 as: "Class",
-                attributes: ['id', 'name', 'description', 'host_user_id', 'member_count', 'code_invite']
+                attributes: ['id', 'name', 'description', 'host_user_id', 'member_count', 'code_invite', 'created_at', 'updated_at']
             }],
             order: order.length ? order : undefined
         });
-
-        const data = classes.map(item => ({
+        const data = classes.map(item => {
+            return {
             id: item.Class.id,
             name: item.Class.name,
             description: item.Class.description,
             host_user_id: item.Class.host_user_id,
             member_count: item.Class.member_count,
             code_invite: item.Class.code_invite,
-            role: item.role
-        }));
-    
+            role: item.role,
+            joined_at: item.joined_at,
+            created_at: item.Class.dataValues.created_at,
+            updated_at: item.Class.dataValues.updated_at,
+        }});
+
         return data;
     }
     static updateClass = async({classId, name, description}) => {

@@ -34,10 +34,26 @@ class DeckService {
     if (!category) {
       throw new NotFoundError("Category not found");
     }
-    return await Deck.findAll({
+    const decks = await Deck.findAll({
       where: { category_id: category.id },
       include: [{ model: Category, attributes: ["name"] }],
     });
+    const data = decks.map(deck => ({
+      id: deck.id,
+      name: deck.name,
+      description: deck.description,
+      user_id: deck.user_id,
+      issuer_id: deck.issuer_id,
+      category_id: deck.category_id,
+      deck_cards_count: deck.deck_cards_count,
+      is_published: deck.is_published,
+      category_name: deck.Category?.name,
+      question_language: deck.question_language,
+      answer_language: deck.answer_language,
+      created_at: deck.createdAt,
+      updated_at: deck.updatedAt,
+    }));
+    return data;
   }
   //   static async getCardsByDeckId(deckId) {
   //     return await Card.findAll({

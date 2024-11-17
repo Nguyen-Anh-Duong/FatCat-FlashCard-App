@@ -10,12 +10,19 @@ class DecksControlViewModel extends ChangeNotifier {
   DecksControlViewModel._internal();
 
   List<DeckModel> _decks = [];
+  List<DeckModel> _decksDownloaded = [];
+
   bool _isLoading = false;
   String? _error;
 
   List<DeckModel> get decks => _decks;
+  List<DeckModel> get decksDownloaded => _decksDownloaded;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  Future<void> fetchData() async {
+    await fetchDecks();
+    await fetchDecksDownloaded();
+  }
 
   Future<void> fetchDecks() async {
     _isLoading = true;
@@ -23,7 +30,21 @@ class DecksControlViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _decks = await getAllDeck('name');
+      _decks = await getAllDeck('createdAt DESC');
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchDecksDownloaded() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      _decksDownloaded = await getAllDeckDownloaded('createdAt DESC');
     } catch (e) {
       _error = e.toString();
     } finally {
