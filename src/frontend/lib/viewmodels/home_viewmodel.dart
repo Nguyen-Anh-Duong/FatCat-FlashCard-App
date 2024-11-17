@@ -51,6 +51,7 @@ class HomeViewModel extends ChangeNotifier {
   bool get isConnected => _isConnected;
 
   HomeViewModel() {
+    fetchDecks();
     _checkInitialConnectivity();
     _listenToConnectivityChanges();
   }

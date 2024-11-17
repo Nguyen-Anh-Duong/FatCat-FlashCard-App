@@ -206,7 +206,11 @@ class CardsScreen extends StatelessWidget {
                           if (!cardData.isEmpty) {
                             PersistentNavBarNavigator.pushNewScreen(
                               context,
-                              screen: SelfStudyScreen(cards: cardData),
+                              screen: SelfStudyScreen(
+                                cards: cardData,
+                                question_language: deck.question_language,
+                                answer_language: deck.answer_language,
+                              ),
                               withNavBar: false,
                               pageTransitionAnimation:
                                   PageTransitionAnimation.cupertino,
@@ -223,7 +227,11 @@ class CardsScreen extends StatelessWidget {
                           if (!cardData.isEmpty) {
                             PersistentNavBarNavigator.pushNewScreen(
                               context,
-                              screen: IntermittentStudyScreen(cards: cardData),
+                              screen: IntermittentStudyScreen(
+                                cards: cardData,
+                                question_language: deck.question_language,
+                                answer_language: deck.answer_language,
+                              ),
                               withNavBar: false,
                               pageTransitionAnimation:
                                   PageTransitionAnimation.cupertino,
@@ -266,6 +274,8 @@ class CardsScreen extends StatelessWidget {
                         return CardItemWidget(
                           question: cardData[index].question,
                           answer: cardData[index].answer,
+                          question_language: deck.question_language,
+                          answer_language: deck.answer_language,
                         );
                       },
                       itemCount: cardData.length,

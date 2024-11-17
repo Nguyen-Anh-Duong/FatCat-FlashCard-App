@@ -1,5 +1,6 @@
 const { sequelize } = require('../database/init.database');
 const { User, Category, Deck, Card, Class, ClassMember, ClassDeck, Token } = require('../models');
+const { convertAndInsertJsonToDb } = require('./jsonToArray');
 
 const seedAllData = async () => {
   try {
@@ -68,8 +69,8 @@ const seedAllData = async () => {
         category_id: languageCategory.id,
         is_published: true,
         deck_cards_count: 7,
-        question_language: 'English',
-        answer_language: 'English',
+        question_language: 'en-US',
+        answer_language: 'en-US',
       }, { transaction: t });
 
       const vietnameseDeck = await Deck.create({
@@ -79,8 +80,8 @@ const seedAllData = async () => {
         category_id: languageCategory.id,
         is_published: true,
         deck_cards_count: 6,
-        question_language: 'Vietnamese',
-        answer_language: 'Vietnamese',
+        question_language: 'vi-VN',
+        answer_language: 'en-US',
       }, { transaction: t });
 
       // Thêm deck mới cho Language category
@@ -91,8 +92,8 @@ const seedAllData = async () => {
         category_id: languageCategory.id,
         is_published: true,
         deck_cards_count: 5,
-        question_language: 'English',
-        answer_language: 'English',
+        question_language: 'en-US',
+        answer_language: 'en-US',
       }, { transaction: t });
 
       // Seed Decks for Mathematics
@@ -103,8 +104,8 @@ const seedAllData = async () => {
         category_id: mathCategory.id,
         is_published: true,
         deck_cards_count: 7,
-        question_language: 'Mathematics',
-        answer_language: 'Mathematics',
+        question_language: 'en-US',
+        answer_language: 'en-US',
       }, { transaction: t });
 
       // Seed Decks for Science
@@ -115,8 +116,8 @@ const seedAllData = async () => {
         category_id: scienceCategory.id,
         is_published: true,
         deck_cards_count: 6,
-        question_language: 'Science',
-        answer_language: 'Science',
+        question_language: 'en-US',
+        answer_language: 'en-US',
       }, { transaction: t });
 
       // Seed Decks for Art
@@ -127,8 +128,8 @@ const seedAllData = async () => {
         category_id: artCategory.id,
         is_published: true,
         deck_cards_count: 6,
-        question_language: 'Art',
-        answer_language: 'Art',
+        question_language: 'en-US',
+        answer_language: 'en-US',
       }, { transaction: t });
 
       // Seed Decks for Literature
@@ -139,10 +140,87 @@ const seedAllData = async () => {
         category_id: literatureCategory.id,
         is_published: true,
         deck_cards_count: 7,
-        question_language: 'Literature',
-        answer_language: 'Literature',
+        question_language: 'en-US',
+        answer_language: 'en-US',
       }, { transaction: t });
 
+      const n5Deck = await Deck.create({
+        user_id: adminUser.id,
+        name: 'N5 Vocabulary',
+        description: 'N5 Vocabulary',
+        category_id: languageCategory.id,
+        is_published: true,
+        deck_cards_count: 7,
+        question_language: 'ja',
+        answer_language: 'en-US',
+      }, { transaction: t });
+      const deckInfo = {
+        user_id: adminUser.id,
+        name: 'N5 Vocabulary',
+        description: 'N5 Vocabulary',
+        category_id: languageCategory.id,
+        is_published: true,
+        question_language: 'ja',
+        answer_language: 'en-US',
+      };
+
+      await convertAndInsertJsonToDb('D:/Workspace/FatCat/src/backend/src/database/n5-vocab-kanji-eng.json', deckInfo, t);
+
+      const deckInfo2 = {
+        user_id: adminUser.id,
+        name: 'N4 Vocabulary',
+        description: 'N4 Vocabulary',
+        category_id: languageCategory.id,
+        is_published: true,
+        question_language: 'ja',
+        answer_language: 'en-US',
+      };
+
+      await convertAndInsertJsonToDb('D:/Workspace/FatCat/src/backend/src/database/n4-vocab-kanji-eng.json', deckInfo2, t);
+      const deckInfo3 = {
+        user_id: adminUser.id,
+        name: 'N3 Vocabulary',
+        description: 'N3 Vocabulary',
+        category_id: languageCategory.id,
+        is_published: true,
+        question_language: 'ja',
+        answer_language: 'en-US',
+      };
+
+      await convertAndInsertJsonToDb('D:/Workspace/FatCat/src/backend/src/database/n3-vocab-kanji-eng.json', deckInfo3, t);
+      const hsk1Deck = {
+        user_id: adminUser.id,
+        name: 'HSK 1',
+        description: 'HSK 1',
+        category_id: languageCategory.id,
+        is_published: true,
+        question_language: 'zh-CN',
+        answer_language: 'en-US',
+      };
+
+      await convertAndInsertJsonToDb('D:/Workspace/FatCat/src/backend/src/database/hsk1_words.json', hsk1Deck, t);
+      const hsk2Deck = {
+        user_id: adminUser.id,
+        name: 'HSK 2',
+        description: 'HSK 2',
+        category_id: languageCategory.id,
+        is_published: true,
+        question_language: 'zh-CN',
+        answer_language: 'en-US',
+      };
+
+      await convertAndInsertJsonToDb('D:/Workspace/FatCat/src/backend/src/database/hsk2_words.json', hsk2Deck, t);
+      const hsk3Deck = {
+        user_id: adminUser.id,
+        name: 'HSK 3',
+        description: 'HSK 3',
+        category_id: languageCategory.id,
+        is_published: true,
+        question_language: 'zh-CN',
+        answer_language: 'en-US',
+      };
+
+      await convertAndInsertJsonToDb('D:/Workspace/FatCat/src/backend/src/database/hsk3_words.json', hsk3Deck, t);
       // Seed Cards for English Deck
       const englishCards = [
         { deck_id: englishDeck.id, question: 'Hello', answer: 'A common greeting' },

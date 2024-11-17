@@ -12,8 +12,14 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 class SelfStudyScreen extends StatelessWidget {
   final List<CardModel> cards;
+  final String? question_language;
+  final String? answer_language;
 
-  SelfStudyScreen({super.key, required this.cards});
+  SelfStudyScreen(
+      {super.key,
+      required this.cards,
+      this.question_language,
+      this.answer_language});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +27,9 @@ class SelfStudyScreen extends StatelessWidget {
       create: (_) => SelfStudyViewModel(cards),
       child: Consumer<SelfStudyViewModel>(
         builder: (context, viewModel, child) {
+          print("question_language =====");
+          print(question_language);
+          print(answer_language);
           if (viewModel.isStudyCompleted) {
             return ReviewStudyScreen(
               detailedAnswers: null,
@@ -202,6 +211,7 @@ class SelfStudyScreen extends StatelessWidget {
                                     child: _buildCardSide(
                                       viewModel.cards[index].question,
                                       viewModel,
+                                      question_language,
                                     ),
                                   ),
                                   back: GestureDetector(
@@ -209,6 +219,7 @@ class SelfStudyScreen extends StatelessWidget {
                                     child: _buildCardSide(
                                       viewModel.cards[index].answer,
                                       viewModel,
+                                      answer_language,
                                     ),
                                   ),
                                 ),
@@ -254,7 +265,8 @@ class SelfStudyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCardSide(String content, SelfStudyViewModel viewModel) {
+  Widget _buildCardSide(
+      String content, SelfStudyViewModel viewModel, String? language) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundCard,
@@ -293,7 +305,7 @@ class SelfStudyScreen extends StatelessWidget {
               iconSize: 32,
               color: AppColors.greyIcon,
               onPressed: () async {
-                await FlutterTts().setLanguage("en-US");
+                await FlutterTts().setLanguage(language ?? "en-US");
                 await FlutterTts().speak(content);
               },
             ),
