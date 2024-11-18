@@ -129,6 +129,101 @@ class CreateOrUpdateDeckScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
+                    child: Text(
+                      'Ngôn ngữ thuật ngữ',
+                      style: TextStyle(
+                        color: AppColors.blackText,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
+                    child: DropdownButtonFormField<String>(
+                      value: viewModel.selectedFrontLanguage,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 3.0,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.brown,
+                            width: 4.0,
+                          ),
+                        ),
+                      ),
+                      items: [
+                        'Tiếng Việt',
+                        'English',
+                        'Japanese',
+                        'Tiếng Trung'
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        viewModel.setFrontLanguage(newValue!);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
+                    child: Text(
+                      'Ngôn ngữ định nghĩa',
+                      style: TextStyle(
+                        color: AppColors.blackText,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
+                    child: DropdownButtonFormField<String>(
+                      value: viewModel.selectedBackLanguage,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 3.0,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.brown,
+                            width: 4.0,
+                          ),
+                        ),
+                      ),
+                      items: [
+                        'Tiếng Việt',
+                        'English',
+                        'Japanese',
+                        'Tiếng Trung'
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        viewModel.setBackLanguage(newValue!);
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 24),
                   ListView.builder(
                     padding: EdgeInsets.zero,

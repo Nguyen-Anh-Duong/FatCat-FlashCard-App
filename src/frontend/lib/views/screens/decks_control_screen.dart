@@ -79,6 +79,7 @@ class DecksControl extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (viewModel.error != null) {
           return RefreshIndicator(
+              color: Colors.brown,
               onRefresh: () async {
                 await viewModel.fetchDecks();
               },
@@ -95,6 +96,7 @@ class DecksControl extends StatelessWidget {
               ));
         } else if (viewModel.decks.isEmpty) {
           return RefreshIndicator(
+              color: Colors.brown,
               onRefresh: () async {
                 await viewModel.fetchDecks();
               },
@@ -110,6 +112,7 @@ class DecksControl extends StatelessWidget {
               ));
         } else {
           return RefreshIndicator(
+            color: Colors.brown,
             onRefresh: () async {
               await viewModel.fetchDecks();
             },

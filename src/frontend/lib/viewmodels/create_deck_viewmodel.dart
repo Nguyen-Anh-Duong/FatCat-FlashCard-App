@@ -12,6 +12,48 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   List<CardEditModel> cards = [];
+  String? selectedFrontLanguage = 'English';
+  String? selectedBackLanguage = 'English';
+  void setFrontLanguage(String language) {
+    selectedFrontLanguage = language;
+    notifyListeners();
+  }
+
+  void setBackLanguage(String language) {
+    selectedBackLanguage = language;
+    notifyListeners();
+  }
+
+  String languageToCode(String language) {
+    if (language == 'Tiếng Việt') {
+      return 'vi';
+    } else if (language == 'English') {
+      return 'en-US';
+    } else if (language == 'Japanese') {
+      return 'ja';
+    } else if (language == 'Tiếng Trung') {
+      return 'zh-CN';
+    } else {
+      return 'en-US';
+    }
+  }
+
+  String codeToLanguage(String code) {
+    if (code == 'vi') {
+      return 'Tiếng Việt';
+    } else if (code == 'en-US') {
+      return 'English';
+    } else if (code == 'ja') {
+      return 'Japanese';
+    } else if (code == 'zh-CN') {
+      return 'Tiếng Trung';
+    } else if (code == 'en-US') {
+      return 'English';
+    } else {
+      return 'English';
+    }
+  }
+
   CreateOrUpdateDeckViewModel({
     this.deckId,
     this.initialDeck,
@@ -21,6 +63,11 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
       // Initialize controllers with existing deck data
       titleController.text = initialDeck!.name;
       descriptionController.text = initialDeck!.description;
+      selectedFrontLanguage =
+          codeToLanguage(initialDeck!.question_language ?? 'en-US');
+      selectedBackLanguage =
+          codeToLanguage(initialDeck!.answer_language ?? 'en-US');
+      notifyListeners();
     }
 
     if (initialCards != null) {
@@ -48,6 +95,9 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
         final deck = decks[0];
         titleController.text = deck.name;
         descriptionController.text = deck.description;
+        selectedFrontLanguage =
+            codeToLanguage(deck.question_language ?? 'en-US');
+        selectedBackLanguage = codeToLanguage(deck.answer_language ?? 'en-US');
 
         final cardsList = await getCard(deckId!);
         cards = cardsList
@@ -103,6 +153,8 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
     final deckData = {
       'name': titleController.text,
       'description': descriptionController.text,
+      'question_language': languageToCode(selectedFrontLanguage ?? 'English'),
+      'answer_language': languageToCode(selectedBackLanguage ?? 'English'),
     };
     if (deckId == null) {
       print('====Create deck====');

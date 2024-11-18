@@ -7,7 +7,7 @@ import '../models/card_model.dart';
 import '../models/deck_model.dart';
 
 class CardScreenViewModel extends ChangeNotifier {
-  final DeckModel deck;
+  DeckModel deck;
   final bool? isLocal;
   List<CardModel> _cards = [];
   bool _isLoading = false;
@@ -24,6 +24,18 @@ class CardScreenViewModel extends ChangeNotifier {
     } else {
       _cards = await CardService.instance.getCardsByDeckId(deck.id!);
       notifyListeners();
+    }
+  }
+
+  Future<DeckModel> loadDeck() async {
+    if (isLocal != null && isLocal == true) {
+      deck = (await getDeckWithId(deck.id!))[0];
+      print('===deckFetchAgain===');
+      print(deck);
+      notifyListeners();
+      return deck;
+    } else {
+      return deck;
     }
   }
 

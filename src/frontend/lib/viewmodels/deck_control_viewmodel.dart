@@ -31,6 +31,7 @@ class DecksControlViewModel extends ChangeNotifier {
 
     try {
       _decks = await getAllDeck('createdAt DESC');
+      print('===${_decks}');
     } catch (e) {
       _error = e.toString();
     } finally {

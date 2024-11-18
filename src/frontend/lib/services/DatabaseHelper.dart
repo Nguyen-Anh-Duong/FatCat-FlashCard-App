@@ -179,20 +179,24 @@ Future<List<DeckModel>> getDeckWithId(String id) async {
       await db.query('DECK', where: 'id = ?', whereArgs: [id]);
   return [
     for (final {
-          'id': id as String,
+          'id': id as int,
           'name': name as String,
           'description': description as String,
           'is_published': is_published as String,
           'deck_cards_count': deck_cards_count as int,
+          'question_language': question_language as String,
+          'answer_language': answer_language as String,
           'createdAt': createdAt as String,
           'updatedAt': updatedAt as String,
         } in deckMaps)
       DeckModel(
-          id: id,
+          id: id.toString(),
           name: name,
           description: description,
           is_published: is_published.toBoolean(),
           deck_cards_count: deck_cards_count.toString(),
+          question_language: question_language,
+          answer_language: answer_language,
           createdAt: DateTime.parse(createdAt),
           updatedAt: DateTime.parse(updatedAt))
   ];
@@ -209,6 +213,8 @@ Future<List<DeckModel>> getAllDeck(String orderBy) async {
           'description': description as String,
           'is_published': is_published as String,
           'deck_cards_count': deck_cards_count as int,
+          'question_language': question_language as String,
+          'answer_language': answer_language as String,
           'createdAt': createdAt as String,
           'updatedAt': updatedAt as String,
         } in deckMaps)
@@ -218,6 +224,8 @@ Future<List<DeckModel>> getAllDeck(String orderBy) async {
           description: description,
           is_published: is_published.toBoolean(),
           deck_cards_count: deck_cards_count.toString(),
+          question_language: question_language,
+          answer_language: answer_language,
           createdAt: DateTime.parse(createdAt),
           updatedAt: DateTime.parse(updatedAt))
   ];
@@ -343,8 +351,8 @@ Future<bool> createDeckWithCards({
         'description': deckData['description'],
         'deck_cards_count': cards.length.toString(),
         'is_published': 'true',
-        'question_language': deckData['question_language'] ?? 'en',
-        'answer_language': deckData['answer_language'] ?? 'en',
+        'question_language': deckData['question_language'] ?? 'en-US',
+        'answer_language': deckData['answer_language'] ?? 'en-US',
         'category_name': deckData['category_name'] ?? 'unknown',
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),

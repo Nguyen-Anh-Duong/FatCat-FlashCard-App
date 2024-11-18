@@ -10,6 +10,7 @@ import 'package:FatCat/views/screens/self_study_screen.dart';
 import 'package:FatCat/views/widgets/action_bottom_sheet_widget.dart';
 import 'package:FatCat/views/widgets/action_button_widget.dart';
 import 'package:FatCat/views/widgets/card_item_widget.dart';
+import 'package:FatCat/views/widgets/confirm_bottomsheet_widget.dart';
 import 'package:FatCat/views/widgets/text_and_showall_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import 'package:provider/provider.dart';
 
 class CardsScreen extends StatelessWidget {
   final DeckModel deck;
+
   final bool? isLocal;
   final VoidCallback? onDelete;
   const CardsScreen(
@@ -91,6 +93,7 @@ class CardsScreen extends StatelessWidget {
                                       initialDeck: deck,
                                       onDelete: () async {
                                         await viewModel.loadCards();
+                                        await viewModel.loadDeck();
                                       },
                                       initialCards: cardData,
                                     ),
@@ -121,22 +124,28 @@ class CardsScreen extends StatelessWidget {
                                 title: 'Xóa',
                                 isDestructive: true,
                                 onTap: () async {
-                                  if (await viewModel
-                                      .deleteAllCardsForDeck(deck.id!)) {
-                                    if (onDelete != null) {
-                                      onDelete!();
-                                    }
-                                    Navigator.pop(context);
-                                    Fluttertoast.showToast(
-                                      msg: "Xóa thành công",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.white,
-                                      textColor: Colors.black,
-                                      fontSize: 16.0,
-                                    );
-                                  }
+                                  showConfirmBottomSheet(
+                                    context,
+                                    'Bạn chắc chắn muốn xoá bộ thẻ này không',
+                                    onConfirm: () async {
+                                      await viewModel
+                                          .deleteAllCardsForDeck(deck.id!);
+                                      Fluttertoast.showToast(
+                                        msg: "Xóa thành công",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.white,
+                                        textColor: Colors.black,
+                                        fontSize: 16.0,
+                                      );
+                                      if (onDelete != null) {
+                                        onDelete!();
+                                      }
+                                    },
+                                  );
+
+                                  // Navigator.pop(context);
                                 },
                               ),
                             ]
@@ -166,7 +175,7 @@ class CardsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Tác giả: ${deck.user_name ?? 'Bạn'}',
+                          'Tác giả: ${viewModel.deck.user_name ?? 'Bạn'}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.brown,
@@ -174,7 +183,7 @@ class CardsScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${deck.deck_cards_count} Thuật ngữ',
+                          '${viewModel.deck.deck_cards_count} Thuật ngữ',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.brown,
