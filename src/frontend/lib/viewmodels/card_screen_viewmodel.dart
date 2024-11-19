@@ -67,4 +67,30 @@ class CardScreenViewModel extends ChangeNotifier {
     }
     return false;
   }
+
+  Future<bool> cloneDecks() async {
+    if (_cards.isEmpty) return false;
+    Map<String, String> deckData = {
+      "name": deck.name,
+      'description': deck.description,
+      'deck_cards_count': cards.length.toString(),
+      'is_published': 'true',
+      'question_language': deck.question_language ?? 'en-US',
+      'answer_language': deck.answer_language ?? 'en-US',
+      'category_name': deck.category_name ?? 'Khác',
+      'createdAt': DateTime.now().toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+
+    List<Map<String, String>> cardsData = cards.map((card) {
+      return {
+        'question': card.question,
+        'answer': card.answer,
+      };
+    }).toList();
+
+    bool rs = await createDeckWithCards(deckData: deckData, cards: cardsData);
+
+    return rs;
+  }
 }

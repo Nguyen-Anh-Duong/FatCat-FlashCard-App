@@ -105,7 +105,10 @@ class LibraryScreen extends StatelessWidget {
                   onTap: () async {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
-                      screen: CardsScreen(deck: deck, isLocal: false,),
+                      screen: CardsScreen(
+                        deck: deck,
+                        isLocal: false,
+                      ),
                       withNavBar: false,
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino,

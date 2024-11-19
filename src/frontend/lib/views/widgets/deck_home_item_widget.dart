@@ -55,7 +55,9 @@ class DeckHomeItemWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          name,
+                          name.length > 13
+                              ? '${name.substring(0, 13)}...'
+                              : name,
                           maxLines: 1,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,

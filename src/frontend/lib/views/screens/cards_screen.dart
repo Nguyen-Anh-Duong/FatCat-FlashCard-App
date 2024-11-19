@@ -78,7 +78,17 @@ class CardsScreen extends StatelessWidget {
                                 icon: CupertinoIcons.share,
                                 title: 'Sao chép bộ thẻ',
                                 isDestructive: false,
-                                onTap: () {},
+                                onTap: () async {
+                                  if (await viewModel.cloneDecks()) {
+                                    await Fluttertoast.showToast(
+                                      msg: 'Sao chép thành công',
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      backgroundColor: Colors.white,
+                                      textColor: Colors.black,
+                                      fontSize: 16.0,
+                                    );
+                                  }
+                                },
                               ),
                             ],
                             if (isLocal == true) ...[

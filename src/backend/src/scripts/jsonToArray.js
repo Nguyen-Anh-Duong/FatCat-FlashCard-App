@@ -8,21 +8,17 @@ async function convertAndInsertJsonToDb(filePath, deckInfo, transaction) {
     const jsonObject = JSON.parse(jsonData);
     let partNumber = 1;
     let currentDeck = [];
-    let currentWordCount = 0;
 
     for (const [question, answer] of Object.entries(jsonObject)) {
-        const wordCount = question.split(' ').length + answer.split(' ').length;
         
-        if (currentWordCount + wordCount > 200) {
+        if (currentDeck.length >= 200) {
             await insertDeckAndCards(deckInfo, currentDeck, partNumber, transaction);
             partNumber++;
             if (partNumber > 5) break;
             currentDeck = [];
-            currentWordCount = 0;
         }
 
         currentDeck.push({ question, answer });
-        currentWordCount += wordCount;
     }
 
     if (currentDeck.length > 0 && partNumber <= 5) {
