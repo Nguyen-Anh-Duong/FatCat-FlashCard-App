@@ -11,11 +11,11 @@ const User = sequelize.define(
       autoIncrement: true,
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(191),
       allowNull: false,
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(191),
       allowNull: false,
       unique: true,
     },
@@ -64,6 +64,8 @@ const User = sequelize.define(
   {
     tableName: "Users",
     timestamps: true,
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
   }
 );
 

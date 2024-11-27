@@ -4,11 +4,13 @@ import '../../constants/colors.dart';
 
 class DeckLibWidget extends StatelessWidget {
   final DeckModel deck;
+  final Color? color;
   final VoidCallback? onTap;
 
   const DeckLibWidget({
     super.key,
     required this.deck,
+    this.color,
     this.onTap,
   });
 
@@ -48,13 +50,14 @@ class DeckLibWidget extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.purple.withOpacity(0.1),
+                      color: color?.withOpacity(0.1) ??
+                          Colors.purple.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       '${deck.deck_cards_count} thẻ',
                       style: TextStyle(
-                        color: Colors.purple,
+                        color: color ?? Colors.purple,
                         fontSize: 12,
                       ),
                     ),
@@ -70,6 +73,14 @@ class DeckLibWidget extends StatelessWidget {
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Tác giả: ${deck.user_name ?? 'Bạn'}',
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 13,
+                ),
               ),
             ],
           ),

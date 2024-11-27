@@ -2,7 +2,7 @@
 import 'package:FatCat/services/date_time_formatter.dart';
 
 class CardModel {
-  final String id;
+  final String? id;
   final String? userId;
   final String deckId;
   final String question;
@@ -12,11 +12,11 @@ class CardModel {
   final DateTime updatedAt;
 
   CardModel({
-    required this.id,
-    required this.userId,
+    this.id,
+    this.userId,
     required this.deckId,
     required this.question,
-    required this.imageId,
+    this.imageId,
     required this.answer,
     required this.createdAt,
     required this.updatedAt,

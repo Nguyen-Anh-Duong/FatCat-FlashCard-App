@@ -5,13 +5,17 @@ class DeckHomeItemWidget extends StatelessWidget {
   final String name;
   final String description;
   final String userCreate;
+  final String? cardCount;
   final VoidCallback onPressed;
+  final Color? color;
   const DeckHomeItemWidget({
     super.key,
     required this.name,
     required this.description,
     required this.userCreate,
     required this.onPressed,
+    this.cardCount,
+    this.color,
   });
 
   @override
@@ -45,15 +49,45 @@ class DeckHomeItemWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16, top: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(
-                      name,
-                      maxLines: 1,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          name.length > 13
+                              ? '${name.substring(0, 13)}...'
+                              : name,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (cardCount != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color?.withOpacity(0.1) ??
+                                    Colors.purple.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '${cardCount} thẻ',
+                                style: TextStyle(
+                                  color: color ?? Colors.purple,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                     Text(
                       description,
@@ -69,9 +103,9 @@ class DeckHomeItemWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 16),
                 child: Text(
-                  userCreate,
+                  'Bạn đã tạo',
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: AppColors.blackText,
                     fontWeight: FontWeight.bold,
                   ),

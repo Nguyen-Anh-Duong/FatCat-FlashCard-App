@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:FatCat/models/deck_model.dart';
+import 'package:FatCat/services/DatabaseHelper.dart';
 import 'package:FatCat/services/connectivity_service.dart';
 import 'package:FatCat/services/deck_service.dart';
 import 'package:FatCat/views/screens/category_screen.dart';
@@ -8,22 +9,37 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+
 class HomeViewModel extends ChangeNotifier {
   final DeckService deckService = DeckService();
   List<DeckModel> _decks = [];
-
+  String _error = '';
   List<DeckModel> get decks => _decks;
+  String get error => _error;
+
+  Future<void> fetchDecks() async {
+    try {
+      List<DeckModel> decks = await getAllDeck('createdAt DESC');
+      _decks = decks;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
 
   Future<void> openCategoryScreen(BuildContext context, String category) async {
     try {
       List<DeckModel> decks = await deckService.getDecks(category);
       _decks = decks;
       notifyListeners();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  CategoryScreen(category: category, decks: decks)));
+      PersistentNavBarNavigator.pushNewScreen(
+        context,
+        screen: CategoryScreen(category: category, decks: decks),
+        withNavBar: false,
+        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+      );
     } catch (e) {
       print(e);
     }
@@ -35,6 +51,7 @@ class HomeViewModel extends ChangeNotifier {
   bool get isConnected => _isConnected;
 
   HomeViewModel() {
+    fetchDecks();
     _checkInitialConnectivity();
     _listenToConnectivityChanges();
   }

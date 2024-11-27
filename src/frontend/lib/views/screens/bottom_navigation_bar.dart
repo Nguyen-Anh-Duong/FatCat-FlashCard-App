@@ -17,18 +17,6 @@ class ScreenControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScreenControlViewModel>(
       builder: (context, viewModel, child) => PersistentTabView(
-        decoration: NavBarDecoration(
-          colorBehindNavBar: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: AppColors.borderCard.withOpacity(0.25),
-            width: 1.5,
-          ),
-        ),
-        margin: const EdgeInsets.only(
-          left: 8,
-          right: 8,
-        ),
         context,
         controller: viewModel.controller,
         screens: _buildScreens(),
@@ -92,7 +80,7 @@ class ScreenControl extends StatelessWidget {
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.group),
-        title: ("Nhóm"),
+        title: ("Lớp học"),
         activeColorPrimary: Colors.green,
         inactiveColorPrimary: Colors.grey,
       ),

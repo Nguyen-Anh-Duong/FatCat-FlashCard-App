@@ -38,7 +38,7 @@ class CategoryScreen extends StatelessWidget {
                       description: deck.description,
                       userCreate: "chua test",
                       onPressed: () {},
-                      deckId: deck.id);
+                      deckId: deck.id!);
                 },
               );
             },

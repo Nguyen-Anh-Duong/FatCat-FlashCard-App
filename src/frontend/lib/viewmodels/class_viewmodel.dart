@@ -10,6 +10,8 @@ class ClassViewModel extends ChangeNotifier {
   ClassViewModel() {
     initData();
   }
+  TextEditingController nameController = TextEditingController();
+  TextEditingController desController = TextEditingController();
 
   final ClassService _classService = ClassService();
   bool _isLoading = false;
@@ -39,6 +41,7 @@ class ClassViewModel extends ChangeNotifier {
   Future<void> fetchOwnClasses() async {
     try {
       _ownClasses = await _classService.getOwnClasses();
+      notifyListeners();
     } catch (e) {
       print('Error fetching own classes: $e');
     }
@@ -54,36 +57,28 @@ class ClassViewModel extends ChangeNotifier {
 
   Future<void> createClass(String name, String description) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-
-      await _classService.createClass(
-        name: name,
-        description: description,
+      ClassModel newClass = await _classService.createClass(
+        name: name.trim(),
+        description: description.trim(),
       );
-      await fetchOwnClasses(); // Refresh the list after creating
+      if (newClass != null) {
+        _ownClasses.add(newClass);
+        notifyListeners();
+      }
     } catch (e) {
       print('Error creating class: $e');
       rethrow;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 
   Future<void> joinClass(String codeInvite) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-
       await _classService.joinClass(codeInvite);
-      await fetchOwnClasses(); // Refresh the list after joining
+      await fetchOwnClasses();
+      notifyListeners();
     } catch (e) {
       print('Error joining class: $e');
       rethrow;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 }
