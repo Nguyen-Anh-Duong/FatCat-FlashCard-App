@@ -4,12 +4,17 @@ const { where } = require("sequelize");
 const { NotFoundError } = require("../core/error.response");
 const { Deck, Category, Card, User } = require("../models");
 const ApiError = require("../utils/ApiError");
+const { raw } = require("express");
+const _ = require("lodash");
+const { sequelize } = require("../database/init.database");
 
 class DeckService {
   static async getAllDecks() {
-    const decks = await Deck.findAll({ include: [{ model: Category, attributes: ["name"] }] });
+    const decks = await Deck.findAll({
+      include: [{ model: Category, attributes: ["name"] }],
+    });
 
-    const data = decks.map(deck => ({
+    const data = decks.map((deck) => ({
       id: deck.id,
       name: deck.name,
       description: deck.description,
@@ -105,146 +110,274 @@ class DeckService {
     return { username: user.name, avatar: user.avatar };
   };
 
-  static createDeck = async ({ deckData }) => {
-    const deck = await Deck.create(deckData);
-    const userInfor = await this.getUserInfor(deck.user_id);
-    return { deck, userInfor };
+  static createDeck = async ({ deck, cards, user_id }) => {
+    if (!deck) throw new ApiError("Missing deck data.", 400);
+    cards = cards && cards.length > 0 ? cards : [];
+
+    cards.forEach((card) => {
+      delete card.id;
+    });
+
+    deck.user_id = user_id;
+
+    const insertDeckAndCards = await Deck.create(
+      {
+        ...deck,
+        deck_cards_count: cards.length,
+        Cards: cards,
+      },
+      {
+        include: [Card],
+      }
+    );
+    return { deck: insertDeckAndCards };
   };
 
-  // copy a deck anf all card of that deck for userId. Issuer of new deck is also userId
-  static createDeckByCopy = async ({ deckId, userId }) => {
-    const queryJoin = await Deck.findAll({
-      where: {
-        id: deckId,
-      },
-      attributes: { exclude: ["id", "createdAt", "updatedAt"] },
-      raw: true,
+  // // copy a deck anf all card of that deck for userId. Issuer of new deck is also userId
+  // static createDeckByCopy = async ({ deckId, userId }) => {
+  //   const queryJoin = await Deck.findAll({
+  //     where: {
+  //       id: deckId,
+  //     },
+  //     attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+  //     raw: true,
 
+  //     include: [
+  //       {
+  //         model: Card,
+  //         attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+  //         //required: true,
+  //       },
+  //       // {
+  //       //   model: User,
+  //       //   // where: {
+  //       //   //   issuer_id: userId,
+  //       //   // },
+  //       //   required: true,
+  //       //   attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+  //       // },
+  //     ],
+  //   });
+
+  //   if (!queryJoin) throw new ApiError("Deck not found.", 404);
+  //   console.log(queryJoin);
+
+  //   const object = queryJoin[0];
+  //   //if the user that want copy deck is not the same user create this deck -> check their id, and check deck publish or not at the same time
+  //   if (object.issuer_id !== userId && !object.is_published)
+  //     throw new ApiError("Access denied.", 403); // if deck.issuer_id === userId  not throw any error
+
+  //   const deckData = {},
+  //     cards = [];
+  //   let count = 0;
+
+  //   //copy deck
+  //   for (const key in object) {
+  //     if (count >= 9) break;
+  //     deckData[key] = object[key];
+  //     count++;
+  //   }
+  //   deckData.user_id = deckData.issuer_id = userId;
+
+  //   //create deck with same data
+  //   const newDeck = await Deck.create(deckData);
+  //   const deckDataPlain = newDeck.get({ plain: true });
+  //   delete deckDataPlain.createdAt;
+  //   delete deckDataPlain.updatedAt;
+
+  //   //copy card
+  //   for (let data of queryJoin) {
+  //     const card = {};
+  //     card.deck_id = newDeck.id;
+  //     card.question = data["Cards.question"];
+  //     card.image = data["Cards.image"];
+  //     card.answer = data["Cards.answer"];
+  //     if (card.question && card.answer) cards.push(card);
+  //   }
+
+  //   //create cards
+  //   let newCards = Array.isArray(cards) ? await Card.bulkCreate(cards) : {};
+  //   newCards = newCards.map((card) => {
+  //     const { createdAt, updatedAt, ...rest } = card.get({ plain: true });
+  //     return rest;
+  //   });
+  //   return { deckCopy: deckDataPlain, cardsCopy: newCards };
+  // };
+
+  // static getDeckByUserId = async ({ viewer_id, author_id }) => {
+  //   const deck =
+  //     viewer_id == author_id
+  //       ? await Deck.findAll({
+  //           where: { user_id: viewer_id },
+  //           attributes: { exclude: ["createdAt", "updatedAt"] },
+  //         })
+  //       : await Deck.findAll({
+  //           where: {
+  //             user_id: author_id,
+  //             is_published: true,
+  //           },
+  //           attributes: { exclude: ["createdAt", "updatedAt"] },
+  //         });
+  //   return { deck };
+  // };
+
+  static getDeckByDeckId = async ({ viewer_id, deck_id }) => {
+    const deck = await Deck.findOne({
+      where: {
+        id: deck_id,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
-        {
-          model: Card,
-          attributes: { exclude: ["id", "createdAt", "updatedAt"] },
-          //required: true,
-        },
-        // {
-        //   model: User,
-        //   // where: {
-        //   //   issuer_id: userId,
-        //   // },
-        //   required: true,
-        //   attributes: { exclude: ["id", "createdAt", "updatedAt"] },
-        // },
+        { model: Card, attributes: { exclude: ["createdAt", "updatedAt"] } },
       ],
     });
 
-    if (!queryJoin) throw new ApiError("Deck not found.", 404);
+    if (!deck) throw new ApiError("Deck not found.", 404);
 
-    const object = queryJoin[0];
-    //if the user that want copy deck is not the same user create this deck -> check their id, and check deck publish or not at the same time
-    if (object.issuer_id !== userId && !object.is_published)
-      throw new ApiError("Access denied.", 403); // if deck.issuer_id === userId  not throw any error
+    if (viewer_id != deck.user_id && !deck.is_published)
+      throw new ApiError("This deck is private. Access denied.", 403);
 
-    const deckData = {},
-      cards = [];
-    let count = 0;
-
-    //copy deck
-    for (const key in object) {
-      if (count >= 9) break;
-      deckData[key] = object[key];
-      count++;
-    }
-    deckData.user_id = deckData.issuer_id = userId;
-
-    //create deck with same data
-    const newDeck = await Deck.create(deckData);
-    const deckDataPlain = newDeck.get({ plain: true });
-    delete deckDataPlain.createdAt;
-    delete deckDataPlain.updatedAt;
-
-    //copy card
-    for (let data of queryJoin) {
-      const card = {};
-      card.deck_id = newDeck.id;
-      card.question = data["Cards.question"];
-      card.image = data["Cards.image"];
-      card.answer = data["Cards.answer"];
-      if (card.question && card.answer) cards.push(card);
-    }
-
-    //create cards
-    let newCards = Array.isArray(cards) ? await Card.bulkCreate(cards) : {};
-    newCards = newCards.map((card) => {
-      const { createdAt, updatedAt, ...rest } = card.get({ plain: true });
-      return rest;
-    });
-    return { deckCopy: deckDataPlain, cardsCopy: newCards };
-  };
-
-  static getDeckByDeckId = async ({ deckId }) => {
-    const deck = await Deck.findOne({
-      where: {
-        id: deckId,
-      },
-    });
-
-    const cards = await Card.findAll({
-      where: {
-        deck_id: deckId,
-      },
-    });
     return {
       deck,
-      cards,
     };
   };
 
-  static updateDeck = async ({ deckId, deckData, cards, userId }) => {
-    const deck = await Deck.findByPk(deckId);
-    if (!deck) throw new ApiError("Deck not found.", 404);
-    if (userId !== deck.user_id) throw new ApiError("Access denied.", 403);
-    if (deckData) {
-      await deck.update(deckData, { validate: true });
-      deck.save();
+  static updateDeck = async ({ deck, deck_id, user_id }) => {
+    const optionalFields = [
+      "name",
+      "description",
+      "category_id",
+      "is_published",
+      "deck_cards_count",
+      "question_language",
+      "answer_language",
+    ];
+    if (!deck) throw new ApiError("deck is required in request.", 400);
+    //Only the author has the right to edit
+    if (user_id !== deck.user_id)
+      throw new ApiError(
+        "Missing or incorrect value of user_id field in request.",
+        400
+      );
+
+    //error if deckId on route is different from deckId in request
+    if (deck_id != deck.id)
+      throw new ApiError("Something went wrong. Try again later.");
+    console.log(deck);
+
+    const { Cards, ...deckFields } = deck;
+
+    const existingDeck = await Deck.findByPk(deck_id, {
+      //raw: true,
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    if (!existingDeck) throw new ApiError("Deck not found.", 404);
+
+    //Check if any field is optional
+    const hasFieldsToUpdate = Object.keys(deckFields).some((key) =>
+      optionalFields.includes(key)
+    );
+
+    const plainExistingDeck = existingDeck.get({ plain: true });
+
+    //update deck only if a field needs to be changed
+    if (hasFieldsToUpdate) {
+      await existingDeck.update(deckFields);
     }
-    if (cards) {
-      for (let card of cards) {
-        if (card.deck_id && card.deck_id !== deckId)
-          throw new ApiError("Access denied.", 403);
-      }
-      for (let card of cards) {
-        if (card.delete) {
-          await Card.destroy({
-            where: {
-              id: card.id,
-            },
-          });
-        } else if (card.id) {
-          //card.id not undefine
-          await Card.update(
-            {
-              question: card.question,
-              answer: card.answer,
-              image_id: card.image,
-            },
-            {
-              where: {
-                id: card.id,
-              },
-              validate: true,
-            }
-          );
+
+    await this.syncCards({ deck_id, cards: Cards });
+    const newCards = await Card.findAll({
+      where: { deck_id },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+
+    //console.log(newCards);
+
+    return {
+      deck: {
+        ...plainExistingDeck,
+        deck_cards_count: newCards.length,
+        Cards: newCards,
+      },
+    };
+  };
+
+  static syncCards = async ({ deck_id, cards }) => {
+    const existingCards = await Card.findAll({
+      where: {
+        deck_id,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      raw: true,
+    });
+
+    const existingCardIds = existingCards.map((card) => card.id); // nhóm các id của card trong db thành 1 array
+    const requestCardIds = cards.map((card) => card.id); // nhóm các id của request thành 1 array
+
+    /* tạo ra 1 object có dạng { create: [], update: [], delete: [] }. 
+    Cái card nào không có id thì cho vào mảng create.
+     Card nào có id nhưng check thấy thay đổi với card trong db thì cho vào mảng update   */
+    const groupCards = cards.reduce(
+      (obj, card, index) => {
+        if (!card.id) {
+          card.deck_id = deck_id;
+          obj["create"].push(card);
+          return obj;
+        } else if (
+          !_.isEqual(
+            card,
+            existingCards.find((item) => item.id === card.id)
+          )
+        ) {
+          obj["update"].push(card);
+          return obj;
         } else {
-          //card.id == undefine
-          await Card.create({
-            deck_id: deckId,
-            question: card.question,
-            answer: card.answer,
-            image: card.image,
-          });
+          return obj;
         }
-      }
+      },
+      { create: [], update: [], delete: [] }
+    );
+
+    // check xem những card nào có trong db nhưng không có trong request thì card đó bị xóa
+    const cardIdsToDelete = existingCardIds.filter(
+      (id) => !requestCardIds.includes(id)
+    );
+
+    groupCards["delete"].push(...cardIdsToDelete);
+
+    //delete cards
+    const bulkDestroy = Card.destroy({
+      where: {
+        id: groupCards["delete"],
+      },
+    });
+
+    //create card
+    const bulkCreate = Card.bulkCreate(groupCards["create"]);
+
+    //không có câu lệnh bulkUpdate sẵn trong sequelize nên phải dùng raw query
+    const statements = [];
+    const tableName = "Cards";
+
+    for (let i = 0; i < groupCards["update"].length; i++) {
+      statements.push(
+        sequelize.query(
+          `UPDATE ${tableName} 
+          SET question='${groupCards["update"][i].question}' ,
+              answer='${groupCards["update"][i].answer}' ,
+              image=${
+                groupCards["update"][i].image === null
+                  ? "NULL"
+                  : `'${groupCards["update"][i].image}'`
+              }
+          WHERE id=${groupCards["update"][i].id};`
+        )
+      );
     }
+
+    const bulkUpdate = Promise.all(statements);
+
+    await Promise.all([bulkUpdate, bulkCreate, bulkDestroy]);
   };
 
   static deleteDeck = async ({ deckId, userId }) => {
@@ -253,14 +386,8 @@ class DeckService {
     if (userId !== deck.user_id) throw new ApiError("Access denied.", 403);
 
     //delete deck
+    // on cascade, so all card also deleted
     await deck.destroy();
-
-    //delete card
-    await Card.destroy({
-      where: {
-        deck_id: deckId,
-      },
-    });
   };
 }
 

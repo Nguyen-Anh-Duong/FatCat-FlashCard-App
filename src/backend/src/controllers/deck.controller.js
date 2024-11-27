@@ -14,11 +14,14 @@ class DeckController {
   }
 
   async createDeck(req, res, next) {
-    const deckData = req.body;
-    deckData.user_id = deckData.issuer_id = req.user.userId;
+    const { deck, cards } = req.body;
     return new SuccessResponse({
       message: "Create new deck successfully.",
-      metadata: await DeckService.createDeck({ deckData }),
+      metadata: await DeckService.createDeck({
+        deck,
+        cards,
+        user_id: req.user.userId,
+      }),
     }).send(res);
   }
 
@@ -32,16 +35,15 @@ class DeckController {
   }
 
   async updateDeck(req, res, next) {
-    const { deck, cards } = req.body;
-    const deckId = req.params.deckId;
-    const { userId } = req.user;
+    const { deck } = req.body;
+    const deck_id = req.params.deckId;
+    const user_id = req.user.userId;
     return new SuccessResponse({
       message: "Update deck successfully.",
       metadata: await DeckService.updateDeck({
-        deckId,
-        deckData: deck,
-        cards,
-        userId,
+        deck,
+        deck_id,
+        user_id,
       }),
     }).send(res);
   }
@@ -61,6 +63,24 @@ class DeckController {
     return new SuccessResponse({
       message: "Get all decks successfully.",
       metadata: await DeckService.getAllDecks(),
+    }).send(res);
+  }
+
+  async getDeckByUserId(req, res, next) {
+    const viewer_id = req.user.userId;
+    const author_id = req.params.userId;
+    return new SuccessResponse({
+      message: "Get all deck by userid successfully",
+      metadata: await DeckService.getDeckByUserId({ viewer_id, author_id }),
+    }).send(res);
+  }
+
+  async getDeckByDeckId(req, res, next) {
+    const viewer_id = req.user.userId;
+    const deck_id = req.params.deckId;
+    return new SuccessResponse({
+      message: "Get deck by deck id successfully.",
+      metadata: await DeckService.getDeckByDeckId({ viewer_id, deck_id }),
     }).send(res);
   }
 }
