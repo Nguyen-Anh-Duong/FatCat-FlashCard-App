@@ -130,9 +130,10 @@ class DeckService {
     return { username: user.name, avatar: user.avatar };
   };
 
-  static createDeck = async ({ deck, cards, user_id }) => {
+  static createDeck = async ({ deck, user_id }) => {
     if (!deck) throw new ApiError("Missing deck data.", 400);
-    cards = cards && cards.length > 0 ? cards : [];
+
+    const cards = deck.Cards && deck.Cards.length > 0 ? deck.Cards : [];
 
     cards.forEach((card) => {
       delete card.id;
@@ -147,9 +148,11 @@ class DeckService {
         Cards: cards,
       },
       {
+        //attributes: { exclude: ["id", "createdAt", "updatedAt"] },
         include: [Card],
       }
     );
+
     return { deck: insertDeckAndCards };
   };
 
