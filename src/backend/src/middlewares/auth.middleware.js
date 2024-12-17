@@ -6,6 +6,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const Token = require("../models/token.model");
 const ApiError = require("../utils/ApiError");
+require("dotenv").config();
 const HEADER = {
   AUTHORIZATION: "authorization",
 };
@@ -71,6 +72,7 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
     const findToken = await Token.findOne({
       where: {
         userId: user.userId,
+        accessToken: token,
       },
     });
     if (!findToken)

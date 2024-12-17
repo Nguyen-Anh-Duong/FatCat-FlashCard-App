@@ -1,3 +1,4 @@
+const { Buffer } = require("node:buffer");
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database/init.database");
 const { add } = require("date-fns");
@@ -26,7 +27,15 @@ const Token = sequelize.define(
     timestamps: true,
     hooks: {
       beforeCreate: (token) => {
-        token.expiresAt = add(new Date(), { days: 90 }); // expire after 90day
+        const encodedAccessToken = token.accessToken; // an access token
+        const tokenParts = encodedAccessToken.split(".");
+
+        const decodedPayload = Buffer.from(tokenParts[1], "base64").toString(
+          "utf-8"
+        );
+        const decodedObject = JSON.parse(decodedPayload);
+
+        token.expiresAt = new Date(decodedObject.exp * 1000); // jwt expiration date
       },
     },
   }
