@@ -8,7 +8,7 @@ const { authenticateToken } = require("../../middlewares/auth.middleware");
 
 router.get("/category", asyncHandler(DeckController.getDecksByCategoryName));
 router.post("/", authenticateToken, asyncHandler(DeckController.createDeck));
-router.patch(
+router.put(
   "/:deckId",
   authenticateToken,
   asyncHandler(DeckController.updateDeck)
@@ -24,4 +24,16 @@ router.post(
   asyncHandler(DeckController.createDeckByCopy)
 );
 router.get("/", asyncHandler(DeckController.getAllDecks));
+
+router.get(
+  "/user/:userId",
+  authenticateToken,
+  asyncHandler(DeckController.getDeckByUserId)
+);
+
+router.get(
+  "/:deckId",
+  authenticateToken,
+  asyncHandler(DeckController.getDeckByDeckId)
+);
 module.exports = router;

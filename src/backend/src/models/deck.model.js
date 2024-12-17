@@ -18,14 +18,14 @@ const Deck = sequelize.define(
         key: "id",
       },
     },
-    issuer_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: User,
-        key: "id",
-      },
-      allowNull: true,
-    },
+    // issuer_id: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: User,
+    //     key: "id",
+    //   },
+    //   allowNull: true,
+    // },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

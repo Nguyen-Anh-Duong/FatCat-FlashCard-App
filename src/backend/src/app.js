@@ -37,8 +37,9 @@ swagger(app);
 
 sequelize
   .sync({ 
-    // force: true,
+    // force: true, 
     alter: true,
+
    })
   .then(async () => {
     console.log("All models were synchronized successfully.");
@@ -52,22 +53,21 @@ sequelize
 //init routes
 app.use("/", require("./routes"));
 
-
 //handle errors
 app.use((req, res, next) => {
-    const error = new Error("Not found");
-    error.status = 404;
-    next(error);
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
 });
 
 app.use((error, req, res, next) => {
-    res.status(error.status || 500);
-    res.json({
-        status: error.status,
-        code: error.code,
-        message: error.message || "Internal Server Error",
-        stack: error.stack,
-    })
-})
+  res.status(error.status || 500);
+  res.json({
+    status: error.status,
+    code: error.code,
+    message: error.message || "Internal Server Error",
+    stack: error.stack,
+  });
+});
 
 module.exports = app;

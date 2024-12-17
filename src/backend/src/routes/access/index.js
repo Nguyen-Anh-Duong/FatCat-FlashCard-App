@@ -7,8 +7,8 @@ const AccessController = require("../../controllers/access.controller");
 const { authenticateToken } = require("../../middlewares/auth.middleware");
 
 router.post("/register", asyncHandler(AccessController.register));
-router.post("/verify-account", asyncHandler(AccessController.verify_account));
-router.post("/resend-code", asyncHandler(AccessController.resend_code));
+router.post("/verify-account", asyncHandler(AccessController.verifyAccount));
+router.post("/resend-code", asyncHandler(AccessController.resendCode));
 router.post("/login", asyncHandler(AccessController.login));
 router.post(
   "/logout",
@@ -18,12 +18,12 @@ router.post(
 router.post(
   "/logout-all-device",
   authenticateToken,
-  asyncHandler(AccessController.logout_all_device)
+  asyncHandler(AccessController.logoutAllDevice)
 );
-router.post("/reset-password", asyncHandler(AccessController.reset_password));
+router.post("/reset-password", asyncHandler(AccessController.resetPassword));
 router.post(
   "/change-password",
   authenticateToken,
-  asyncHandler(AccessController.change_password)
+  asyncHandler(AccessController.changePassword)
 );
 module.exports = router;

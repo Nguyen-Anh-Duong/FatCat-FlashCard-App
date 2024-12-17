@@ -51,7 +51,7 @@ class AccessService {
     };
   };
 
-  static verify_account = async ({ email, otpCode }) => {
+  static verifyAccount = async ({ email, otpCode }) => {
     //find user
     const user = await User.findOne({
       where: {
@@ -107,7 +107,7 @@ class AccessService {
     };
   };
 
-  static resend_code = async ({ email }) => {
+  static resendCode = async ({ email }) => {
     const user = await User.findOne({
       where: {
         email,
@@ -135,8 +135,9 @@ class AccessService {
     if (!comparePassword)
       throw new BadRequestError("Email or password is not correct.");
     if (!user.isVerified)
-      throw new BadRequestError(
-        "Your Email has not been verified. Please click on resend."
+      throw new ApiError(
+        "Your Email has not been verified. Please click on resend.",
+        405
       );
     const payload = {
       userId: user.id,
@@ -145,7 +146,7 @@ class AccessService {
     };
 
     const accessToken = await TokenService.generateAccessToken(payload);
-    await Token.create({
+    const token = await Token.create({
       userId: user.id,
       accessToken,
     });
@@ -167,7 +168,7 @@ class AccessService {
     });
   };
 
-  static logout_all_device = async ({ userId }) => {
+  static logoutAllDevice = async ({ userId }) => {
     await Token.destroy({
       where: {
         userId,
@@ -175,7 +176,7 @@ class AccessService {
     });
   };
 
-  static reset_password = async ({ email }) => {
+  static resetPassword = async ({ email }) => {
     const user = await User.findOne({
       where: {
         email,
@@ -186,7 +187,7 @@ class AccessService {
       throw new NotFoundError(
         "User not found. Please check the information and try again."
       );
-    //await this.logout_all_device({ userId: user.id });
+    await this.logoutAllDevice({ userId: user.id });
     const newPassword = generateRandomString();
     user.password = newPassword;
     await user.save();
@@ -194,7 +195,7 @@ class AccessService {
     return { newPassword };
   };
 
-  static change_password = async ({
+  static changePassword = async ({
     userId,
     oldPassword,
     newPassword,
@@ -205,10 +206,10 @@ class AccessService {
         id: userId,
       },
     });
-    if (!user)
-      throw new NotFoundError(
-        "User not found. Please check the information and try again."
-      );
+    // if (!user)
+    //   throw new NotFoundError(
+    //     "User not found. Please check the information and try again."
+    //   );
     const comparePassword = await user.comparePassword(oldPassword);
     if (!comparePassword)
       throw new ApiError(
