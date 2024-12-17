@@ -1,4 +1,5 @@
 import 'package:FatCat/views/screens/review_study_screen.dart';
+import 'package:FatCat/views/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flip_card/flip_card.dart';
@@ -52,9 +53,19 @@ class IntermittentStudyScreen extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.settings),
                           onPressed: () {
-                            // Handle settings action
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SettingsScreen(
+                                  username: 'Tên người dùng',
+                                  email: 'email@example.com',
+                                ),
+                              ),
+                            );
+
                           },
                         ),
+
                       ],
                     ),
                   ),
