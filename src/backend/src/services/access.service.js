@@ -41,6 +41,7 @@ class AccessService {
     });
 
     const otpCode = await createOtpForUser(user.id);
+    console.log(otpCode);
 
     //await sendVerificationMail(user.email, user.name, otpCode);
 

@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const swagger = require("./swagger");
 const compression = require("compression");
 const { sequelize } = require("./database/init.database");
 const cors = require("cors");
@@ -29,14 +30,20 @@ app.use(cors());
 app.use(express.json({ charset: 'utf-8' }));
 app.use(express.urlencoded({ extended: true, charset: 'utf-8' }));
 
+//swagger
+swagger(app);
+
 //init database
 
 sequelize
-  .sync({ force: true })
+  .sync({ 
+    // force: true,
+    alter: true,
+   })
   .then(async () => {
     console.log("All models were synchronized successfully.");
-    await seedAllData();
-    await seedClassData();
+    // await seedAllData();
+    // await seedClassData();
   })
   .catch((error) => {
     console.error("Error synchronizing models:", error);
