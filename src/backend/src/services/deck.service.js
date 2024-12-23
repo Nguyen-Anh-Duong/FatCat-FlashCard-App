@@ -155,6 +155,7 @@ class DeckService {
 
     return { deck: insertDeckAndCards };
   };
+  
 
   // // copy a deck anf all card of that deck for userId. Issuer of new deck is also userId
   // static createDeckByCopy = async ({ deckId, userId }) => {
@@ -277,13 +278,15 @@ class DeckService {
     ];
     if (!deck) throw new ApiError("deck is required in request.", 400);
     //Only the author has the right to edit
-    if (user_id !== deck.user_id)
-      throw new ApiError(
-        "Missing or incorrect value of user_id field in request.",
-        400
-      );
+    console.log(`userId::${user_id} --- ${deck.user_id}`)
+    // if (user_id !== deck.user_id)
+    //   throw new ApiError(
+    //     "Missing or incorrect value of user_id field in request.",
+    //     400
+    //   );
 
     //error if deckId on route is different from deckId in request
+    console.log(deck_id + deck)
     if (deck_id != deck.id)
       throw new ApiError("Something went wrong. Try again later.");
     console.log(deck);
@@ -335,37 +338,47 @@ class DeckService {
     });
 
     const existingCardIds = existingCards.map((card) => card.id); // nhóm các id của card trong db thành 1 array
-    const requestCardIds = cards.map((card) => card.id); // nhóm các id của request thành 1 array
+    const requestCardIds = cards.map((card) => {
+      console.log(`*** ${card.id}`)
+      return card.id
+    }); // nhóm các id của request thành 1 array
 
     /* tạo ra 1 object có dạng { create: [], update: [], delete: [] }. 
     Cái card nào không có id thì cho vào mảng create.
      Card nào có id nhưng check thấy thay đổi với card trong db thì cho vào mảng update   */
     const groupCards = cards.reduce(
       (obj, card, index) => {
-        if (!card.id) {
+        console.log(card);
+        if (!card.id || card.id.trim() ==='') {
           card.deck_id = deck_id;
+     
+          delete card.id
+          console.log(1)
           obj["create"].push(card);
           return obj;
-        } else if (
-          !_.isEqual(
-            card,
-            existingCards.find((item) => item.id === card.id)
-          )
-        ) {
+        } else {
+          console.log(2)
+
           obj["update"].push(card);
           return obj;
-        } else {
-          return obj;
-        }
+        } 
       },
       { create: [], update: [], delete: [] }
     );
 
     // check xem những card nào có trong db nhưng không có trong request thì card đó bị xóa
+    console.log(`exist ${existingCardIds}`);
+    console.log(`req ${requestCardIds}`);
+    
     const cardIdsToDelete = existingCardIds.filter(
-      (id) => !requestCardIds.includes(id)
+      (id) => {
+        console.log(`delete ${id} -- ${!requestCardIds.includes(id)}`);
+        return !requestCardIds.includes(id.toString())
+      }
     );
-
+    console.log(cardIdsToDelete.length)
+    console.log(cardIdsToDelete)
+    
     groupCards["delete"].push(...cardIdsToDelete);
 
     //delete cards

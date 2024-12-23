@@ -84,7 +84,7 @@ class ClassController {
     new SuccessResponse({
       message: "Create deck for class successfully",
       metadata: await DeckForClassService.createDeckForClass({
-        userId: req.user.userId,
+        user_id: req.user.userId,
         classId: req.params.class_id,
         ...req.body,
       }),
@@ -95,21 +95,6 @@ class ClassController {
     new SuccessResponse({
       message: "Get decks for class successfully",
       metadata: await DeckForClassService.getDeckForClass(req.params.class_id),
-    }).send(res);
-  }
-
-  async updateDeckForClass(req, res) {
-    const { deck, cards } = req.body;
-    const deckId = req.params.deckId;
-    const { userId } = req.user;
-    return new SuccessResponse({
-      message: "Update deck successfully.",
-      metadata: await DeckService.updateDeck({
-        deckId,
-        deckData: deck,
-        cards,
-        userId,
-      }),
     }).send(res);
   }
 }

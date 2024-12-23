@@ -43,7 +43,7 @@ class AccessService {
     const otpCode = await createOtpForUser(user.id);
     console.log(otpCode);
 
-    //await sendVerificationMail(user.email, user.name, otpCode);
+    await sendVerificationMail(user.email, user.name, otpCode);
 
     return {
       ...pick({ object: user, keys: ["email", "name", "role_system"] }),
@@ -120,7 +120,7 @@ class AccessService {
     if (user.isVerified)
       throw new ApiError("Your account has already been verified.", 430);
     const newOtpCode = await createOtpForUser(user.id);
-    //await sendVerificationMail(user.email, user.name, newOtpCode);
+    await sendVerificationMail(user.email, user.name, newOtpCode);
     return { newOtpCode };
   };
 
@@ -191,7 +191,7 @@ class AccessService {
     const newPassword = generateRandomString();
     user.password = newPassword;
     await user.save();
-    //await sendResetPasswordMail({ email, name: user.name, newPassword });
+    await sendResetPasswordMail({ email, name: user.name, newPassword });
     return { newPassword };
   };
 

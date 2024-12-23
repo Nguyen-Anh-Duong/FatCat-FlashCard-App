@@ -35,20 +35,20 @@ swagger(app);
 
 //init database
 
-sequelize
-  .sync({ 
-    // force: true, 
-    alter: true,
+// sequelize
+//   .sync({ 
+//     // force: true, 
+//     // alter: true,
 
-   })
-  .then(async () => {
-    console.log("All models were synchronized successfully.");
-    // await seedAllData();
-    // await seedClassData();
-  })
-  .catch((error) => {
-    console.error("Error synchronizing models:", error);
-  });
+//    })
+//   .then(async () => {
+//     console.log("All models were synchronized successfully.");
+//     // await seedAllData();
+//     // await seedClassData();
+//   })
+//   .catch((error) => {
+//     console.error("Error synchronizing models:", error);
+//   });
 
 //init routes
 app.use("/", require("./routes"));
