@@ -38,8 +38,9 @@ class ClassDetailViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.delayed(const Duration(milliseconds: 200));
-      _decks = await DeckService.fetchDecks();
+      print('_deck: $_decks');
+      _decks = await DeckService.fetchDecksForClass(mClass.id);
+      print('_deck after: $_decks');
     } catch (e) {
       _error = e.toString();
     }

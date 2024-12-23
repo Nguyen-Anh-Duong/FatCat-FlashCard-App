@@ -55,18 +55,20 @@ class DeckModel {
 
     DeckModel deck = DeckModel(
       id: json['id']?.toString(),
-      name: json['name'],
-      description: json['description'],
-      is_published: json['is_published'] == 'false',
-      deck_cards_count: json['deck_cards_count'].toString(),
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      is_published: json['is_published'] ?? false,
+      deck_cards_count: json['deck_cards_count']?.toString() ?? '0',
       user_id: json['user_id']?.toString() ?? '',
       user_name: json['user_name'] ?? '',
       category_id: json['category_id']?.toString() ?? '',
       category_name: json['category_name'] ?? '',
       question_language: json['question_language'] ?? 'en',
       answer_language: json['answer_language'] ?? 'en',
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt:
+          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
     print('===');
     print(deck.toString());

@@ -257,14 +257,32 @@ Future<List<DeckModel>> getAllDeckDownloaded(String orderBy) async {
 }
 
 ///Update the deck that has the same DeckModel's id
-Future<void> updateDeck(String deckId, Map<String, String> deckData) async {
+Future<bool> updateDeck(String deckId, Map<String, String> deckData) async {
   try {
     Database db = await AppDatabase.getInstance();
-    deckData['updatedAt'] = DateTime.now().toIso8601String();
 
-    await db.update('DECK', deckData, where: 'id = ?', whereArgs: [deckId]);
-  } catch (ex) {
-    print(ex);
+    final deck = {
+      'name': deckData['name'],
+      'description': deckData['description'],
+      'deck_cards_count': deckData['deck_cards_count'],
+      'question_language': deckData['question_language'] ?? 'en-US',
+      'answer_language': deckData['answer_language'] ?? 'en-US',
+      'category_name': deckData['category_name'] ?? 'unknown',
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+
+    await db.update(
+      'DECK',
+      deck,
+      where: 'id = ?',
+      whereArgs: [deckId],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    return true;
+  } catch (e) {
+    print('Error updating deck: $e');
+    return false;
   }
 }
 
@@ -406,8 +424,11 @@ Future<void> updateCard(CardModel card) async {
 ///Get card with DeckModel
 Future<List<CardModel>> getCard(String deckId) async {
   Database db = await AppDatabase.getInstance();
-  final List<Map<String, dynamic>> cardMaps =
-      await db.query('CARD', where: 'deckId = ?', whereArgs: [deckId]);
+  final List<Map<String, dynamic>> cardMaps = await db.query(
+    'CARD',
+    where: 'deckId = ?',
+    whereArgs: [deckId],
+  );
 
   return cardMaps
       .map((map) => CardModel(

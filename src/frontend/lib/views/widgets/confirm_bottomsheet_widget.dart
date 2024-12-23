@@ -2,9 +2,9 @@ import 'package:FatCat/views/widgets/primary_button_widget.dart';
 import 'package:FatCat/views/widgets/primary_outline_button.dart';
 import 'package:flutter/material.dart';
 
-void showConfirmBottomSheet(BuildContext context, String title,
+Future<bool?> showConfirmBottomSheet(BuildContext context, String title,
     {VoidCallback? onConfirm}) {
-  showModalBottomSheet(
+  return showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -24,13 +24,13 @@ void showConfirmBottomSheet(BuildContext context, String title,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               primaryOutlineButton("Đóng", 150, () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
               }),
               primaryButton("Đồng ý", 150, () {
                 if (onConfirm != null) {
                   onConfirm!();
                 }
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               })
             ],
           ),

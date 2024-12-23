@@ -23,6 +23,7 @@ class ClassScreen extends StatelessWidget {
             child: Scaffold(
               appBar: AppBar(
                 title: Text("Lớp học", style: AppTextStyles.boldText28),
+                backgroundColor: AppColors.backgroundScreen,
                 actions: [
                   IconButton(
                     icon: Icon(Icons.refresh),
@@ -99,6 +100,7 @@ class ClassScreen extends StatelessWidget {
         return RefreshIndicator(
           color: AppColors.green,
           onRefresh: () => viewModel.initData(),
+          backgroundColor: AppColors.backgroundScreen,
           child: viewModel.ownClasses.isEmpty
               ? ListView(
                   children: [
@@ -131,12 +133,14 @@ class ClassScreen extends StatelessWidget {
                       final classItem = viewModel.ownClasses[index];
                       return ClassCardWidget(
                         classItem: classItem,
+                        inClass: true,
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(
                             context,
                             screen: ClassDetailScreen(
                               mClass: classItem,
                               role: classItem.role,
+                              inClass: true,
                               inviteCode: classItem.codeInvite,
                               onDelete: () async {
                                 await viewModel.fetchOwnClasses();
@@ -167,6 +171,7 @@ class ClassScreen extends StatelessWidget {
 
         return RefreshIndicator(
           color: AppColors.green,
+          backgroundColor: AppColors.backgroundScreen,
           onRefresh: () => viewModel.initData(),
           child: viewModel.allClasses.isEmpty
               ? ListView(

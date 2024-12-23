@@ -23,11 +23,21 @@ class CardsScreen extends StatelessWidget {
 
   final bool? isLocal;
   final VoidCallback? onDelete;
+  final bool inClass;
+  final String? role;
+  final String? classId;
   const CardsScreen(
-      {super.key, required this.deck, this.isLocal, this.onDelete});
+      {super.key,
+      required this.deck,
+      this.inClass = false,
+      this.isLocal,
+      this.onDelete,
+      this.role,
+      this.classId});
 
   @override
   Widget build(BuildContext context) {
+    print('user_id of deck==${deck.user_id}');
     return ChangeNotifierProvider(
       create: (_) => CardScreenViewModel(
         deck,
@@ -35,12 +45,7 @@ class CardsScreen extends StatelessWidget {
       ),
       child: Consumer<CardScreenViewModel>(
         builder: (context, viewModel, child) {
-          List<CardModel> cardData = [];
-          if (isLocal == true) {
-            cardData = viewModel.cards;
-          } else {
-            cardData = viewModel.cards;
-          }
+          List<CardModel> cardData = viewModel.cards;
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -73,6 +78,33 @@ class CardsScreen extends StatelessWidget {
                         ),
                         builder: (context) => ActionBottomSheet(
                           actions: [
+                            if (inClass &&
+                                (role == 'host' || role == 'manager')) ...[
+                              ActionItem(
+                                icon: CupertinoIcons.pencil_circle,
+                                title: 'Cập nhật bộ thẻ',
+                                isDestructive: false,
+                                onTap: () async {
+                                  PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    screen: CreateOrUpdateDeckScreen(
+                                      onDelete: () async {
+                                        await viewModel.loadCards();
+                                      },
+                                      deckId: deck.id,
+                                      userId: deck.user_id,
+                                      initialDeck: deck,
+                                      inClass: true,
+                                      classId: classId,
+                                      initialCards: cardData,
+                                    ),
+                                    withNavBar: false,
+                                    pageTransitionAnimation:
+                                        PageTransitionAnimation.cupertino,
+                                  );
+                                },
+                              ),
+                            ],
                             if (isLocal == false) ...[
                               ActionItem(
                                 icon: CupertinoIcons.share,
@@ -91,6 +123,24 @@ class CardsScreen extends StatelessWidget {
                                 },
                               ),
                             ],
+                            if (inClass &&
+                                (role == 'host' || role == 'manager'))
+                              ActionItem(
+                                icon: CupertinoIcons.delete,
+                                title: 'Xoá bộ thẻ',
+                                isDestructive: true,
+                                onTap: () async {
+                                  bool? rs = await showConfirmBottomSheet(
+                                      context,
+                                      "Bạn chắc chắn sẽ xoá nó chứ T.T");
+                                  if (rs != null) {
+                                    if (rs) {
+                                      await viewModel.deleteInServer(deck.id!);
+                                      // Navigator.pop(context);
+                                    } else {}
+                                  }
+                                },
+                              ),
                             if (isLocal == true) ...[
                               ActionItem(
                                 icon: CupertinoIcons.square_pencil,
@@ -286,18 +336,45 @@ class CardsScreen extends StatelessWidget {
                     SizedBox(
                       height: 4,
                     ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return CardItemWidget(
-                          question: cardData[index].question,
-                          answer: cardData[index].answer,
-                          question_language: deck.question_language,
-                          answer_language: deck.answer_language,
-                        );
-                      },
-                      itemCount: cardData.length,
+                    if (!viewModel.isLoading)
+                      Container(
+                        height: 250,
+                        child: PageView.builder(
+                          itemCount: viewModel.cards.length,
+                          onPageChanged: (index) {
+                            viewModel.currentIndex = index;
+                          },
+                          itemBuilder: (context, index) {
+                            return CardItemWidget(
+                              question: viewModel.cards[index].question,
+                              answer: viewModel.cards[index].answer,
+                              question_language: deck.question_language,
+                              answer_language: deck.answer_language,
+                            );
+                          },
+                        ),
+                      ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        viewModel.cards.length > 5 ? 5 : viewModel.cards.length,
+                        (index) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            width: viewModel.currentIndex == index ? 8.0 : 8.0,
+                            height: 8.0,
+                            decoration: BoxDecoration(
+                              color: viewModel.currentIndex == index
+                                  ? Colors.grey
+                                  : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

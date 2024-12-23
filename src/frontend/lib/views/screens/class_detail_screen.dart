@@ -5,6 +5,7 @@ import 'package:FatCat/models/class_model.dart';
 import 'package:FatCat/models/deck_model.dart';
 import 'package:FatCat/viewmodels/class_detail_viewmodel.dart';
 import 'package:FatCat/views/screens/cards_screen.dart';
+import 'package:FatCat/views/screens/create_or_update_deck_screen.dart';
 import 'package:FatCat/views/widgets/action_bottom_sheet_widget.dart';
 import 'package:FatCat/views/widgets/confirm_bottomsheet_widget.dart';
 import 'package:FatCat/views/widgets/deck_lib_widget.dart';
@@ -20,13 +21,14 @@ class ClassDetailScreen extends StatelessWidget {
   final String? role;
   final VoidCallback? onDelete;
   final String? inviteCode;
-  const ClassDetailScreen({
-    super.key,
-    required this.mClass,
-    this.onDelete,
-    this.role,
-    this.inviteCode,
-  });
+  final bool inClass;
+  const ClassDetailScreen(
+      {super.key,
+      required this.mClass,
+      this.onDelete,
+      this.role,
+      this.inviteCode,
+      this.inClass = false});
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +66,24 @@ class ClassDetailScreen extends StatelessWidget {
                                     }
                                   },
                                 ),
-                              if (role != null && role == 'host' ||
-                                  role == 'manager')
+                              if (role != null &&
+                                  (role == 'host' || role == 'manager') &&
+                                  inClass)
                                 ActionItem(
                                   icon: CupertinoIcons.add,
                                   title: 'Tạo bộ thẻ',
-                                  onTap: () {},
+                                  onTap: () {
+                                    PersistentNavBarNavigator.pushNewScreen(
+                                      context,
+                                      screen: CreateOrUpdateDeckScreen(
+                                        classId: mClass.id,
+                                        inClass: true,
+                                      ),
+                                      withNavBar: false,
+                                      pageTransitionAnimation:
+                                          PageTransitionAnimation.cupertino,
+                                    );
+                                  },
                                 ),
                               ActionItem(
                                 icon: Icons.share,
@@ -140,6 +154,7 @@ class ClassDetailScreen extends StatelessWidget {
                   DecksTab(
                     mClass: mClass,
                     viewmodel: viewModel,
+                    role: role,
                   ), // Tab 1: Decks
                   MembersTab(viewmodel: viewModel), // Tab 2: Members
                   MembersRankingTab(), // Tab 3: Members Ranking
@@ -156,38 +171,49 @@ class ClassDetailScreen extends StatelessWidget {
 class DecksTab extends StatelessWidget {
   final ClassModel mClass;
   final ClassDetailViewmodel viewmodel;
-  const DecksTab({super.key, required this.mClass, required this.viewmodel});
+  final String? role;
+  final bool inClass;
+  const DecksTab(
+      {super.key,
+      required this.mClass,
+      required this.viewmodel,
+      this.role,
+      this.inClass = true});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return RefreshIndicator(
+      onRefresh: () async {
+        await viewmodel.fetchDecks();
+      },
       child: Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: Column(
-          children: [
-            ListView.builder(
-              padding: const EdgeInsets.only(top: 16),
-              itemCount: viewmodel.decks.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final deck = viewmodel.decks[index];
-                return DeckLibWidget(
-                  deck: deck,
-                  color: AppColors.green,
-                  onTap: () async {
-                    PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: CardsScreen(deck: deck, isLocal: false),
-                      withNavBar: false,
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                  },
+        padding: const EdgeInsets.only(top: 8),
+        child: ListView.builder(
+          padding: const EdgeInsets.only(top: 16),
+          itemCount: viewmodel.decks.length,
+          itemBuilder: (context, index) {
+            final deck = viewmodel.decks[index];
+            return DeckLibWidget(
+              deck: deck,
+              color: AppColors.green,
+              onTap: () async {
+                PersistentNavBarNavigator.pushNewScreen(
+                  context,
+                  screen: CardsScreen(
+                      onDelete: () async {
+                        await viewmodel.fetchDecks();
+                      },
+                      deck: deck,
+                      isLocal: false,
+                      inClass: inClass,
+                      role: role,
+                      classId: mClass.id),
+                  withNavBar: false,
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
                 );
               },
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

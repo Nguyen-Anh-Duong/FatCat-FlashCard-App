@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:FatCat/models/user_model.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../models/class_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,23 +8,29 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ClassService {
   final String baseUrl =
       dotenv.get('BASE_URL') ?? 'http://localhost:3000/v1/api';
-  final String authorization = dotenv.get('AUTHORIZATION') ??
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMxMzc5MDA2LCJleHAiOjE3MzkxNTUwMDZ9.UCUJ512XTdkciDexOcNRzRQ6SStmlSju9IdtFbyYdEk';
+  static final storage = FlutterSecureStorage();
+  static Future<String?> getAccessToken() async {
+    return await storage.read(key: 'accessToken');
+  }
+
+  static Future<Map<String, String>> getHeaders() async {
+    final token = await getAccessToken();
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': token ?? '',
+    };
+  }
 
   // Headers cho API calls
-  Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        'authorization': authorization,
-      };
 
   // Lấy tất cả các lớp
   Future<List<ClassModel>> getAllClasses() async {
-    print(baseUrl);
+    final headers = await getHeaders();
     try {
       final response = await http
           .get(
             Uri.parse('$baseUrl/class'),
-            headers: _headers,
+            headers: headers,
           )
           .timeout(const Duration(seconds: 5));
       print(response.body);
@@ -41,6 +48,7 @@ class ClassService {
 
   // Lấy lớp học của user hiện tại
   Future<List<ClassModel>> getOwnClasses() async {
+    final _headers = await getHeaders();
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/class/own_classes'),
@@ -65,6 +73,7 @@ class ClassService {
     required String name,
     required String description,
   }) async {
+    final _headers = await getHeaders();
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/class'),
@@ -91,6 +100,7 @@ class ClassService {
 
   // Tham gia lớp học
   Future<void> joinClass(String codeInvite) async {
+    final _headers = await getHeaders();
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/class/$codeInvite'),
@@ -107,6 +117,7 @@ class ClassService {
 
   // Xóa lớp học
   Future<void> deleteClass(String classId) async {
+    final _headers = await getHeaders();
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/classes/$classId'),
@@ -123,6 +134,7 @@ class ClassService {
 
   // Lấy thành viên của lớp
   Future<List<UserModel>> getClassMembers(String classId) async {
+    final _headers = await getHeaders();
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/class/$classId/members'),
@@ -146,12 +158,14 @@ class ClassService {
 
   // Rời lớp
   Future<void> leaveClass(String classId) async {
+    final _headers = await getHeaders();
     await http.delete(Uri.parse('$baseUrl/class/leave/$classId'),
         headers: _headers);
   }
 
   // Lấy decks của lớp
   Future<List<dynamic>> getClassDecks(String classId) async {
+    final _headers = await getHeaders();
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/class/$classId/decks'),

@@ -86,10 +86,15 @@ class Home extends StatelessWidget {
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextAndShowAllWidget(
-                              text: 'Thư mục',
-                              onPressed: () {},
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 12, bottom: 8),
+                              child: Text(
+                                'Bộ thẻ của bạn',
+                                style: AppTextStyles.boldText20,
+                              ),
                             ),
                             SizedBox(
                               height: 150,

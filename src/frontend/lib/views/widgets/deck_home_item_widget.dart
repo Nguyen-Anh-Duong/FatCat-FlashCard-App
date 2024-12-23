@@ -40,7 +40,7 @@ class DeckHomeItemWidget extends StatelessWidget {
         ),
         onPressed: onPressed,
         child: SizedBox(
-          width: 250,
+          width: 320,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

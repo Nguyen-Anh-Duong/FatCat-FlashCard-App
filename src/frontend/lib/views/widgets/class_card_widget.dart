@@ -6,12 +6,10 @@ import 'package:flutter/services.dart';
 class ClassCardWidget extends StatelessWidget {
   final ClassModel classItem;
   final VoidCallback? onTap;
+  final bool inClass;
 
-  const ClassCardWidget({
-    super.key,
-    required this.classItem,
-    this.onTap,
-  });
+  const ClassCardWidget(
+      {super.key, required this.classItem, this.onTap, this.inClass = false});
 
   @override
   Widget build(BuildContext context) {

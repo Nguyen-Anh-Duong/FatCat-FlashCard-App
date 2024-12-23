@@ -53,4 +53,8 @@ class DecksControlViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void dispose() {
+    super.dispose();
+  }
 }

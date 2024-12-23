@@ -1,7 +1,11 @@
 import 'package:FatCat/constants/colors.dart';
 import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/deck_model.dart';
+import 'package:FatCat/views/screens/bottom_navigation_bar.dart';
+import 'package:FatCat/views/screens/class_screen.dart';
+import 'package:FatCat/views/screens/decks_control_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:FatCat/viewmodels/create_deck_viewmodel.dart';
 import 'package:FatCat/views/widgets/card_edit_widget.dart';
@@ -11,18 +15,26 @@ class CreateOrUpdateDeckScreen extends StatelessWidget {
   final DeckModel? initialDeck;
   final List<CardModel>? initialCards;
   final VoidCallback? onDelete;
-  const CreateOrUpdateDeckScreen({
-    Key? key,
-    this.deckId,
-    this.initialDeck,
-    this.initialCards,
-    this.onDelete,
-  }) : super(key: key);
+  final bool inClass;
+  final String? classId;
+  final String? userId;
+  const CreateOrUpdateDeckScreen(
+      {Key? key,
+      this.deckId,
+      this.initialDeck,
+      this.initialCards,
+      this.onDelete,
+      this.classId,
+      this.userId,
+      this.inClass = false})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => CreateOrUpdateDeckViewModel(
         deckId: deckId,
+        userId: userId,
         initialDeck: initialDeck,
         initialCards: initialCards,
       ),
@@ -46,208 +58,205 @@ class CreateOrUpdateDeckScreen extends StatelessWidget {
                   child: IconButton(
                     icon: const Icon(Icons.check, size: 32),
                     onPressed: () async {
-                      await viewModel.saveDeck();
-                      if (onDelete != null) {
-                        onDelete!();
+                      if (inClass && classId != null) {
+                        print('=====Inclass');
+                        await viewModel.saveDeckToServer(classId!);
+                        Navigator.pop(context);
+                      } else {
+                        print('=====khong trong class');
+
+                        await viewModel.saveDeck();
+                        if (onDelete != null) {
+                          onDelete!();
+                        }
+                        PersistentNavBarNavigator.pushNewScreen(
+                          context,
+                          screen: DecksControl(),
+                          withNavBar: true,
+                          pageTransitionAnimation:
+                              PageTransitionAnimation.cupertino,
+                        );
                       }
-                      Navigator.pop(context);
                     },
                   ),
                 ),
               ],
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tiêu đề',
-                          style: TextStyle(
-                            color: AppColors.blackText,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+            body: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(16.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // Title input section
+                      Text(
+                        'Tiêu đề',
+                        style: TextStyle(
+                          color: AppColors.blackText,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        TextField(
-                          controller: viewModel.titleController,
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 3.0,
-                              ),
+                      ),
+                      TextField(
+                        controller: viewModel.titleController,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 3.0,
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.brown,
-                                width: 4.0,
-                              ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.brown,
+                              width: 4.0,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Mô tả',
-                          style: TextStyle(
-                            color: AppColors.blackText,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Description input section
+                      Text(
+                        'Mô tả',
+                        style: TextStyle(
+                          color: AppColors.blackText,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        TextField(
-                          controller: viewModel.descriptionController,
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 3.0,
-                              ),
+                      ),
+                      TextField(
+                        controller: viewModel.descriptionController,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 3.0,
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.brown,
-                                width: 4.0,
-                              ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.brown,
+                              width: 4.0,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
-                    child: Text(
-                      'Ngôn ngữ thuật ngữ',
-                      style: TextStyle(
-                        color: AppColors.blackText,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
-                    child: DropdownButtonFormField<String>(
-                      value: viewModel.selectedFrontLanguage,
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 3.0,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.brown,
-                            width: 4.0,
-                          ),
+                      const SizedBox(height: 16),
+                      // Front language dropdown
+                      Text(
+                        'Ngôn ngữ thuật ngữ',
+                        style: TextStyle(
+                          color: AppColors.blackText,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      items: [
-                        'Tiếng Việt',
-                        'English',
-                        'Japanese',
-                        'Tiếng Trung'
-                      ].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        viewModel.setFrontLanguage(newValue!);
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
-                    child: Text(
-                      'Ngôn ngữ định nghĩa',
-                      style: TextStyle(
-                        color: AppColors.blackText,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
-                    child: DropdownButtonFormField<String>(
-                      value: viewModel.selectedBackLanguage,
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 3.0,
+                      DropdownButtonFormField<String>(
+                        value: viewModel.selectedFrontLanguage,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 3.0,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.brown,
+                              width: 4.0,
+                            ),
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.brown,
-                            width: 4.0,
-                          ),
+                        items: [
+                          'Tiếng Việt',
+                          'English',
+                          'Japanese',
+                          'Tiếng Trung'
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          viewModel.setFrontLanguage(newValue!);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // Back language dropdown
+                      Text(
+                        'Ngôn ngữ định nghĩa',
+                        style: TextStyle(
+                          color: AppColors.blackText,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      items: [
-                        'Tiếng Việt',
-                        'English',
-                        'Japanese',
-                        'Tiếng Trung'
-                      ].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        viewModel.setBackLanguage(newValue!);
-                      },
-                    ),
+                      DropdownButtonFormField<String>(
+                        value: viewModel.selectedBackLanguage,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 3.0,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.brown,
+                              width: 4.0,
+                            ),
+                          ),
+                        ),
+                        items: [
+                          'Tiếng Việt',
+                          'English',
+                          'Japanese',
+                          'Tiếng Trung'
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          viewModel.setBackLanguage(newValue!);
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                    ]),
                   ),
-                  const SizedBox(height: 24),
-                  ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: viewModel.cards.length,
-                    itemBuilder: (context, index) {
-                      return CardEditWidget(
-                        card: viewModel.cards[index],
-                        onRemove: () => viewModel.removeCard(index),
-                        onCardChanged: (card) =>
-                            viewModel.updateCard(index, card),
+                ),
+                // Cards section
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 8.0),
+                        child: CardEditWidget(
+                          key: ValueKey(index),
+                          card: viewModel.cards[index],
+                          onRemove: () => viewModel.removeCard(index),
+                          onCardChanged: (updatedCard) =>
+                              viewModel.updateCard(index, updatedCard),
+                        ),
                       );
                     },
+                    childCount: viewModel.cards.length,
                   ),
-                  const SizedBox(height: 80), // Space for FAB
-                ],
+                ),
+              ],
+            ),
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: FloatingActionButton(
+                backgroundColor: Colors.brown,
+                child: const Icon(Icons.add, color: Colors.white),
+                onPressed: () => viewModel.addCard(),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.brown,
-              child: const Icon(Icons.add, color: Colors.white),
-              onPressed: () => viewModel.addCard(),
-            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           );
         },
       ),

@@ -1,13 +1,16 @@
 import 'package:FatCat/models/card_edit_model.dart';
 import 'package:FatCat/models/card_model.dart';
 import 'package:FatCat/models/deck_model.dart';
+import 'package:FatCat/services/deck_service.dart';
 import 'package:flutter/material.dart';
 import 'package:FatCat/services/DatabaseHelper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateOrUpdateDeckViewModel extends ChangeNotifier {
   final String? deckId;
+  final String? userId; //ng tao deck
   final DeckModel? initialDeck;
+  DeckModel? updatedDeck;
   final List<CardModel>? initialCards;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -56,6 +59,7 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
 
   CreateOrUpdateDeckViewModel({
     this.deckId,
+    this.userId,
     this.initialDeck,
     this.initialCards,
   }) {
@@ -70,10 +74,12 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
+    Future.delayed(const Duration(milliseconds: 450));
     if (initialCards != null) {
       // Convert CardModel to CardEditModel
       cards = initialCards!
           .map((card) => CardEditModel(
+                id: card.id,
                 question: card.question,
                 answer: card.answer,
                 deckId: card.deckId,
@@ -118,27 +124,32 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
   }
 
   void addCard() {
-    cards.add(CardEditModel(
+    final newCard = CardEditModel(
       question: '',
       answer: '',
       deckId: deckId ?? '',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-    ));
+    );
+    cards = [...cards, newCard];
     notifyListeners();
   }
 
   void removeCard(int index) {
-    cards.removeAt(index);
-    notifyListeners();
+    if (index >= 0 && index < cards.length) {
+      cards = List.from(cards)..removeAt(index);
+      notifyListeners();
+    }
   }
 
   void updateCard(int index, CardEditModel card) {
-    cards[index] = card;
+    if (index < 0 || index >= cards.length) return;
+    if (cards[index] == card) return;
+    cards = [...cards]..[index] = card;
     notifyListeners();
   }
 
-  Future<void> saveDeck() async {
+  Future<DeckModel?> saveDeck() async {
     if (titleController.text.isEmpty) {
       Fluttertoast.showToast(
         msg: 'Tiêu đề không được để trống',
@@ -153,6 +164,7 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
     final deckData = {
       'name': titleController.text,
       'description': descriptionController.text,
+      'deck_cards_count': cards.length.toString(),
       'question_language': languageToCode(selectedFrontLanguage ?? 'English'),
       'answer_language': languageToCode(selectedBackLanguage ?? 'English'),
     };
@@ -174,6 +186,7 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
       if (!success) {
         throw Exception('Không thể lưu deck và cards');
       }
+
       Fluttertoast.showToast(
         msg: 'Tạo bộ thẻ thành công',
         toastLength: Toast.LENGTH_SHORT,
@@ -186,6 +199,7 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
       try {
         print('====Update deck====');
         deckData['deck_cards_count'] = cards.length.toString();
+
         await updateDeck(deckId!, deckData);
 
         final existingCards = await getCard(deckId!);
@@ -206,7 +220,6 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
           );
           await insertCard(cardData);
         }
-
         notifyListeners();
         Fluttertoast.showToast(
           msg: 'Cập nhật bộ thẻ thành công',
@@ -216,9 +229,94 @@ class CreateOrUpdateDeckViewModel extends ChangeNotifier {
           textColor: Colors.black,
           fontSize: 16.0,
         );
+        return updatedDeck;
       } catch (e) {
         throw Exception('Không thể cập nhật deck và cards: $e');
       }
+    }
+  }
+
+  Future<DeckModel?> saveDeckToServer(String classId) async {
+    if (titleController.text.isEmpty) {
+      Fluttertoast.showToast(
+        msg: 'Tiêu đề không được để trống',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
+      throw Exception('Tiêu đề không được để trống');
+    }
+    final deckTemp = DeckModel(
+      id: '',
+      question_language: languageToCode(selectedFrontLanguage ?? 'English'),
+      answer_language: languageToCode(selectedBackLanguage ?? 'English'),
+      name: titleController.text,
+      description: descriptionController.text,
+      is_published: false,
+      deck_cards_count: '',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    if (deckId == null) {
+      print('====Create deck====');
+      final List<CardModel> cardsList = cards
+          .map((card) => CardModel(
+              deckId: '',
+              question: card.question,
+              answer: card.answer,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now()))
+          .toList();
+      print('2====Create deck====');
+
+      final success =
+          await DeckService.createDeckToServer(classId, deckTemp, cardsList);
+
+      if (!success) {
+        throw Exception('Không thể lưu deck và cards');
+      }
+
+      Fluttertoast.showToast(
+        msg: 'Tạo bộ thẻ thành công',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
+    } else {
+      deckTemp.id = deckId;
+      print('====Update deck====');
+      deckTemp.user_id = userId ?? '';
+      print('user_id');
+      List<CardModel> cardTemp = [];
+      for (var card in cards) {
+        print('card ${card.question} ${card.id}');
+        final cardData = CardModel(
+          id: card.id ?? '',
+          userId: '1',
+          deckId: deckId!,
+          question: card.question,
+          answer: card.answer,
+          imageId: '',
+          createdAt: card.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        cardTemp.add(cardData);
+      }
+      await DeckService.updateDeckToServer(classId, deckTemp, cardTemp);
+      notifyListeners();
+      Fluttertoast.showToast(
+        msg: 'Cập nhật bộ thẻ thành công',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
+      return updatedDeck;
     }
   }
 
