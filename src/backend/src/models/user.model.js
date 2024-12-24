@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database/init.database");
 const bcrypt = require("bcrypt");
+const moment = require("moment");
 
 const User = sequelize.define(
   "User",
@@ -37,10 +38,11 @@ const User = sequelize.define(
     },
     streak_length: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: 1,
     },
     streak_start_at: {
       type: DataTypes.DATE,
+      defaultValue: moment().startOf("day"),
     },
     score: {
       type: DataTypes.INTEGER,
@@ -64,8 +66,8 @@ const User = sequelize.define(
   {
     tableName: "Users",
     timestamps: true,
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci'
+    charset: "utf8mb4",
+    collate: "utf8mb4_unicode_ci",
   }
 );
 
