@@ -1,0 +1,481 @@
+openapi: 3.0.3
+info:
+  title: Flashcard API Documentation
+  description: API documentation for Flashcard application
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/v1/api
+  - url: https://fatcat-flashcard-app.onrender.com/v1/api
+tags:
+  - name: access
+    description: Authentication and user access operations
+  - name: deck
+    description: Operations about decks
+  - name: card
+    description: Operations about cards
+  - name: class
+    description: Operations about classes
+
+paths:
+  /access/register:
+    post:
+      tags:
+        - access
+      summary: Register new user
+      description: Register a new user account
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Register successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Register successfully!!
+                  metadata:
+                    type: object
+
+  /access/verify-account:
+    post:
+      tags:
+        - access
+      summary: Verify user account
+      description: Verify user account with OTP code
+      operationId: verifyAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                otpCode:
+                  type: string
+      responses:
+        '200':
+          description: Account verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Account verified
+                  metadata:
+                    type: object
+
+  /access/login:
+    post:
+      tags:
+        - access
+      summary: Login user
+      description: Login with user credentials
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successfully!!
+                  metadata:
+                    type: object
+
+  /access/logout:
+    post:
+      tags:
+        - access
+      summary: Logout user
+      description: Logout current user session
+      operationId: logout
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully logged out.
+                  metadata:
+                    type: object
+
+  /deck:
+    get:
+      tags:
+        - deck
+      summary: Get all decks
+      description: Retrieve all decks
+      operationId: getAllDecks
+      responses:
+        '200':
+          description: List of all decks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get all decks successfully.
+                  metadata:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Deck'
+
+    post:
+      tags:
+        - deck
+      summary: Create new deck
+      description: Create a new deck
+      operationId: createDeck
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckInput'
+      responses:
+        '200':
+          description: Deck created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create new deck successfully.
+                  metadata:
+                    $ref: '#/components/schemas/Deck'
+
+  /class:
+    get:
+      tags:
+        - class
+      summary: Get all classes
+      description: Retrieve all classes
+      operationId: getAllClasses
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of all classes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get all classes successfully
+                  metadata:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Class'
+
+    post:
+      tags:
+        - class
+      summary: Create new class
+      description: Create a new class
+      operationId: createClass
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassInput'
+      responses:
+        '200':
+          description: Class created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create class successfully
+                  metadata:
+                    $ref: '#/components/schemas/Class'
+
+  /class/own_classes:
+    get:
+      tags:
+        - class
+      summary: Get user's classes
+      description: Get classes by user ID
+      operationId: getClassByUserId
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: Sort parameter for classes
+      responses:
+        '200':
+          description: User's classes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get class by user id successfully
+                  metadata:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Class'
+
+  /class/{class_id}:
+    delete:
+      tags:
+        - class
+      summary: Delete class
+      description: Delete a specific class
+      operationId: deleteClass
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Class deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Delete class successfully
+                  metadata:
+                    type: object
+
+    patch:
+      tags:
+        - class
+      summary: Update class
+      description: Update class information
+      operationId: updateClass
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassInput'
+      responses:
+        '200':
+          description: Class updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Update class successfully
+                  metadata:
+                    $ref: '#/components/schemas/Class'
+
+  /class/{class_id}/members:
+    get:
+      tags:
+        - class
+      summary: Get class members
+      description: Get all members of a class
+      operationId: getMembersOfClass
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Class members retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get members of class successfully
+                  metadata:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClassMember'
+
+  /class/{class_id}/members/{user_id}:
+    delete:
+      tags:
+        - class
+      summary: Delete class member
+      description: Remove a member from class
+      operationId: deleteMember
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Member deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Delete member successfully
+                  metadata:
+                    type: object
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Deck:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: string
+        issuer_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    DeckInput:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    Class:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        code_invite:
+          type: string
+        host_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ClassInput:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    ClassMember:
+      type: object
+      properties:
+        user_id:
+          type: string
+        class_id:
+          type: string
+        role:
+          type: string
+          enum: [host, member]
+        joined_at:
+          type: string
+          format: date-time
